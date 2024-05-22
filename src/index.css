@@ -5,4 +5,51 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(7 11 41);
+
+  /* MUST BE REMOVED! */
+  height: 2000px;
+}
+.mid-img{
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  filter: grayscale(100%);
+  mask-image: linear-gradient(to top,  rgba(0, 0, 0, 0),rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 1),rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+      
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  /* align-items: center; */
+  padding: 20px;
+  background: #1f2833;
+  /* color: #66fcf1; */
+}
+
+.section .logo {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #EFBD65;
+  ;
+}
+
+header .section {
+  display: flex;
+  align-items: center;
+}
+
+.section a {
+  text-decoration: none;
+  color: #fff;
+  margin: 0 15px;
+}
+
+header .social-icons a {
+  margin-left: 10px;
+  text-decoration: none;
+  color: #66fcf1;
 }
