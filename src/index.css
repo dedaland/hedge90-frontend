@@ -11,6 +11,7 @@ body {
   height: 2000px;
 }
 .mid-img{
+  z-index: -1;
   position: absolute;
   top: 100%;
   left: 50%;
@@ -52,4 +53,97 @@ header .social-icons a {
   margin-left: 10px;
   text-decoration: none;
   color: #66fcf1;
+}
+/* SECTIONS */
+
+.intro {
+  text-align: left;
+  margin-bottom: 50px;
+}
+
+.intro h1 {
+  font-size: 3em;
+  margin: 0;
+}
+
+.intro h2 {
+  font-size: 1.5em;
+  margin: 0;
+}
+
+.transactions {
+  display: flex;
+  margin-right: 100px;
+  justify-content: right;
+  color: #fff;
+}
+
+.transaction-panel {
+  background: #1f2833;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.panel-header button {
+  background: #26262f;
+  border: none;
+  padding: 10px 20px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.previous-purchases {
+  margin-top: 20px;
+}
+
+.previous-purchases h3 {
+  margin: 0 0 10px 0;
+}
+
+.purchase-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.purchase-item .tether {
+  color: #66fcf1;
+}
+
+.sell-section {
+  margin-top: 20px;
+}
+
+.sell-section h3 {
+  margin: 0 0 10px 0;
+}
+
+.sell-section input {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #c5c6c7;
+  border-radius: 5px;
+  background: #0b0c10;
+  color: #c5c6c7;
+}
+
+.sell-section p {
+  margin: 0 0 10px 0;
+}
+
+.sell-section .sell-button {
+  width: 100%;
+  background: #EFBD65;
+  border: none;
+  padding: 10px;
+  color: #000000;
+  cursor: pointer;
+  border-radius: 5px;
 }
