@@ -1,4 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import Collapsible from './collapsible';
 // import Select from 'react-select'
 import Select, { StylesConfig, ThemeConfig } from 'react-select';
 
@@ -204,6 +205,38 @@ const App = () => {
                 blockchain security measures
                 </div>
             </div>
+          </section>
+          <section className='faq-section'>
+            <div className='faq-title'>Frequently asked questions</div>
+            <div className='faq-sub-title'>Find answers to some of your questions or contact us below</div>
+              <Collapsible 
+              title="What is Dedacoin?"
+              children={
+                <div className='faq-answer'>Dedacoin is a cryptocurrency that offers a stable and secure way to invest in the crypto market. It is a decentralized platform that allows users to purchase, sell, and trade cryptocurrencies with ease.</div>
+              }
+              >
+              </Collapsible>
+              <Collapsible 
+              title="What is Dedacoin?"
+              children={
+                <div className='faq-answer'>Dedacoin is a cryptocurrency that offers a stable and secure way to invest in the crypto market. It is a decentralized platform that allows users to purchase, sell, and trade cryptocurrencies with ease.</div>
+              }
+              >
+              </Collapsible>
+              <Collapsible 
+              title="What is Dedacoin?"
+              children={
+                <div className='faq-answer'>Dedacoin is a cryptocurrency that offers a stable and secure way to invest in the crypto market. It is a decentralized platform that allows users to purchase, sell, and trade cryptocurrencies with ease.</div>
+              }
+              >
+              </Collapsible>
+              <Collapsible 
+              title="What is Dedacoin?"
+              children={
+                <div className='faq-answer'>Dedacoin is a cryptocurrency that offers a stable and secure way to invest in the crypto market. It is a decentralized platform that allows users to purchase, sell, and trade cryptocurrencies with ease.</div>
+              }
+              >
+              </Collapsible>
           </section>
 
     </div>
