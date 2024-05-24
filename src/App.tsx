@@ -32,7 +32,8 @@ const customStyles: StylesConfig<OptionType, false> = {
   container: (base, { isDisabled, isFocused }) => ({
     ...base,
     color: 'white',
-    border: "#8a8aa0"
+    border: "#8a8aa0",
+    width: "98%"
   }),
   control: (provided, state) => ({
     ...provided,
@@ -87,22 +88,9 @@ const App = () => {
   return (
     
     <div
-      style={{
-        // display: 'flex',
-        // justifyContent: 'flex-end',
-        // padding: 12,
-      }}
     >
       <header>
-        {/* <div className="logo">
-         <div>dedacoin</div> 
-          
-        </div>
-        <div>
-            <a href="#">ABOUT</a>
-            <a href="#">HOW TO BUY</a>
-            <a href="#">FAQS</a>
-        </div> */}
+
         <div className="section">
         <div className='logo'>dedacoin</div> 
             <a href="#">ABOUT</a>
@@ -119,49 +107,46 @@ const App = () => {
         </div>
     </header>
       <img className="mid-img" src="/pattern.svg" alt="pattern" />
-      <section className="intro">
-            <h1>Dedacoin</h1>
-            <h2>The Future of Stable Investment</h2>
-        </section>
-        <section className="transactions">
-            <div className="transaction-panel">
-                <div className="panel-header">
-                    <button className="buy-button">Buy</button>
-                    <button className="refund-button">Refund</button>
-                </div>
+      <div className='main-section'>
+            <section className="intro">
+                  <h1>Dedacoin</h1>
+                  <h2>The Future of Stable Investment</h2>
+              </section>
+              <section className="transactions">
+                  <div className="transaction-panel">
+                      <div className="panel-header">
+                          <button style={{backgroundColor: "#26262f", color: "white"}} className="buy-button">Buy</button>
+                          <button style={{backgroundColor: "white", color: "black"}} className="refund-button">Refund</button>
+                      </div>
 
 
-                <div className="previous-purchases">
-                    <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
-                    <Select
-                      options={options}
-                      styles={customStyles}
-                      theme={customTheme}
-                      formatOptionLabel={formatOptionLabel}
-                    />
-{/* 
-                    <div className="purchase-item">
-                        <p>5.09 DEDA ($160 Paid)</p>
-                        <p>158.07 <span className="tether">T</span></p>
-                    </div>
-                    <div className="purchase-item">
-                        <p>5.09 DEDA ($220 Paid)</p>
-                        <p>219.02 <span className="tether">T</span></p>
-                    </div>
-                    <div className="purchase-item">
-                        <p>42.105 DEDA ($100 Paid)</p>
-                        <p>50.065 <span className="tether">T</span></p>
-                    </div> */}
-                    <p>Available: 5.09</p>
-                </div>
-                <div className="sell-section">
-                    <h3>Tether you receive</h3>
-                    <input type="text" placeholder="Amount" />
-                    <p>1 Dedacoin = 0.9808 Tether</p>
-                    <button className="sell-button">Sell Now</button>
-                </div>
-            </div>
-        </section>
+                      <div className="previous-purchases">
+                          <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
+                          <Select
+                            options={options}
+                            styles={customStyles}
+                            theme={customTheme}
+                            formatOptionLabel={formatOptionLabel}
+                          />
+
+                      </div>
+                      <div className="sell-section">
+                          <h5>DeDaCoin you pay</h5>
+                          <input type="text" placeholder="Amount" />
+                          <button className='max-button'>Max</button>
+                          <p className='available-amount'>Available: 5.09</p>
+                          <h5>Tether you receive</h5>
+                          <input type="text" placeholder="Amount" disabled />
+                          <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
+                          <button className="sell-button">Sell Now</button>
+                      </div>
+                  </div>
+              </section>
+          </div>
+          <section className='how-to-buy'>
+            <div className='section-title'>How to buy</div>
+            <p></p>
+          </section>
 
     </div>
   );
