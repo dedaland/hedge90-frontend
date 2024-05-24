@@ -145,7 +145,65 @@ const App = () => {
           </div>
           <section className='how-to-buy'>
             <div className='section-title'>How to buy</div>
-            <p></p>
+                <div className='secion-step'>step 01</div>
+                <div className='section-step-title'>connect your crypto wallet</div>
+
+
+                <div className='section-step-content'>securely connect your wallet to start buying <br/> or selling dedacoin</div>
+
+
+                <div className='secion-step'>step 02</div>
+
+                <div className='section-step-title'>buy dedacoin</div>
+
+
+
+                <div className='section-step-content'>Purchase dedacoin with confidence. <br/>
+
+                knowing your investment is protected.</div>
+
+
+                <div className='secion-step'>step 03</div>
+
+                <div className='section-step-title'>monitor and Trade</div>
+
+                <div className='section-step-content'>easily track your investments and trade <br/>
+                dedacoin on our intuitive platform</div>
+          </section>
+
+          <div className='key-feature-title'>Key Features</div>
+          <section className='key-features'>
+            
+            <div className='key-feature-section-box'>
+                <div className='key-feature-section-box-title'>
+                Price stability
+                </div>
+                <div className='key-feature-section-box-content'>
+                  Easily track your investments and 
+                  trade Dedacoin on our intuitive
+                  platform.
+                </div>
+            </div>
+            <div className='key-feature-section-box'>
+                <div className='key-feature-section-box-title'>
+                High Liquidity
+                </div>
+                <div className='key-feature-section-box-content'>
+                with a growing number of active
+                users, Dedacoin offers high liquidity
+                for seamless buying and selling.
+                </div>
+            </div>
+            <div className='key-feature-section-box'>
+                <div className='key-feature-section-box-title'>
+                Security first
+                </div>
+                <div className='key-feature-section-box-content'>
+                Your transactions and holdings are
+                safeguarded with latest in
+                blockchain security measures
+                </div>
+            </div>
           </section>
 
     </div>

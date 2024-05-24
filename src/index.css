@@ -72,7 +72,7 @@ header .social-icons a {
 .intro h1 {
   font-size: 5em;
   margin: 0;
- color: #EFBD65;;
+ color: #EFBD65;
 }
 
 .intro h2 {
@@ -193,7 +193,7 @@ header .social-icons a {
 
 .how-to-buy {
   margin: 100px auto;
-  width: 50%;
+  width: 44%;
   color: white;
   border: 1px solid #8a8aa0;
   border-radius: 10px;
@@ -210,6 +210,73 @@ header .social-icons a {
   font-weight: bold;
 }
 
-  /*  */
+.secion-step{
+  font-size: 1.5em;
+  font-weight: bold;
+  padding-left: 100px;
+  /* padding-top: 30px; */
+  color: #EFBD65;
+}
+
+.section-step-title {
+  font-size: 2em;
+  font-weight: bold;
+  padding-left: 100px;
+  padding-top: 30px;
+  color: #ffffff;
+}
+
+
+.section-step-content {
+  font-size: 1.2em;
+  padding-left: 100px;
+  padding-top: 30px;
+  padding-bottom: 70px;
+  color: #c5c6c7;
+  width: 80%;
+}
+
+.key-feature-title{
+  font-size: 2.6em;
+  font-weight: bold;
+  padding-left: 110px;
+  padding-top: 30px;
+  color: #ffffff;
+}
+
+.key-features{
+  color: white;
+  margin-left: 100px;
+  margin-top: 50px;
+  display: flex;
+}
+
+.key-feature-section-box{
+  width: 30%;
+  height: 250px;
+  margin: 10px;
+  display:flexbox;
+  border: 1px solid #8a8aa0;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.61);
+  backdrop-filter: blur(5px);
+}
+
+.key-feature-section-box-title{
+  font-size: 2em;
+  font-weight: bold;
+  padding-left: 30px;
+  padding-top: 30px;
+  padding-bottom: 10px;
+}
+
+.key-feature-section-box-content{
+  font-size: 1.2em;
+  padding-left: 30px;
+  padding-top: 30px;
+  padding-bottom: 70px;
+  color: #ffffff;
+  width: 80%;
+}
 /* .refund-button .buy-button {} */
 
