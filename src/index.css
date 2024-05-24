@@ -6,8 +6,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(7 11 41);
-
-  /* MUST BE REMOVED! */
   height: 2400px;
 }
 .mid-img{
@@ -25,10 +23,10 @@ body {
 header {
   display: flex;
   justify-content: space-between;
-  /* align-items: center; */
+
   padding: 20px;
-  /* background: #1f2833; */
-  /* color: #66fcf1; */
+
+
 }
 
 
@@ -55,7 +53,6 @@ header .social-icons a {
   text-decoration: none;
   color: #66fcf1;
 }
-/* SECTIONS */
 .main-section{
   display: flex;
 }
@@ -83,7 +80,7 @@ header .social-icons a {
 
 .transactions {
   display: flex;
-  /* flex: 1 1 45%; */
+
   width: 45%;
   margin-right: 100px;
   justify-content: right;
@@ -91,7 +88,7 @@ header .social-icons a {
 }
 
 .transaction-panel {
-  /* background: #1f2833; */
+
   background: black;
   padding: 20px;
   border-radius: 10px;
@@ -106,11 +103,10 @@ header .social-icons a {
 }
 
 .panel-header button {
-  /* background: #26262f; */
+
   width: 50%;
   border: none;
   padding: 14px 20px;
-  /* color: #fff; */
   border-radius: 5px;
   cursor: pointer;
 }
@@ -135,7 +131,7 @@ header .social-icons a {
 
 .sell-section {
   margin-top: 20px;
-  /* line-height: 1.5; */
+
 }
 
 .sell-section h3 {
@@ -214,7 +210,7 @@ header .social-icons a {
   font-size: 1.5em;
   font-weight: bold;
   padding-left: 100px;
-  /* padding-top: 30px; */
+
   color: #EFBD65;
 }
 
@@ -278,7 +274,7 @@ header .social-icons a {
   color: #ffffff;
   width: 80%;
 }
-/* .refund-button .buy-button {} */
+
 
 .faq-section{
   margin-top: 100px;
@@ -318,7 +314,7 @@ header .social-icons a {
   width: 100%;
   text-align: left;
   cursor: pointer;
-  /* padding-left: 30px; */
+
   padding: 30px;
 }
 

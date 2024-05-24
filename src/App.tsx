@@ -1,28 +1,19 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Collapsible from './collapsible';
-// import Select from 'react-select'
+
 import Select, { StylesConfig, ThemeConfig } from 'react-select';
 
 type OptionType = { label: string; value: string, imageUrl: string };
 
-// const options = [
-//   { value: 'chocolate', 
-//   // label: 'Chocolate USDT<img src="" />' ,
-//   label: <div><img src="" height="30px" width="30px"/>Chocolate </div>,
-//   color: "black"},
-//   { value: 'strawberry', label: 'Strawberry' , color: "black"},
-//   { value: 'vanilla', label: 'Vanilla' , color: "black"}
-// ]
 
 const options: OptionType[] = [
   { value: 'option1', label: 'Option 1', imageUrl: '/time-past-svgrepo-com.svg' },
-  { value: 'option2', label: 'Option 2', imageUrl: '/time-past-svgrepo-com.svg' },
-  // Add more options as needed
+  { value: 'option2', label: 'Option 2', imageUrl: '/time-past-svgrepo-com.svg' }
 ];
 
 const formatOptionLabel = ({ label, imageUrl }: OptionType) => (
   <div style={{ display: 'flex', alignItems: 'center' }}>
-    <img src={imageUrl} alt="" style={{ marginRight: 10, width: 20, height: 20 }} />
+    <img src={imageUrl} alt="" style={{ marginRight: "10px", width: "20px", height: "20px" }} />
     {label}
   </div>
 );
@@ -245,5 +236,3 @@ const App = () => {
 
 export default App;
 
-
-// rgb(7 11 41);

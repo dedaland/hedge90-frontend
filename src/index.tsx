@@ -3,7 +3,6 @@ import './polyfills';
 import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import reportWebVitals from './reportWebVitals';
 import { getDefaultConfig, RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 import { metaMaskWallet, trustWallet, injectedWallet } from '@rainbow-me/rainbowkit/wallets';
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
@@ -38,16 +37,10 @@ const config = createConfig({
   transports: {
     [bsc.id]: http(),
   },
-  multiInjectedProviderDiscovery: true,
-  // chains: [
-  //   mainnet,
-  //   polygon,
-  //   optimism,
-  //   arbitrum,
-  //   base,
-  //   ...(process.env.REACT_APP_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
-  // ],
+  multiInjectedProviderDiscovery: true
 });
+
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -61,11 +54,10 @@ root.render(
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider modalSize="compact" theme={darkTheme({
           accentColor: '#000',
-          // border: '0.5px solid white';
           accentColorForeground: 'white',
           borderRadius: 'small',
           fontStack: 'system',
-          overlayBlur: 'small',
+          overlayBlur: 'small'
         })}
     >
           <App />
@@ -75,4 +67,3 @@ root.render(
   </React.StrictMode>
 );
 
-reportWebVitals();
