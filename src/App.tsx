@@ -80,14 +80,16 @@ const App = () => {
   return (
     
     <div
-    >
+    className='body-section'>
       <header>
 
         <div className="section">
         <div className='logo'>dedacoin</div> 
+        <div className='section-links'>
             <a href="#">ABOUT</a>
             <a href="#">HOW TO BUY</a>
             <a href="#">FAQS</a>
+        </div>
         </div>
         
         <div className="section">

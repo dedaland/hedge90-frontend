@@ -8,6 +8,10 @@ body {
   background-color: rgb(7 11 41);
   height: 2400px;
 }
+.body-section{
+  max-width: 1600px;
+  margin: auto;
+}
 .mid-img{
   z-index: -1;
   position: absolute;
@@ -81,7 +85,7 @@ header .social-icons a {
 .transactions {
   display: flex;
 
-  width: 45%;
+  width: 500px;
   margin-right: 100px;
   justify-content: right;
   color: #fff;
@@ -131,7 +135,7 @@ header .social-icons a {
 
 .sell-section {
   margin-top: 20px;
-
+  position: relative;
 }
 
 .sell-section h3 {
@@ -165,8 +169,8 @@ header .social-icons a {
 }
 
 .max-button {
-  position: absolute;
-  right: 130px;
+  position:absolute;
+  right: 10px;
   background: transparent;
   border: none;
   padding: 10px;
@@ -177,7 +181,7 @@ header .social-icons a {
 }
 .available-amount {
   position: absolute;
-  right: 130px;
+  right: 10px;
   font-size: 0.8em;
   color: #c5c6c7;
 }
@@ -332,3 +336,90 @@ header .social-icons a {
 .collapsible-content.open {
   display: block;
 }
+
+@media screen and (max-width: 1270px) {
+  .how-to-buy {
+    width: 80%;
+  }
+
+  .secion-step{
+    padding-left: 100px;
+  }
+  
+  .section-step-title {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+  
+  
+  .section-step-content {
+    font-size: 1.2em;
+    padding-left: 100px;
+    padding-top: 30px;
+    padding-bottom: 70px;
+    padding-right: 100px;
+    color: #c5c6c7;
+    width: 80%;
+  }
+}
+
+
+@media screen and (max-width: 960px) {
+  
+  .intro h1 {
+    font-size: 3em;
+  }
+  
+  .intro h2 {
+    font-size: 2.5em;
+  }
+
+  .key-features{
+    display: block;
+  }
+  .key-feature-section-box{
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 708px) {
+  .how-to-buy {
+    width: 80%;
+  }
+
+  .secion-step{
+    padding-left: 50px;
+  }
+  
+  .section-step-title {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  
+  
+  .section-step-content {
+    font-size: 1.2em;
+    padding-left: 50px;
+    padding-top: 30px;
+    padding-bottom: 70px;
+    padding-right: 50px;
+    color: #c5c6c7;
+    width: 80%;
+  }
+  .section-links {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .main-section {
+    display: ruby-text;
+  }
+  .transactions{
+    margin-left: auto;
+  }
+  .intro {
+    display:none;
+  }
+}
+
