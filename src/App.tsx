@@ -84,7 +84,11 @@ const App = () => {
       <header>
 
         <div className="section">
-        <div className='logo'>dedacoin</div> 
+        <img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />
+
+        <div className='logo'>
+          dedacoin
+          </div> 
         <div className='section-links'>
             <a href="#">ABOUT</a>
             <a href="#">HOW TO BUY</a>
@@ -232,6 +236,28 @@ const App = () => {
               </Collapsible>
           </section>
 
+          <section className='footer-section'>
+            <div className="section">
+                
+                <div className='logo'><img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />dedacoin</div> 
+            </div>
+            
+            <div className="section">
+                <div className="social-icons">
+                    <a href="#"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
+                    <a href="#"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
+                </div>
+            </div>
+          </section>
+          <hr style={{border: "0.1px solid #EFBD65", width: "90%"}}/>
+          <section className='copy-contact-section'>
+              <div className='copyright'>
+                © 2024 Dedacoin Rights Reserved.
+              </div>
+              <div className='contact-us'>
+                Contact@dedacoin.com
+              </div>
+          </section>
     </div>
   );
 };
