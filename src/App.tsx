@@ -85,6 +85,7 @@ const App = () => {
 
         <div className="section">
         <img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />
+        {/* <img width="30px" style={{paddingRight: "13px"}} src="/TetherUSDT.svg" alt="" /> */}
 
         <div className='logo'>
           dedacoin
