@@ -7,7 +7,8 @@ import { getDefaultConfig, RainbowKitProvider, darkTheme } from '@rainbow-me/rai
 import { metaMaskWallet, trustWallet, injectedWallet } from '@rainbow-me/rainbowkit/wallets';
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 
-import { WagmiProvider, http, createConfig } from 'wagmi';
+import { WagmiProvider, http, createConfig, fallback, unstable_connector } from 'wagmi';
+import { injected } from 'wagmi/connectors'
 import {
   arbitrum,
   base,
@@ -16,10 +17,12 @@ import {
   optimism,
   polygon,
   sepolia,
+  bscTestnet
 } from 'wagmi/chains';
 
 import App from './App';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 
 const connectors = connectorsForWallets(
   [{ groupName: 'Wallets', wallets: [metaMaskWallet, trustWallet, injectedWallet] }],
@@ -35,7 +38,9 @@ const config = createConfig({
   ],
   chains: [bsc],
   transports: {
-    [bsc.id]: http(),
+    [bsc.id]: fallback([
+      unstable_connector(injected), 
+    ]),
   },
   multiInjectedProviderDiscovery: true
 });

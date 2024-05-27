@@ -2,6 +2,8 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Collapsible from './collapsible';
 
 import Select, { StylesConfig, ThemeConfig } from 'react-select';
+import { type BaseError, useReadContract } from 'wagmi'
+import { abi } from './erc20_abi'
 
 type OptionType = { label: string; value: string, imageUrl: string };
 
@@ -76,6 +78,39 @@ const customTheme: ThemeConfig = (theme) => ({
 });
 
 
+const wagmiContractConfig = {
+  addressOrName: '0x31471E0791fCdbE82fbF4C44943255e923F1b794',
+  contractInterface: abi,
+};
+
+function ReadContract() {
+  const { 
+    data: balance,
+    error,
+    isPending
+  } = useReadContract({
+    ...wagmiContractConfig,
+    functionName: 'balanceOf',
+    args: ['0x2f5EF555ce682CB3F88623cC628b67fF0C4e90bD'],
+  })
+
+  // if (isPending) return <div>Loading...</div>
+
+  if (error) {
+    const message = ((error as unknown) as BaseError).message;
+    return (
+      <div>
+        Error: {message}
+      </div>
+    );
+  }
+
+  return (
+    <div>Balance: {balance?.toString()}</div>
+  )
+}
+
+
 const App = () => {
   return (
     
@@ -98,7 +133,7 @@ const App = () => {
         </div>
         
         <div className="section">
-            <ConnectButton />
+            <ConnectButton showBalance={false} />
             <div className="social-icons">
                 <a href="#"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
                 <a href="#"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
@@ -130,6 +165,7 @@ const App = () => {
 
                       </div>
                       <div className="sell-section">
+                          HI: <ReadContract /> : IH
                           <h5>DeDaCoin you pay</h5>
                           <input type="text" placeholder="Amount" />
                           <button className='max-button'>Max</button>
