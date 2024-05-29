@@ -1,11 +1,12 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Collapsible from './collapsible';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Select, { StylesConfig, ThemeConfig } from 'react-select';
-import { type BaseError, useReadContract, useAccount } from 'wagmi'
+import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
 import { getAccount } from '@wagmi/core'
 import { abi } from './erc20_abi'
+import { contract_abi } from './contract_abi'
 import { config } from './wallet';
 
 
@@ -112,11 +113,115 @@ function ReadContract() {
     }
 }
 
+const tokenAddress = '0xEfd0e778289B94f2c7a759829D750BDF113aBafD';
+
+// Address of the contract to spend the tokens
+const spenderAddress = '0x85A47f53Fb62AfBd94B64193173Bb61ce7D5eadf';
+
+// function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
+//   const { address } = useAccount();
+
+//   const { data } = useSimulateContract();
+
+//   const { writeContract } = useWriteContract();
+
+  
+
+
+//   return (
+//     <div>
+//       <button onClick={() => {
+//               setisLoading(true)
+//               writeContract(
+//                 {
+//                   abi: contract_abi,
+//                   address: spenderAddress,
+//                   functionName: 'buyTokens',
+//                   args: [amountToBuy], // Example: 1 token (assuming amount is in ether units)
+//                 },{
+//                   onSuccess: () => {
+//                     setTimeout(() => {
+//                       setIsApproved(true)
+//                       setisLoading(false);
+//                     }, 15000)
+                  
+//                 },
+//                 onError: () => {
+//                   setisLoading(false);
+//                 }
+//               }
+//           )}
+//         }>
+//         Buy Tokens
+//       </button>
+//     </div>
+//   );
+// }
+
+
+function ApproveTokensComponent({ amountToApprove }: { amountToApprove: bigint }) {
+  const { address } = useAccount();
+  const [isApproved, setIsApproved] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
+
+  // Read the allowance to check if the amount is already approved
+  const { data: allowance } = useReadContract({
+    address: tokenAddress,
+    abi: abi,
+    functionName: 'allowance',
+    args: [address ?? '0x0000000000000000000000000000000000000000', spenderAddress],
+  });
+
+  useEffect(() => {
+    if (allowance && allowance >= amountToApprove) {
+      setIsApproved(true);
+    } else {
+      setIsApproved(false);
+    }
+  }, [allowance, amountToApprove]);
+
+  // Prepare the write contract for the approve function
+  const { data } = useSimulateContract({
+    address: tokenAddress,
+    abi: abi,
+    functionName: 'approve',
+    args: [spenderAddress, amountToApprove],
+  });
+
+  const { writeContract } = useWriteContract()
+  return (
+    <div>
+      {isApproved ? (
+       <button className="sell-button">Buy Now</button>
+      ) : (
+        <button disabled={isLoading} className="sell-button" onClick={() => {
+              setisLoading(true)
+              writeContract(
+                data!.request,{
+                  onSuccess: () => {
+                    setTimeout(() => {
+                      setIsApproved(true)
+                      setisLoading(false);
+                    }, 15000)
+                  
+                },
+                onError: () => {
+                  setisLoading(false);
+                }
+              }
+          )}
+        }>{ isLoading ? "Approving..." : "Approve Tokens"}</button>
+      )}
+    </div>
+  );
+}
+
 
 
 const App = () => {
   const [buysell, setBuysell] = useState('buy');
   const { isConnected, address } = useAccount();
+  const [amountToApprove, setAmountToApprove] = useState(BigInt(0));
   function toggleBuysell(input: string) {
     setBuysell(input);
   }
@@ -165,9 +270,6 @@ const App = () => {
                           onClick={() => toggleBuysell('sell')}
                           style={buysell == 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
                       </div>
-
-
-                      
                       <div style={buysell == 'sell' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
                       <div className="previous-purchases">
                           <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
@@ -191,11 +293,16 @@ const App = () => {
 
                       <div style={buysell == 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
                           <h5>DeDaCoin you recieve</h5>
-                          <input type="text" placeholder="Amount" />
+                          <input type="number"
+                                  value={amountToApprove == 0n ? "" : amountToApprove.toString()}
+                                  onChange={(e) => setAmountToApprove(BigInt(e.target.value))}
+                                  placeholder="Amount" />
+                          
                           <h5>Tether you pay</h5>
                           <input type="text" placeholder="Amount" disabled />
                           <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
-                          <button className="sell-button">Buy Now</button>
+                          <ApproveTokensComponent amountToApprove={amountToApprove} />
+                          
                       </div>
                   </div>
               </section>
