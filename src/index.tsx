@@ -1,44 +1,13 @@
-import '@rainbow-me/rainbowkit/styles.css';
-import './polyfills';
-import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { getDefaultConfig, RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
-import { metaMaskWallet, trustWallet, injectedWallet } from '@rainbow-me/rainbowkit/wallets';
-import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import { WagmiProvider} from 'wagmi';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 
-import { WagmiProvider, http, createConfig } from 'wagmi';
-import {
-  arbitrum,
-  base,
-  mainnet,
-  bsc,
-  optimism,
-  polygon,
-  sepolia,
-} from 'wagmi/chains';
+import { queryClient, config } from './wallet';
+
 
 import App from './App';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const connectors = connectorsForWallets(
-  [{ groupName: 'Wallets', wallets: [metaMaskWallet, trustWallet, injectedWallet] }],
-  {
-    appName: 'My RainbowKit App',
-    projectId: 'YOUR_PROJECT_ID',
-  },
-);
-
-const config = createConfig({
-  connectors: [
-    ...connectors,
-  ],
-  chains: [bsc],
-  transports: {
-    [bsc.id]: http(),
-  },
-  multiInjectedProviderDiscovery: true
-});
 
 
 
@@ -46,24 +15,25 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const queryClient = new QueryClient();
 
 root.render(
   <React.StrictMode>
-    <WagmiProvider config={config}>
+        <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider modalSize="compact" theme={darkTheme({
-          accentColor: '#000',
-          accentColorForeground: 'white',
-          borderRadius: 'small',
-          fontStack: 'system',
-          overlayBlur: 'small'
-        })}
-    >
-          <App />
-        </RainbowKitProvider>
+
+            <RainbowKitProvider modalSize="compact" theme={darkTheme({
+              accentColor: '#000',
+              accentColorForeground: 'white',
+              borderRadius: 'small',
+              fontStack: 'system',
+              overlayBlur: 'small'
+            })}
+        >
+              <App />
+            </RainbowKitProvider>
       </QueryClientProvider>
-    </WagmiProvider>
+
+        </WagmiProvider>
   </React.StrictMode>
 );
 

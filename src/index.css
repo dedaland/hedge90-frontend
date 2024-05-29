@@ -124,16 +124,16 @@ header .social-icons a {
   color: #66fcf1;
 }
 
-.sell-section {
+.sell-buy-section {
   margin-top: 20px;
   position: relative;
 }
 
-.sell-section h3 {
+.sell-buy-section h3 {
   margin: 0 0 10px 0;
 }
 
-.sell-section input {
+.sell-buy-section input {
   width: 91%;
   padding: 10px;
   margin-bottom: 10px;
@@ -144,11 +144,11 @@ header .social-icons a {
   color: #c5c6c7;
 }
 
-.sell-section p {
+.sell-buy-section p {
   margin: 0 0 10px 0;
 }
 
-.sell-section .sell-button {
+.sell-buy-section .sell-button {
   width: 100%;
   background: #EFBD65;
   border: none;
@@ -442,3 +442,8 @@ header .social-icons a {
   }
 }
 
+
+iframe
+{
+    display: none;
+}

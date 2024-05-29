@@ -1,7 +1,13 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Collapsible from './collapsible';
+import { useState } from 'react';
 
 import Select, { StylesConfig, ThemeConfig } from 'react-select';
+import { type BaseError, useReadContract, useAccount } from 'wagmi'
+import { getAccount } from '@wagmi/core'
+import { abi } from './erc20_abi'
+import { config } from './wallet';
+
 
 type OptionType = { label: string; value: string, imageUrl: string };
 
@@ -76,7 +82,45 @@ const customTheme: ThemeConfig = (theme) => ({
 });
 
 
+
+
+function ReadContract() {
+    const account = getAccount(config)
+    const { data, isError, isLoading } = useReadContract({
+      abi: abi,
+      address: '0xEfd0e778289B94f2c7a759829D750BDF113aBafD',
+      functionName: 'balanceOf',
+      args: [account.address ?? '0x0000000000000000000000000000000000000000'],//['0x2f5EF555ce682CB3F88623cC628b67fF0C4e90bD'],
+      config: config
+    })
+
+    if (isLoading) {
+      return "Loading..."
+    }
+
+    if (isError) {
+      console.log("ERR", "Couldn't fetch balance")
+      return ""
+    }
+
+    if(data){
+      return (
+        data?.toString()
+      )
+    }else{
+      return "Couldn't fetch balance"
+    }
+}
+
+
+
 const App = () => {
+  const [buysell, setBuysell] = useState('buy');
+  const { isConnected, address } = useAccount();
+  function toggleBuysell(input: string) {
+    setBuysell(input);
+  }
+
   return (
     
     <div
@@ -98,7 +142,7 @@ const App = () => {
         </div>
         
         <div className="section">
-            <ConnectButton />
+            <ConnectButton showBalance={false} />
             <div className="social-icons">
                 <a href="#"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
                 <a href="#"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
@@ -114,11 +158,17 @@ const App = () => {
               <section className="transactions">
                   <div className="transaction-panel">
                       <div className="panel-header">
-                          <button style={{backgroundColor: "#26262f", color: "white"}} className="buy-button">Buy</button>
-                          <button style={{backgroundColor: "white", color: "black"}} className="refund-button">Refund</button>
+                          <button 
+                          onClick={() => toggleBuysell('buy')}
+                          style={buysell == 'buy' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="buy-button">Buy</button>
+                          <button 
+                          onClick={() => toggleBuysell('sell')}
+                          style={buysell == 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
                       </div>
 
 
+                      
+                      <div style={buysell == 'sell' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
                       <div className="previous-purchases">
                           <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
                           <Select
@@ -129,15 +179,23 @@ const App = () => {
                           />
 
                       </div>
-                      <div className="sell-section">
                           <h5>DeDaCoin you pay</h5>
                           <input type="text" placeholder="Amount" />
                           <button className='max-button'>Max</button>
-                          <p className='available-amount'>Available: 5.09</p>
+                          <p className='available-amount'>Available: {isConnected?<ReadContract />:"Connect your wallet"}</p>
                           <h5>Tether you receive</h5>
                           <input type="text" placeholder="Amount" disabled />
                           <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
                           <button className="sell-button">Sell Now</button>
+                      </div>
+
+                      <div style={buysell == 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
+                          <h5>DeDaCoin you recieve</h5>
+                          <input type="text" placeholder="Amount" />
+                          <h5>Tether you pay</h5>
+                          <input type="text" placeholder="Amount" disabled />
+                          <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
+                          <button className="sell-button">Buy Now</button>
                       </div>
                   </div>
               </section>
