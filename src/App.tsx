@@ -1,6 +1,6 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Collapsible from './collapsible';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import Select, { StylesConfig, ThemeConfig } from 'react-select';
 import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
@@ -113,67 +113,75 @@ function ReadContract() {
     }
 }
 
-const tokenAddress = '0xEfd0e778289B94f2c7a759829D750BDF113aBafD';
+const tokenAddress = '0x6B7Ff29582E0137C172dFB083Ff9Dd6c07C7D097';
+const USDTAddress = '0x56Deb4F512867Fa7E2C951425Ac7be0162E66e3f';
 
 // Address of the contract to spend the tokens
-const spenderAddress = '0x85A47f53Fb62AfBd94B64193173Bb61ce7D5eadf';
+const spenderAddress = '0x5d4fC96A0f39182d8e1ECe4Dd006f9Da839B2Bea';
 
-// function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
-//   const { address } = useAccount();
+function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
+  const [isLoading, setisLoading] = useState(false);
+  const [isPurchased, setisPurchased] = useState(false);
 
-//   const { data } = useSimulateContract();
+  const { data } = useSimulateContract({
+    address: spenderAddress,
+    abi: contract_abi,
+    functionName: 'buyTokens',
+    args: [amountToBuy],
+  });
 
-//   const { writeContract } = useWriteContract();
+  const { writeContract } = useWriteContract()
 
-  
-
-
-//   return (
-//     <div>
-//       <button onClick={() => {
-//               setisLoading(true)
-//               writeContract(
-//                 {
-//                   abi: contract_abi,
-//                   address: spenderAddress,
-//                   functionName: 'buyTokens',
-//                   args: [amountToBuy], // Example: 1 token (assuming amount is in ether units)
-//                 },{
-//                   onSuccess: () => {
-//                     setTimeout(() => {
-//                       setIsApproved(true)
-//                       setisLoading(false);
-//                     }, 15000)
-                  
-//                 },
-//                 onError: () => {
-//                   setisLoading(false);
-//                 }
-//               }
-//           )}
-//         }>
-//         Buy Tokens
-//       </button>
-//     </div>
-//   );
-// }
+  return (
+    <div>
+      {isPurchased ? (
+      <button className="sell-button">Successfully purchased</button>
+     ) :
+      (<button disabled={isLoading} className="sell-button" onClick={() => {
+        setisLoading(true)
+        writeContract(
+          data!.request,{
+            onSuccess: () => {
+              setTimeout(() => {
+                setisPurchased(true)
+                setisLoading(false);
+              }, 15000)
+            
+          },
+          onError: () => {
+            setisLoading(false);
+          }
+        }
+    )
+  }
+  }>
+        Buy Tokens
+      </button>)}
+    </div>
+  );
+}
 
 
 function ApproveTokensComponent({ amountToApprove }: { amountToApprove: bigint }) {
   const { address } = useAccount();
   const [isApproved, setIsApproved] = useState(false);
   const [isLoading, setisLoading] = useState(false);
+  const amountToApproveWithDecimal = amountToApprove * BigInt(10 ** 8)
+    // NOTE: fetch price first
+  const tokenPrice = BigInt(1.5 * 10**6)
+
+  const amountToBuyWithDecimal = amountToApprove * tokenPrice
 
   // Read the allowance to check if the amount is already approved
   const { data: allowance } = useReadContract({
-    address: tokenAddress,
+    address: USDTAddress,
     abi: abi,
     functionName: 'allowance',
     args: [address ?? '0x0000000000000000000000000000000000000000', spenderAddress],
   });
 
   useEffect(() => {
-    if (allowance && allowance >= amountToApprove) {
+    if (allowance && allowance >= amountToBuyWithDecimal) {
       setIsApproved(true);
     } else {
       setIsApproved(false);
@@ -181,36 +189,51 @@ function ApproveTokensComponent({ amountToApprove }: { amountToApprove: bigint }
   }, [allowance, amountToApprove]);
 
   // Prepare the write contract for the approve function
-  const { data } = useSimulateContract({
-    address: tokenAddress,
+  const { data, error } = useSimulateContract({
+    address: USDTAddress,
     abi: abi,
     functionName: 'approve',
-    args: [spenderAddress, amountToApprove],
+    args: [spenderAddress, BigInt(2**53-1)],
   });
 
   const { writeContract } = useWriteContract()
+
+  useEffect(() => {
+    if (error) {
+      console.error("Failed to simulate contract approval.", error);
+    }
+  }, []);
+
+  const handleApprove = () => {
+    if (!data || !data.request) {
+      console.error("Approval simulation data is not available.");
+      return;
+      
+    }
+    setisLoading(true)
+    writeContract(
+          data.request,{
+            onSuccess: () => {
+              setTimeout(() => {
+                setIsApproved(true)
+                setisLoading(false);
+              }, 15000)
+          },
+          onError: () => {
+            setisLoading(false);
+          }
+        }
+    )
+  }
+
   return (
     <div>
       {isApproved ? (
-       <button className="sell-button">Buy Now</button>
+      //  <button className="sell-button">Buy Now</button>
+      // <BuyTokensComponent amountToBuy={amountToApprove} />
+      <BuyTokensComponent amountToBuy={amountToApproveWithDecimal} />
       ) : (
-        <button disabled={isLoading} className="sell-button" onClick={() => {
-              setisLoading(true)
-              writeContract(
-                data!.request,{
-                  onSuccess: () => {
-                    setTimeout(() => {
-                      setIsApproved(true)
-                      setisLoading(false);
-                    }, 15000)
-                  
-                },
-                onError: () => {
-                  setisLoading(false);
-                }
-              }
-          )}
-        }>{ isLoading ? "Approving..." : "Approve Tokens"}</button>
+        <button disabled={isLoading} className="sell-button" onClick={handleApprove}>{ isLoading ? "Approving..." : "Approve Tokens"}</button>
       )}
     </div>
   );
@@ -302,6 +325,7 @@ const App = () => {
                           <input type="text" placeholder="Amount" disabled />
                           <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
                           <ApproveTokensComponent amountToApprove={amountToApprove} />
+                          {/* <BuyTokensComponent amountToBuy={1000000000n} /> */}
                           
                       </div>
                   </div>

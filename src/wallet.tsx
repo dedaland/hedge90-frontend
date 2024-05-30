@@ -30,7 +30,7 @@ export const config = createConfig({
   ],
   chains: [bscTestnet],
   transports: {
-    [bscTestnet.id]: http()//http("https://sepolia.infura.io/v3/3b14b0c3e9f246f59b141820d1936066")//http("https://go.getblock.io/874b729c0579489e95445e53e0e1dd23") //unstable_connector(injected)
+    [bscTestnet.id]: http("https://data-seed-prebsc-1-s1.binance.org:8545/")//http("https://sepolia.infura.io/v3/3b14b0c3e9f246f59b141820d1936066")//http("https://go.getblock.io/874b729c0579489e95445e53e0e1dd23") //unstable_connector(injected)
   },
   multiInjectedProviderDiscovery: true
 });
