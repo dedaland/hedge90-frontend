@@ -117,14 +117,14 @@ const tokenAddress = '0x6B7Ff29582E0137C172dFB083Ff9Dd6c07C7D097';
 const USDTAddress = '0x56Deb4F512867Fa7E2C951425Ac7be0162E66e3f';
 
 // Address of the contract to spend the tokens
-const spenderAddress = '0x5d4fC96A0f39182d8e1ECe4Dd006f9Da839B2Bea';
+const contractAddress = '0x5d4fC96A0f39182d8e1ECe4Dd006f9Da839B2Bea';
 
 function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
   const [isLoading, setisLoading] = useState(false);
   const [isPurchased, setisPurchased] = useState(false);
 
   const { data } = useSimulateContract({
-    address: spenderAddress,
+    address: contractAddress,
     abi: contract_abi,
     functionName: 'buyTokens',
     args: [amountToBuy],
@@ -155,72 +155,113 @@ function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
     )
   }
   }>
-        Buy Tokens
+        { isLoading ? "Purchasing..." : "Buy DedaCoin"}
       </button>)}
     </div>
   );
 }
 
 
-function ApproveTokensComponent({ amountToApprove }: { amountToApprove: bigint }) {
-  const { address } = useAccount();
-  const [isApproved, setIsApproved] = useState(false);
-  const [isLoading, setisLoading] = useState(false);
-  const amountToApproveWithDecimal = amountToApprove * BigInt(10 ** 8)
-    // NOTE: fetch price first
-  const tokenPrice = BigInt(1.5 * 10**6)
+function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigint }) {
+  // const { address } = useAccount();
+  const [isUSDTApproved, setIsUSDTApproved] = useState(false);
+  const [isUSDTApproveLoading, setisUSDTApproveLoading] = useState(false);
 
-  const amountToBuyWithDecimal = amountToApprove * tokenPrice
+
+  const [isDeDaApproved, setIsDeDaApproved] = useState(false);
+  const [isDeDaApproveLoading, setisDeDaApproveLoading] = useState(false);
+  // 
+  const [buysell, setBuysell] = useState('buy');
+  const { isConnected, address } = useAccount();
+
+
+
+  const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(0));
+
+
+
+
+  function toggleBuysell(input: string) {
+    setBuysell(input);
+  }
+  // 
+  const DeDaAmountToBuyWithDecimal = DeDaAmountToBuy * BigInt(10 ** 8)
+    // NOTE: fetch price first
+  const tokenPrice = 0.86
+
+  const finalPriceWithDecimal = DeDaAmountToBuy * BigInt(tokenPrice * 10**6)
 
   // Read the allowance to check if the amount is already approved
-  const { data: allowance } = useReadContract({
+  const { data: usdtAllowance } = useReadContract({
     address: USDTAddress,
     abi: abi,
     functionName: 'allowance',
-    args: [address ?? '0x0000000000000000000000000000000000000000', spenderAddress],
+    args: [address ?? '0x0000000000000000000000000000000000000000', contractAddress],
   });
 
   useEffect(() => {
-    if (allowance && allowance >= amountToBuyWithDecimal) {
-      setIsApproved(true);
+    if (usdtAllowance && usdtAllowance >= finalPriceWithDecimal) {
+      setIsUSDTApproved(true);
     } else {
-      setIsApproved(false);
+      setIsUSDTApproved(false);
     }
-  }, [allowance, amountToApprove]);
+  }, [usdtAllowance, DeDaAmountToBuy]);
 
   // Prepare the write contract for the approve function
-  const { data, error } = useSimulateContract({
+  const { data: buyData, error: buyErr } = useSimulateContract({
     address: USDTAddress,
     abi: abi,
     functionName: 'approve',
-    args: [spenderAddress, BigInt(2**53-1)],
+    args: [contractAddress, BigInt(2**53-1)],
   });
 
-  const { writeContract } = useWriteContract()
+  const { writeContract: writeApproveContract } = useWriteContract()
 
   useEffect(() => {
-    if (error) {
-      console.error("Failed to simulate contract approval.", error);
+    if (buyErr) {
+      console.error("Failed to simulate contract approval.", buyErr);
     }
   }, []);
 
-  const handleApprove = () => {
-    if (!data || !data.request) {
+  const handleBuyApprove = () => {
+    if (!buyData || !buyData.request) {
       console.error("Approval simulation data is not available.");
       return;
       
     }
-    setisLoading(true)
-    writeContract(
-          data.request,{
+    setisUSDTApproveLoading(true)
+    writeApproveContract(
+      buyData.request,{
             onSuccess: () => {
               setTimeout(() => {
-                setIsApproved(true)
-                setisLoading(false);
+                setIsUSDTApproved(true)
+                setisUSDTApproveLoading(false);
               }, 15000)
           },
           onError: () => {
-            setisLoading(false);
+            setisUSDTApproveLoading(false);
+          }
+        }
+    )
+  }
+
+  const handleSellApprove = () => {
+    if (!buyData || !buyData.request) {
+      console.error("Approval simulation data is not available.");
+      return;
+      
+    }
+    setisUSDTApproveLoading(true)
+    writeApproveContract(
+      buyData.request,{
+            onSuccess: () => {
+              setTimeout(() => {
+                setIsUSDTApproved(true)
+                setisUSDTApproveLoading(false);
+              }, 15000)
+          },
+          onError: () => {
+            setisUSDTApproveLoading(false);
           }
         }
     )
@@ -228,13 +269,59 @@ function ApproveTokensComponent({ amountToApprove }: { amountToApprove: bigint }
 
   return (
     <div>
-      {isApproved ? (
-      //  <button className="sell-button">Buy Now</button>
-      // <BuyTokensComponent amountToBuy={amountToApprove} />
-      <BuyTokensComponent amountToBuy={amountToApproveWithDecimal} />
-      ) : (
-        <button disabled={isLoading} className="sell-button" onClick={handleApprove}>{ isLoading ? "Approving..." : "Approve Tokens"}</button>
-      )}
+      {/*  */}
+      <section className="transactions">
+                  <div className="transaction-panel">
+                      <div className="panel-header">
+                          <button 
+                          onClick={() => toggleBuysell('buy')}
+                          style={buysell == 'buy' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="buy-button">Buy</button>
+                          <button 
+                          onClick={() => toggleBuysell('sell')}
+                          style={buysell == 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
+                      </div>
+                      <div style={buysell == 'sell' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
+                      <div className="previous-purchases">
+                          <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
+                          <Select
+                            options={options}
+                            styles={customStyles}
+                            theme={customTheme}
+                            formatOptionLabel={formatOptionLabel}
+                          />
+
+                      </div>
+                          <h5>DeDaCoin you pay</h5>
+                          <input type="text" placeholder="Amount" />
+                          <button className='max-button'>Max</button>
+                          <p className='available-amount'>Available: {isConnected?<ReadContract />:"Connect your wallet"}</p>
+                          <h5>Tether you receive</h5>
+                          <input type="text" placeholder="Amount" disabled />
+                          <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
+                          <button className="sell-button">Sell Now</button>
+                      </div>
+
+                      <div style={buysell == 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
+                          <h5>DeDaCoin you recieve</h5>
+                          <input type="number"
+                                  value={DeDaAmountToBuy == 0n ? "" : DeDaAmountToBuy.toString()}
+                                  onChange={(e) => setDeDaAmountToBuy(BigInt(e.target.value))}
+                                  placeholder="Amount" />
+                          
+                          <h5>Tether you pay</h5>
+                          <input type="text" value={finalPriceWithDecimal == 0n ? "":(Number(finalPriceWithDecimal)/10**6).toString()} placeholder="Amount" disabled />
+                          <p className='price-text'>&#9432; 1 Dedacoin = {tokenPrice.toString()} Tether</p>
+                          {isUSDTApproved ? (
+                            <BuyTokensComponent amountToBuy={DeDaAmountToBuyWithDecimal} />
+                            ) : (
+                              <button disabled={isUSDTApproveLoading} className="sell-button" onClick={handleBuyApprove}>{ isUSDTApproveLoading ? "Approving..." : "Approve Tokens"}</button>
+                            )}
+                          
+                      </div>
+                  </div>
+              </section>
+      {/*  */}
+      
     </div>
   );
 }
@@ -242,12 +329,12 @@ function ApproveTokensComponent({ amountToApprove }: { amountToApprove: bigint }
 
 
 const App = () => {
-  const [buysell, setBuysell] = useState('buy');
-  const { isConnected, address } = useAccount();
-  const [amountToApprove, setAmountToApprove] = useState(BigInt(0));
-  function toggleBuysell(input: string) {
-    setBuysell(input);
-  }
+  // const [buysell, setBuysell] = useState('buy');
+  // const { isConnected, address } = useAccount();
+  // const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(0));
+  // function toggleBuysell(input: string) {
+  //   setBuysell(input);
+  // }
 
   return (
     
@@ -283,53 +370,7 @@ const App = () => {
                   <h1>Dedacoin</h1>
                   <h2>The Future of Stable Investment</h2>
               </section>
-              <section className="transactions">
-                  <div className="transaction-panel">
-                      <div className="panel-header">
-                          <button 
-                          onClick={() => toggleBuysell('buy')}
-                          style={buysell == 'buy' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="buy-button">Buy</button>
-                          <button 
-                          onClick={() => toggleBuysell('sell')}
-                          style={buysell == 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
-                      </div>
-                      <div style={buysell == 'sell' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
-                      <div className="previous-purchases">
-                          <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
-                          <Select
-                            options={options}
-                            styles={customStyles}
-                            theme={customTheme}
-                            formatOptionLabel={formatOptionLabel}
-                          />
-
-                      </div>
-                          <h5>DeDaCoin you pay</h5>
-                          <input type="text" placeholder="Amount" />
-                          <button className='max-button'>Max</button>
-                          <p className='available-amount'>Available: {isConnected?<ReadContract />:"Connect your wallet"}</p>
-                          <h5>Tether you receive</h5>
-                          <input type="text" placeholder="Amount" disabled />
-                          <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
-                          <button className="sell-button">Sell Now</button>
-                      </div>
-
-                      <div style={buysell == 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
-                          <h5>DeDaCoin you recieve</h5>
-                          <input type="number"
-                                  value={amountToApprove == 0n ? "" : amountToApprove.toString()}
-                                  onChange={(e) => setAmountToApprove(BigInt(e.target.value))}
-                                  placeholder="Amount" />
-                          
-                          <h5>Tether you pay</h5>
-                          <input type="text" placeholder="Amount" disabled />
-                          <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
-                          <ApproveTokensComponent amountToApprove={amountToApprove} />
-                          {/* <BuyTokensComponent amountToBuy={1000000000n} /> */}
-                          
-                      </div>
-                  </div>
-              </section>
+              <TransactionComponent />
           </div>
           <section className='how-to-buy'>
             <div className='section-title'>How to buy</div>
