@@ -10,18 +10,25 @@ import { contract_abi } from './contract_abi'
 import { config } from './wallet';
 
 
-type OptionType = { label: string; value: string, imageUrl: string };
+type OptionType = { label1: string; label2: string; value: string, imageUrl1: string, imageUrl2: string };
 
 
 const options: OptionType[] = [
-  { value: 'option1', label: 'Option 1', imageUrl: '/time-past-svgrepo-com.svg' },
-  { value: 'option2', label: 'Option 2', imageUrl: '/time-past-svgrepo-com.svg' }
+  { value: '0', label1: '10 DEDA(at 1$ price)', imageUrl1: '/logo.png', label2: '9', imageUrl2: '/TetherUSDT.svg' },
+  { value: '1', label1: '10 DEDA(at 1$ price)', imageUrl1: '/logo.png', label2: '9', imageUrl2: '/TetherUSDT.svg' },
+  { value: '2', label1: '10 DEDA(at 1$ price)', imageUrl1: '/logo.png', label2: '9', imageUrl2: '/TetherUSDT.svg' }
 ];
 
-const formatOptionLabel = ({ label, imageUrl }: OptionType) => (
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    <img src={imageUrl} alt="" style={{ marginRight: "10px", width: "20px", height: "20px" }} />
-    {label}
+const formatOptionLabel = ({ label1, imageUrl1, label2, imageUrl2 }: OptionType) => (
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <img src={imageUrl1} alt="" style={{ marginRight: "10px", width: "20px", height: "20px" }} />
+      <span>{label1}</span>
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <span>{label2}</span>
+      <img src={imageUrl2} alt="" style={{ marginLeft: "10px", width: "20px", height: "20px" }} />
+    </div>
   </div>
 );
 
@@ -84,14 +91,21 @@ const customTheme: ThemeConfig = (theme) => ({
 
 
 
+const tokenAddress = '0x6B7Ff29582E0137C172dFB083Ff9Dd6c07C7D097';
+const USDTAddress = '0x56Deb4F512867Fa7E2C951425Ac7be0162E66e3f';
 
-function ReadContract() {
+// Address of the contract to spend the tokens
+const contractAddress = '0x5d4fC96A0f39182d8e1ECe4Dd006f9Da839B2Bea';
+
+
+
+function ReadTokenBalanceContract({address}: {address: string}) {
     const account = getAccount(config)
     const { data, isError, isLoading } = useReadContract({
       abi: abi,
-      address: '0xEfd0e778289B94f2c7a759829D750BDF113aBafD',
+      address: tokenAddress,
       functionName: 'balanceOf',
-      args: [account.address ?? '0x0000000000000000000000000000000000000000'],//['0x2f5EF555ce682CB3F88623cC628b67fF0C4e90bD'],
+      args: [account.address ?? '0x0000000000000000000000000000000000000000'],
       config: config
     })
 
@@ -106,18 +120,13 @@ function ReadContract() {
 
     if(data){
       return (
-        data?.toString()
+        (Number(data)/(10**8)).toString()
       )
     }else{
       return "Couldn't fetch balance"
     }
 }
 
-const tokenAddress = '0x6B7Ff29582E0137C172dFB083Ff9Dd6c07C7D097';
-const USDTAddress = '0x56Deb4F512867Fa7E2C951425Ac7be0162E66e3f';
-
-// Address of the contract to spend the tokens
-const contractAddress = '0x5d4fC96A0f39182d8e1ECe4Dd006f9Da839B2Bea';
 
 function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
   const [isLoading, setisLoading] = useState(false);
@@ -162,6 +171,49 @@ function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
 }
 
 
+function SellTokensComponent({ amountToSell, index }: { amountToSell: bigint, index: bigint }) {
+  const [isLoading, setisLoading] = useState(false);
+  const [isPurchased, setisPurchased] = useState(false);
+
+  const { data } = useSimulateContract({
+    address: contractAddress,
+    abi: contract_abi,
+    functionName: 'returnTokens',
+    args: [amountToSell, index],
+  });
+
+  const { writeContract } = useWriteContract()
+
+  return (
+    <div>
+      {isPurchased ? (
+      <button className="sell-button">Successfully returned</button>
+     ) :
+      (<button disabled={isLoading} className="sell-button" onClick={() => {
+        setisLoading(true)
+        writeContract(
+          data!.request,{
+            onSuccess: () => {
+              setTimeout(() => {
+                setisPurchased(true)
+                setisLoading(false);
+              }, 15000)
+            
+          },
+          onError: () => {
+            setisLoading(false);
+          }
+        }
+    )
+  }
+  }>
+        { isLoading ? "Returning..." : "Return DedaCoin"}
+      </button>)}
+    </div>
+  );
+}
+
+
 function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigint }) {
   // const { address } = useAccount();
   const [isUSDTApproved, setIsUSDTApproved] = useState(false);
@@ -177,6 +229,8 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 
 
   const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(0));
+  const [DeDaAmountToSell, setDeDaAmountToSell] = useState(BigInt(0));
+  const [DeDaIndexToSell, setDeDaIndexToSelll] = useState(BigInt(1));
 
 
 
@@ -186,6 +240,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   }
   // 
   const DeDaAmountToBuyWithDecimal = DeDaAmountToBuy * BigInt(10 ** 8)
+  const DeDaAmountToSellWithDecimal = DeDaAmountToSell * BigInt(10 ** 8)
     // NOTE: fetch price first
   const tokenPrice = 0.86
 
@@ -198,7 +253,15 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
     functionName: 'allowance',
     args: [address ?? '0x0000000000000000000000000000000000000000', contractAddress],
   });
+  
+  const { data: dedaAllowance } = useReadContract({
+    address: tokenAddress,
+    abi: abi,
+    functionName: 'allowance',
+    args: [address ?? '0x0000000000000000000000000000000000000000', contractAddress],
+  });
 
+  
   useEffect(() => {
     if (usdtAllowance && usdtAllowance >= finalPriceWithDecimal) {
       setIsUSDTApproved(true);
@@ -206,6 +269,9 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       setIsUSDTApproved(false);
     }
   }, [usdtAllowance, DeDaAmountToBuy]);
+
+
+  
 
   // Prepare the write contract for the approve function
   const { data: buyData, error: buyErr } = useSimulateContract({
@@ -215,7 +281,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
     args: [contractAddress, BigInt(2**53-1)],
   });
 
-  const { writeContract: writeApproveContract } = useWriteContract()
+  const { writeContract: writeUSDTApproveContract } = useWriteContract()
 
   useEffect(() => {
     if (buyErr) {
@@ -230,7 +296,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       
     }
     setisUSDTApproveLoading(true)
-    writeApproveContract(
+    writeUSDTApproveContract(
       buyData.request,{
             onSuccess: () => {
               setTimeout(() => {
@@ -245,23 +311,40 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
     )
   }
 
+  useEffect(() => {
+    if (dedaAllowance && dedaAllowance >= DeDaAmountToSell) {
+      setIsDeDaApproved(true);
+    } else {
+      setIsDeDaApproved(false);
+    }
+  }, [dedaAllowance, DeDaAmountToSell]);
+
+  const { data: sellData, error: sellErr } = useSimulateContract({
+    address: tokenAddress,
+    abi: abi,
+    functionName: 'approve',
+    args: [contractAddress, BigInt(2**53-1)],
+  });
+
+  const { writeContract: writeDeDaApproveContract } = useWriteContract()
+
   const handleSellApprove = () => {
-    if (!buyData || !buyData.request) {
+    if (!sellData || !sellData.request) {
       console.error("Approval simulation data is not available.");
       return;
       
     }
-    setisUSDTApproveLoading(true)
-    writeApproveContract(
-      buyData.request,{
+    setisDeDaApproveLoading(true)
+    writeDeDaApproveContract(
+      sellData.request,{
             onSuccess: () => {
               setTimeout(() => {
-                setIsUSDTApproved(true)
-                setisUSDTApproveLoading(false);
+                setIsDeDaApproved(true)
+                setisDeDaApproveLoading(false);
               }, 15000)
           },
           onError: () => {
-            setisUSDTApproveLoading(false);
+            setisDeDaApproveLoading(false);
           }
         }
     )
@@ -280,6 +363,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                           onClick={() => toggleBuysell('sell')}
                           style={buysell == 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
                       </div>
+                      {/* sell section */}
                       <div style={buysell == 'sell' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
                       <div className="previous-purchases">
                           <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
@@ -292,14 +376,23 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 
                       </div>
                           <h5>DeDaCoin you pay</h5>
-                          <input type="text" placeholder="Amount" />
+                          <input type="number"
+                                  value={DeDaAmountToSell == 0n ? "" : DeDaAmountToSell.toString()}
+                                  onChange={(e) => setDeDaAmountToSell(BigInt(e.target.value))}
+                                  placeholder="Amount" />
                           <button className='max-button'>Max</button>
-                          <p className='available-amount'>Available: {isConnected?<ReadContract />:"Connect your wallet"}</p>
+                          <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress} />:"Connect your wallet"}</p>
                           <h5>Tether you receive</h5>
                           <input type="text" placeholder="Amount" disabled />
                           <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
-                          <button className="sell-button">Sell Now</button>
+                          {isDeDaApproved ? (
+                            <SellTokensComponent amountToSell={DeDaAmountToSellWithDecimal} index={DeDaIndexToSell} />
+                            ) : (
+                              <button disabled={isDeDaApproveLoading} className="sell-button" onClick={handleSellApprove}>{ isDeDaApproveLoading ? "Approving..." : "Approve Tokens"}</button>
+                            )}
+                          {/* <button className="sell-button">Sell Now</button> */}
                       </div>
+                      {/* buy section */}
 
                       <div style={buysell == 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
                           <h5>DeDaCoin you recieve</h5>
