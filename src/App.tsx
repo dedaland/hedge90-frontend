@@ -2,7 +2,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Collapsible from './collapsible';
 import { useState, useEffect, useCallback } from 'react';
 
-import Select, { StylesConfig, ThemeConfig } from 'react-select';
+import Select, { StylesConfig, ThemeConfig, SingleValue } from 'react-select';
 import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
 import { getAccount } from '@wagmi/core'
 import { abi } from './erc20_abi'
@@ -230,8 +230,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 
   const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(0));
   const [DeDaAmountToSell, setDeDaAmountToSell] = useState(BigInt(0));
-  const [DeDaIndexToSell, setDeDaIndexToSelll] = useState(BigInt(1));
-
+  const [DeDaIndexToSell, setDeDaIndexToSell] = useState(BigInt(0));
 
 
 
@@ -350,6 +349,34 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
     )
   }
 
+  const handleSelectChange = (selectedOption: SingleValue<OptionType>) => {
+    if(selectedOption){
+      setDeDaIndexToSell(BigInt(selectedOption.value));
+    }
+  };
+
+
+  // Fetch Options every 10 seconds
+  // const fetchOptions = async () => {
+  //   try {
+  //     const response = await axios.get('your-backend-url');
+  //     const fetchedOptions = response.data.map(option => ({
+  //       value: BigInt(option.value),
+  //       label: option.label,
+  //     }));
+  //     setOptions(fetchedOptions);
+  //   } catch (error) {
+  //     console.error('Error fetching options:', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchOptions(); // Initial fetch
+  //   const interval = setInterval(fetchOptions, 10000); // Fetch every 10 seconds
+
+  //   return () => clearInterval(interval); // Cleanup interval on component unmount
+  // }, []);
+
   return (
     <div>
       {/*  */}
@@ -372,6 +399,8 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                             styles={customStyles}
                             theme={customTheme}
                             formatOptionLabel={formatOptionLabel}
+                            value={options.find(option => option.value === DeDaIndexToSell.toString())}
+                            onChange={handleSelectChange}
                           />
 
                       </div>
