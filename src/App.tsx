@@ -312,7 +312,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   }
 
   useEffect(() => {
-    if (dedaAllowance && dedaAllowance >= DeDaAmountToSell) {
+    if (dedaAllowance && dedaAllowance >= DeDaAmountToSellWithDecimal) {
       setIsDeDaApproved(true);
     } else {
       setIsDeDaApproved(false);
