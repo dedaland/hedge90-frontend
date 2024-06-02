@@ -1,6 +1,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Collapsible from './collapsible';
 import { useState, useEffect, useCallback } from 'react';
+import axios from 'axios'
 
 import Select, { StylesConfig, ThemeConfig, SingleValue } from 'react-select';
 import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
@@ -10,27 +11,16 @@ import { contract_abi } from './contract_abi'
 import { config } from './wallet';
 
 
-type OptionType = { label1: string; label2: string; value: string, imageUrl1: string, imageUrl2: string };
+type OptionType = { label1: string; label2: string; value: string, imageUrl1: string, imageUrl2: string, purshase_price: number };
+
+type Purchase = {
+  amount: number;
+  pricePerToken: number;
+  USDTAmount: number;
+};
 
 
-const options: OptionType[] = [
-  { value: '0', label1: '10 DEDA(at 1$ price)', imageUrl1: '/logo.png', label2: '9', imageUrl2: '/TetherUSDT.svg' },
-  { value: '1', label1: '10 DEDA(at 1$ price)', imageUrl1: '/logo.png', label2: '9', imageUrl2: '/TetherUSDT.svg' },
-  { value: '2', label1: '10 DEDA(at 1$ price)', imageUrl1: '/logo.png', label2: '9', imageUrl2: '/TetherUSDT.svg' }
-];
 
-const formatOptionLabel = ({ label1, imageUrl1, label2, imageUrl2 }: OptionType) => (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <img src={imageUrl1} alt="" style={{ marginRight: "10px", width: "20px", height: "20px" }} />
-      <span>{label1}</span>
-    </div>
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <span>{label2}</span>
-      <img src={imageUrl2} alt="" style={{ marginLeft: "10px", width: "20px", height: "20px" }} />
-    </div>
-  </div>
-);
 
 
 
@@ -95,7 +85,7 @@ const tokenAddress = '0x6B7Ff29582E0137C172dFB083Ff9Dd6c07C7D097';
 const USDTAddress = '0x56Deb4F512867Fa7E2C951425Ac7be0162E66e3f';
 
 // Address of the contract to spend the tokens
-const contractAddress = '0x5d4fC96A0f39182d8e1ECe4Dd006f9Da839B2Bea';
+const contractAddress = '0x894974Bc5dD9CE85E7A4d0d729E77D9a6E4BDCC0';
 
 
 
@@ -231,6 +221,21 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(0));
   const [DeDaAmountToSell, setDeDaAmountToSell] = useState(BigInt(0));
   const [DeDaIndexToSell, setDeDaIndexToSell] = useState(BigInt(0));
+  const [tokenPrice, setTokenPrice] = useState(0);
+
+  
+  const formatOptionLabel = ({ label1, imageUrl1, label2, imageUrl2 }: OptionType) => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <img src={imageUrl1} alt="" style={{ marginRight: "10px", width: "20px", height: "20px" }} />
+        <span>{label1}</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <span>{label2}</span>
+        <img src={imageUrl2} alt="" style={{ marginLeft: "10px", width: "20px", height: "20px" }} />
+      </div>
+    </div>
+  );
 
 
 
@@ -241,7 +246,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   const DeDaAmountToBuyWithDecimal = DeDaAmountToBuy * BigInt(10 ** 8)
   const DeDaAmountToSellWithDecimal = DeDaAmountToSell * BigInt(10 ** 8)
     // NOTE: fetch price first
-  const tokenPrice = 0.86
+  // const tokenPrice = 1
 
   const finalPriceWithDecimal = DeDaAmountToBuy * BigInt(tokenPrice * 10**6)
 
@@ -356,26 +361,34 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   };
 
 
-  // Fetch Options every 10 seconds
-  // const fetchOptions = async () => {
-  //   try {
-  //     const response = await axios.get('your-backend-url');
-  //     const fetchedOptions = response.data.map(option => ({
-  //       value: BigInt(option.value),
-  //       label: option.label,
-  //     }));
-  //     setOptions(fetchedOptions);
-  //   } catch (error) {
-  //     console.error('Error fetching options:', error);
-  //   }
-  // };
+  const [selectOptions, setSelectOptions] = useState<OptionType[]>([]);
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      const price_res = await axios.get(`http://localhost:3000/get-price`);
+      setTokenPrice(price_res.data['price'])
+      const response = await axios.get(`http://localhost:3000/get-user-purchases/${address}`);
+      const data = response.data.map((item: any, index: number) => ({
+         id: index,
+         value: index,
+         label1: `${item.amount / (10**8)} DEDA(at ${item.pricePerToken / (10**6)}$ price)`,
+         imageUrl1: '/logo.png',
+         label2: `${item.USDTAmount / (10**6)}`,
+         purshase_price: item.pricePerToken,
+         imageUrl2: '/TetherUSDT.svg' 
+        }));
 
-  // useEffect(() => {
-  //   fetchOptions(); // Initial fetch
-  //   const interval = setInterval(fetchOptions, 10000); // Fetch every 10 seconds
+      console.log("DATA", data)
+      setSelectOptions(data)
+    }, 5000);
 
-  //   return () => clearInterval(interval); // Cleanup interval on component unmount
-  // }, []);
+    return () => {
+        clearInterval(intervalId);
+    };
+// Only run this effect once, on mount
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
+
 
   return (
     <div>
@@ -395,11 +408,11 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                       <div className="previous-purchases">
                           <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
                           <Select
-                            options={options}
+                            options={selectOptions}
                             styles={customStyles}
                             theme={customTheme}
                             formatOptionLabel={formatOptionLabel}
-                            value={options.find(option => option.value === DeDaIndexToSell.toString())}
+                            value={selectOptions.find(option => option.value === DeDaIndexToSell.toString())}
                             onChange={handleSelectChange}
                           />
 
@@ -407,13 +420,18 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                           <h5>DeDaCoin you pay</h5>
                           <input type="number"
                                   value={DeDaAmountToSell == 0n ? "" : DeDaAmountToSell.toString()}
-                                  onChange={(e) => setDeDaAmountToSell(BigInt(e.target.value))}
+                                  onChange={
+                                    (e) => setDeDaAmountToSell(BigInt(e.target.value))
+                                  }
                                   placeholder="Amount" />
                           <button className='max-button'>Max</button>
                           <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress} />:"Connect your wallet"}</p>
                           <h5>Tether you receive</h5>
-                          <input type="text" placeholder="Amount" disabled />
-                          <p className='price-text'>&#9432; 1 Dedacoin = 0.9808 Tether</p>
+                          <input type="text"
+                          value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**6) - (option.purshase_price/(10**6)*0.1))! : acc, 0)).toString()}
+                          // value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.map((option) => option.value == DeDaIndexToSell.toString() ? option.usdt_max : 0)).toString()}
+                          placeholder="Amount" disabled />
+                          <p className='price-text'>&#9432; 1 Dedacoin = {tokenPrice.toString()} Tether</p>
                           {isDeDaApproved ? (
                             <SellTokensComponent amountToSell={DeDaAmountToSellWithDecimal} index={DeDaIndexToSell} />
                             ) : (
