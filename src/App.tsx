@@ -81,11 +81,11 @@ const customTheme: ThemeConfig = (theme) => ({
 
 
 
-const tokenAddress = '0x6B7Ff29582E0137C172dFB083Ff9Dd6c07C7D097';
-const USDTAddress = '0x56Deb4F512867Fa7E2C951425Ac7be0162E66e3f';
+const tokenAddress = process.env.REACT_APP_TOKEN_ADDRESS;
+const USDTAddress = process.env.REACT_APP_USDT_ADDRESS;
 
 // Address of the contract to spend the tokens
-const contractAddress = '0x894974Bc5dD9CE85E7A4d0d729E77D9a6E4BDCC0';
+const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 
 
@@ -93,7 +93,7 @@ function ReadTokenBalanceContract({address}: {address: string}) {
     const account = getAccount(config)
     const { data, isError, isLoading } = useReadContract({
       abi: abi,
-      address: tokenAddress,
+      address: tokenAddress as `0x${string}`,
       functionName: 'balanceOf',
       args: [account.address ?? '0x0000000000000000000000000000000000000000'],
       config: config
@@ -123,7 +123,7 @@ function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
   const [isPurchased, setisPurchased] = useState(false);
 
   const { data } = useSimulateContract({
-    address: contractAddress,
+    address: contractAddress as `0x${string}`,
     abi: contract_abi,
     functionName: 'buyTokens',
     args: [amountToBuy],
@@ -166,7 +166,7 @@ function SellTokensComponent({ amountToSell, index }: { amountToSell: bigint, in
   const [isPurchased, setisPurchased] = useState(false);
 
   const { data } = useSimulateContract({
-    address: contractAddress,
+    address: contractAddress as `0x${string}`,
     abi: contract_abi,
     functionName: 'returnTokens',
     args: [amountToSell, index],
@@ -252,17 +252,17 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 
   // Read the allowance to check if the amount is already approved
   const { data: usdtAllowance } = useReadContract({
-    address: USDTAddress,
+    address: USDTAddress as `0x${string}`,
     abi: abi,
     functionName: 'allowance',
-    args: [address ?? '0x0000000000000000000000000000000000000000', contractAddress],
+    args: [address ?? '0x0000000000000000000000000000000000000000', contractAddress as `0x${string}`],
   });
   
   const { data: dedaAllowance } = useReadContract({
-    address: tokenAddress,
+    address: tokenAddress as `0x${string}`,
     abi: abi,
     functionName: 'allowance',
-    args: [address ?? '0x0000000000000000000000000000000000000000', contractAddress],
+    args: [address ?? '0x0000000000000000000000000000000000000000', contractAddress as `0x${string}`],
   });
 
   
@@ -279,10 +279,10 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 
   // Prepare the write contract for the approve function
   const { data: buyData, error: buyErr } = useSimulateContract({
-    address: USDTAddress,
+    address: USDTAddress as `0x${string}`,
     abi: abi,
     functionName: 'approve',
-    args: [contractAddress, BigInt(2**53-1)],
+    args: [contractAddress as `0x${string}`, BigInt(2**53-1)],
   });
 
   const { writeContract: writeUSDTApproveContract } = useWriteContract()
@@ -324,10 +324,10 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   }, [dedaAllowance, DeDaAmountToSell]);
 
   const { data: sellData, error: sellErr } = useSimulateContract({
-    address: tokenAddress,
+    address: tokenAddress as `0x${string}`,
     abi: abi,
     functionName: 'approve',
-    args: [contractAddress, BigInt(2**53-1)],
+    args: [contractAddress as `0x${string}`, BigInt(2**53-1)],
   });
 
   const { writeContract: writeDeDaApproveContract } = useWriteContract()
@@ -364,9 +364,9 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   const [selectOptions, setSelectOptions] = useState<OptionType[]>([]);
   useEffect(() => {
     const intervalId = setInterval(async () => {
-      const price_res = await axios.get(`http://localhost:3000/get-price`);
+      const price_res = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-price`);
       setTokenPrice(price_res.data['price'])
-      const response = await axios.get(`http://localhost:3000/get-user-purchases/${address}`);
+      const response = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-user-purchases/${address}`);
       const data = response.data.map((item: any, index: number) => ({
          id: index,
          value: index,
@@ -440,7 +440,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                             setDeDaAmountToSell(BigInt(data))
                           }}
                           >Max</button>
-                          <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress} />:"Connect your wallet"}</p>
+                          <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress as `0x${string}`} />:"Connect your wallet"}</p>
                           <h5>Tether you receive</h5>
                           <input type="text"
                           value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**6) - (option.purshase_price/(10**6)*0.1))! : acc, 0)).toString()}

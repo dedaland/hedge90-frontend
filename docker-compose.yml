@@ -1,0 +1,16 @@
+
+version: '3.8'
+
+services:
+  
+  deda-frontend:
+    image: deda-frontend:latest
+    ports:
+      - "3001:3001"
+    networks:
+      - deda-network
+
+networks:
+  deda-network: # external
+    name: deda-network
+    external: true
