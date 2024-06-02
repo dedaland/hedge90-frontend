@@ -593,30 +593,88 @@ const App = () => {
             <div className='faq-title'>Frequently asked questions</div>
             <div className='faq-sub-title'>Find answers to some of your questions or contact us below</div>
               <Collapsible 
-              title="What is Dedacoin?"
+              title="How to install MetaMask?"
               children={
-                <div className='faq-answer'>Dedacoin is a cryptocurrency that offers a stable and secure way to invest in the crypto market. It is a decentralized platform that allows users to purchase, sell, and trade cryptocurrencies with ease.</div>
+                <div className='faq-answer'>
+                  <ul>
+                  <li>Installing MetaMask Getting started with MetaMask is easy. Just go to https://metamask.io </li>
+                  <li>click the “Download Now” button.</li>
+                  <li>Note: going directly to the MetaMask website listed above is the best way to ensure you</li>
+                  <li>download the correct software. Now, if you use Chrome, click Install MetaMask for Chrome.</li>
+                </ul>
+                You can see step by step in this video !
+                </div>
               }
               >
               </Collapsible>
               <Collapsible 
-              title="What is Dedacoin?"
+              title="How to add Deda (BNB Chain) to MetaMask?"
               children={
-                <div className='faq-answer'>Dedacoin is a cryptocurrency that offers a stable and secure way to invest in the crypto market. It is a decentralized platform that allows users to purchase, sell, and trade cryptocurrencies with ease.</div>
+                <div className='faq-answer'>
+                  <ul>
+                 <li>Open MetaMask Wallet</li> 
+                 <li>In UP-Left side change network to Binance Smart Chain (BNB Chain)</li> 
+                 <li>In Up-left side click, and select Expand View</li> 
+                 <li>In this page select: “Import Tokens”</li> 
+                 <li>Add Deda Contract Address in box:</li> 
+                 <li>“0x15F9EB4b9BEaFa9Db35341c5694c0b6573809808”</li> 
+                 <li>Press “ Next”</li> 
+                 <li>Press “ Import”</li> 
+                  <b>Congratulations! You now see DedaCoin (Deda) in your wallet.</b>
+                  {/* You can see step by step in this video ! */}
+                </ul>
+                </div>
               }
               >
               </Collapsible>
               <Collapsible 
-              title="What is Dedacoin?"
+              title="How buy DedaCoin in Hedge90?"
               children={
-                <div className='faq-answer'>Dedacoin is a cryptocurrency that offers a stable and secure way to invest in the crypto market. It is a decentralized platform that allows users to purchase, sell, and trade cryptocurrencies with ease.</div>
+                <div className='faq-answer'>
+                  <ul>
+                    <li>
+                    Pre_Buy Task (just for first Time)
+                      <ul>
+                          <li>First, install the MetaMask (or Trust Wallet)</li>
+                          <li>Add BNB Chain</li>
+                          <li>Add DedaCoin to your wallet</li>
+                      </ul>
+                    </li>
+                    <li> Go to https://hedge90.co</li>
+                    (Be sure to watch out for fraudulent addresses. Buy exactly from our official address)
+                    <li>Select the amount of DedaCoin you want to purchase based on the current price and</li>
+                    click the buy button.
+                    <li>The smart contract will automatically connect to your wallet and obtain the necessary
+                    permissions.</li>
+                    <li>The transactions are conducted on the blockchain, and the purchased DedaCoin will be
+                    deposited into your wallet.</li>
+                    <li>90% of the USDT you pay will be locked in the smart contract block in your favor, and you
+                    can withdraw it anytime you wish.</li>
+                    <b>Congratulations! Welcome to the large Deda community.</b>
+                </ul>
+                </div>
               }
               >
               </Collapsible>
               <Collapsible 
-              title="What is Dedacoin?"
+              title="How Sell DedaCoin in Hedge90? (Caselation Hedge90)"
               children={
-                <div className='faq-answer'>Dedacoin is a cryptocurrency that offers a stable and secure way to invest in the crypto market. It is a decentralized platform that allows users to purchase, sell, and trade cryptocurrencies with ease.</div>
+                <div className='faq-answer'>
+                  <ul>
+                  <li>Go to https://hedge90.co</li>
+                  <li>Select Sell TAB</li>
+                  <li>Connect wallet process is running automatically.</li>
+                  ( The wallet with which you bought DedaCoin on Hedge90 must be active on your
+                  browser(
+                  <li>Enter the amount of DedaCoin you want to sell.</li>
+                  (If you have bought DedaCoin several times through Hedge90 , you can choose which of
+                  your contracts you want to cancel.)
+                  <li>The continuation of the process is done automatically through the smart contract, and
+                  your guaranteed tethers will be transferred to your wallet, and DedaCoins will be returned
+                  to the Deda liquidity pool.</li>
+                  <b>Congratulations, you managed to complete your transaction with the least risk.</b>
+                </ul>
+                </div>
               }
               >
               </Collapsible>

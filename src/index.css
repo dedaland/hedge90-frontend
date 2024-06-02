@@ -289,6 +289,9 @@ header .social-icons a {
   font-size: 1.4em;
   color: white;
 }
+.faq-answer {
+  line-height: 1.5em;
+}
 
 .collapsible {
   color: white;
