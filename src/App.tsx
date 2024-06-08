@@ -9,6 +9,7 @@ import { getAccount } from '@wagmi/core'
 import { abi } from './erc20_abi'
 import { contract_abi } from './contract_abi'
 import { config } from './wallet';
+import TermsAndConditions from './termAndConditions';
 
 
 type OptionType = { label1: string; label2: string; value: string, imageUrl1: string, imageUrl2: string, purshase_price: number, amount: number };
@@ -218,7 +219,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 
 
 
-  const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(0));
+  const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(50));
   const [DeDaAmountToSell, setDeDaAmountToSell] = useState(BigInt(0));
   const [DeDaIndexToSell, setDeDaIndexToSell] = useState(BigInt(0));
   const [tokenPrice, setTokenPrice] = useState(0);
@@ -294,6 +295,10 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   }, []);
 
   const handleBuyApprove = () => {
+    let amountToUse = DeDaAmountToBuy;
+    if (amountToUse < 50n) {
+      alert("Minimum DedaCoin to buy is 50!")
+    }
     if (!buyData || !buyData.request) {
       console.error("Approval simulation data is not available.");
       return;
@@ -364,8 +369,13 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   const [selectOptions, setSelectOptions] = useState<OptionType[]>([]);
   useEffect(() => {
     const intervalId = setInterval(async () => {
+      try{
       const price_res = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-price`);
       setTokenPrice(price_res.data['price'])
+      }catch(err){
+        console.log("NO PRICE")
+      }
+      try{
       const response = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-user-purchases/${address}`);
       const data = response.data.map((item: any, index: number) => ({
          id: index,
@@ -380,6 +390,10 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 
       console.log("DATA", data)
       setSelectOptions(data)
+      }catch(err: any){
+        console.log("NO USER PURCHASES")
+      }
+
     }, 5000);
 
     return () => {
@@ -418,7 +432,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                           />
 
                       </div>
-                          <h5>DeDaCoin you pay</h5>
+                          <h5>DedaCoin you pay</h5>
                           <input type="number"
                                   value={DeDaAmountToSell == 0n ? "" : DeDaAmountToSell.toString()}
                                   onChange={
@@ -446,7 +460,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                           value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**6) - (option.purshase_price/(10**6)*0.1))! : acc, 0)).toString()}
                           // value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.map((option) => option.value == DeDaIndexToSell.toString() ? option.usdt_max : 0)).toString()}
                           placeholder="Amount" disabled />
-                          <p className='price-text'>&#9432; 1 Dedacoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
+                          <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                           {isDeDaApproved ? (
                             <SellTokensComponent amountToSell={DeDaAmountToSellWithDecimal} index={DeDaIndexToSell} />
                             ) : (
@@ -457,15 +471,24 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                       {/* buy section */}
 
                       <div style={buysell == 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
-                          <h5>DeDaCoin you recieve</h5>
+                          <h5>DedaCoin you recieve</h5>
                           <input type="number"
                                   value={DeDaAmountToBuy == 0n ? "" : DeDaAmountToBuy.toString()}
-                                  onChange={(e) => setDeDaAmountToBuy(BigInt(e.target.value))}
+                                  onChange={(e) => {
+                                    let value = BigInt(e.target.value);
+                                    setDeDaAmountToBuy(value);
+                                }}
+                                onBlur={(e) => {
+                                    let value = BigInt(e.target.value);
+                                    if (value < 50n) {
+                                        setDeDaAmountToBuy(50n);
+                                    }
+                                }}
                                   placeholder="Amount" />
                           
                           <h5>Tether you pay</h5>
                           <input type="text" value={finalPriceWithDecimal == 0n ? "":(Number(finalPriceWithDecimal)/10**6).toString()} placeholder="Amount" disabled />
-                          <p className='price-text'>&#9432; 1 Dedacoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
+                          <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                           {isUSDTApproved ? (
                             <BuyTokensComponent amountToBuy={DeDaAmountToBuyWithDecimal} />
                             ) : (
@@ -476,6 +499,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                   </div>
               </section>
       {/*  */}
+      <TermsAndConditions/>
       
     </div>
   );
@@ -502,7 +526,7 @@ const App = () => {
         {/* <img width="30px" style={{paddingRight: "13px"}} src="/TetherUSDT.svg" alt="" /> */}
 
         <div className='logo'>
-          dedacoin
+          DedaCoin
           </div> 
         <div className='section-links'>
             <a href="#">ABOUT</a>
@@ -522,7 +546,7 @@ const App = () => {
       <img className="mid-img" src="/pattern.svg" alt="pattern" />
       <div className='main-section'>
             <section className="intro">
-                  <h1>Dedacoin</h1>
+                  <h1>DedaCoin</h1>
                   <h2>The Future of Stable Investment</h2>
               </section>
               <TransactionComponent />
@@ -533,16 +557,16 @@ const App = () => {
                 <div className='section-step-title'>connect your crypto wallet</div>
 
 
-                <div className='section-step-content'>securely connect your wallet to start buying <br/> or selling dedacoin</div>
+                <div className='section-step-content'>securely connect your wallet to start buying <br/> or selling DedaCoin</div>
 
 
                 <div className='secion-step'>step 02</div>
 
-                <div className='section-step-title'>buy dedacoin</div>
+                <div className='section-step-title'>buy DedaCoin</div>
 
 
 
-                <div className='section-step-content'>Purchase dedacoin with confidence. <br/>
+                <div className='section-step-content'>Purchase DedaCoin with confidence. <br/>
 
                 knowing your investment is protected.</div>
 
@@ -552,7 +576,7 @@ const App = () => {
                 <div className='section-step-title'>monitor and Trade</div>
 
                 <div className='section-step-content'>easily track your investments and trade <br/>
-                dedacoin on our intuitive platform</div>
+                DedaCoin on our intuitive platform</div>
           </section>
 
           <div className='key-feature-title'>Key Features</div>
@@ -564,7 +588,7 @@ const App = () => {
                 </div>
                 <div className='key-feature-section-box-content'>
                   Easily track your investments and 
-                  trade Dedacoin on our intuitive
+                  trade DedaCoin on our intuitive
                   platform.
                 </div>
             </div>
@@ -574,7 +598,7 @@ const App = () => {
                 </div>
                 <div className='key-feature-section-box-content'>
                 with a growing number of active
-                users, Dedacoin offers high liquidity
+                users, DedaCoin offers high liquidity
                 for seamless buying and selling.
                 </div>
             </div>
@@ -683,7 +707,7 @@ const App = () => {
           <section className='footer-section'>
             <div className="section">
                 
-                <div className='logo'><img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />dedacoin</div> 
+                <div className='logo'><img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />DedaCoin</div> 
             </div>
             
             <div className="section">
