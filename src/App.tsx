@@ -367,8 +367,10 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 
 
   const [selectOptions, setSelectOptions] = useState<OptionType[]>([]);
+  const [loadingOptions, setLoadingOptions] = useState(true);
   useEffect(() => {
     const intervalId = setInterval(async () => {
+      const account = getAccount(config)
       try{
       const price_res = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-price`);
       setTokenPrice(price_res.data['price'])
@@ -376,7 +378,8 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
         console.log("NO PRICE")
       }
       try{
-      const response = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-user-purchases/${address}`);
+      setLoadingOptions(true)
+      const response = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-user-purchases/${account.address}`);
       const data = response.data.map((item: any, index: number) => ({
          id: index,
          value: index,
@@ -390,6 +393,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 
       console.log("DATA", data)
       setSelectOptions(data)
+      setLoadingOptions(false)
       }catch(err: any){
         console.log("NO USER PURCHASES")
       }
@@ -423,6 +427,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                       <div className="previous-purchases">
                           <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
                           <Select
+                            isLoading={loadingOptions}
                             options={selectOptions}
                             styles={customStyles}
                             theme={customTheme}
