@@ -20,7 +20,8 @@ const connectors = connectorsForWallets(
   [{ groupName: 'Wallets', wallets: [metaMaskWallet, trustWallet, injectedWallet] }],
   {
     appName: 'My RainbowKit App',
-    projectId: "NO_PROJECT",
+    // projectId: "NO_PROJECT",
+    projectId: "0d6e5c92264b0ded8e52916d2aa84c84",
   },
 );
 
