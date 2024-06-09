@@ -437,7 +437,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                           />
 
                       </div>
-                          <h5>DedaCoin you pay</h5>
+                          <h5>DedaCoin to pay</h5>
                           <input type="number"
                                   value={DeDaAmountToSell == 0n ? "" : DeDaAmountToSell.toString()}
                                   onChange={
@@ -491,7 +491,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                                 }}
                                   placeholder="Amount" />
                           
-                          <h5>Tether you pay</h5>
+                          <h5>Tether to pay</h5>
                           <input type="text" value={finalPriceWithDecimal == 0n ? "":(Number(finalPriceWithDecimal)/10**6).toString()} placeholder="Amount" disabled />
                           <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                           {isUSDTApproved ? (

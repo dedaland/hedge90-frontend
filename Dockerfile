@@ -16,5 +16,7 @@ COPY . .
 
 RUN yarn build
 
-CMD yarn run start
+RUN yarn global add serve
+
+CMD serve -s build -l tcp://0.0.0.0:3001;
 
