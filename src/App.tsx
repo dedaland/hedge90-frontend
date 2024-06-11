@@ -10,6 +10,7 @@ import { abi } from './erc20_abi'
 import { contract_abi } from './contract_abi'
 import { config } from './wallet';
 import TermsAndConditions from './termAndConditions';
+import InvoiceModal from './savableTnx'
 
 
 type OptionType = { label1: string; label2: string; value: string, imageUrl1: string, imageUrl2: string, purshase_price: number, amount: number };
@@ -407,11 +408,12 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
-
+const [isModalOpen, setIsModalOpen] = useState(true);
 
   return (
     <div>
       {/*  */}
+      <InvoiceModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <section className="transactions">
                   <div className="transaction-panel">
                       <div className="panel-header">
