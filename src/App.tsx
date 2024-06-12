@@ -123,6 +123,8 @@ function ReadTokenBalanceContract({address}: {address: string}) {
 function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
   const [isLoading, setisLoading] = useState(false);
   const [isPurchased, setisPurchased] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tnxHash, setTnxHash] = useState("0x");
 
   const { data } = useSimulateContract({
     address: contractAddress as `0x${string}`,
@@ -135,6 +137,7 @@ function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
 
   return (
     <div>
+        <InvoiceModal isOpen={isModalOpen} amount={(Number(amountToBuy)/10**8)} tnxId={tnxHash} onClose={() => setIsModalOpen(false)} />
       {isPurchased ? (
       <button className="sell-button">Successfully purchased</button>
      ) :
@@ -142,10 +145,14 @@ function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
         setisLoading(true)
         writeContract(
           data!.request,{
-            onSuccess: () => {
+            onSuccess: (data) => {
+              console.log("USDT APPROVE DATA", data)
+
               setTimeout(() => {
                 setisPurchased(true)
                 setisLoading(false);
+                setTnxHash(data)
+                setIsModalOpen(true)
               }, 15000)
             
           },
@@ -381,9 +388,15 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       try{
       setLoadingOptions(true)
       const response = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-user-purchases/${account.address}`);
-      const data = response.data.map((item: any, index: number) => ({
-         id: index,
-         value: index,
+      const data = response.data
+      .map((item: any, index: number) => ({
+        ...item,
+        originalIndex: index
+      }))
+      .filter((item: any) => item.amount !== "0")
+      .map((item: any, index: number) => ({
+         id: item.originalIndex,
+         value: item.originalIndex,
          label1: `${item.amount / (10**8)} DEDA(at ${item.pricePerToken / (10**6)}$ price)`,
          imageUrl1: '/logo.png',
          label2: `${item.USDTAmount / (10**6)}`,
@@ -408,12 +421,10 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
-const [isModalOpen, setIsModalOpen] = useState(true);
 
   return (
     <div>
       {/*  */}
-      <InvoiceModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <section className="transactions">
                   <div className="transaction-panel">
                       <div className="panel-header">
@@ -583,7 +594,7 @@ const App = () => {
                 <div className='section-step-title'>monitor and Trade</div>
 
                 <div className='section-step-content'>easily track your investments and trade <br/>
-                DedaCoin on our intuitive platform</div>
+                DedaCoin on our secure platform</div>
           </section>
 
           <div className='key-feature-title'>Key Features</div>
@@ -595,7 +606,7 @@ const App = () => {
                 </div>
                 <div className='key-feature-section-box-content'>
                   Easily track your investments and 
-                  trade DedaCoin on our intuitive
+                  trade DedaCoin on our secure
                   platform.
                 </div>
             </div>
@@ -611,12 +622,13 @@ const App = () => {
             </div>
             <div className='key-feature-section-box'>
                 <div className='key-feature-section-box-title'>
-                Security first
+                High security
                 </div>
                 <div className='key-feature-section-box-content'>
-                Your transactions and holdings are
-                safeguarded with latest in
-                blockchain security measures
+                By initiating the latest  blockchain technology
+                we can ensure our users that all of their 
+                transactions and their assets are 
+                safely guarded in our platform
                 </div>
             </div>
           </section>
@@ -633,7 +645,7 @@ const App = () => {
                   <li>Note: going directly to the MetaMask website listed above is the best way to ensure you</li>
                   <li>download the correct software. Now, if you use Chrome, click Install MetaMask for Chrome.</li>
                 </ul>
-                You can see step by step in this video !
+                You can complete the process by watching our tutorial video and following the step-by-step guides !
                 </div>
               }
               >
@@ -651,7 +663,7 @@ const App = () => {
                  <li>“0x15F9EB4b9BEaFa9Db35341c5694c0b6573809808”</li> 
                  <li>Press “ Next”</li> 
                  <li>Press “ Import”</li> 
-                  <b>Congratulations! You now see DedaCoin (Deda) in your wallet.</b>
+                  <b>Congratulations now you can see that deda coin has been successfully added to your wallet.</b>
                   {/* You can see step by step in this video ! */}
                 </ul>
                 </div>
@@ -664,7 +676,7 @@ const App = () => {
                 <div className='faq-answer'>
                   <ul>
                     <li>
-                    Pre_Buy Task (just for first Time)
+                    You only have to complete this task for the first time purchase of deda on hege 90.
                       <ul>
                           <li>First, install the MetaMask (or Trust Wallet)</li>
                           <li>Add BNB Chain</li>
@@ -688,7 +700,7 @@ const App = () => {
               >
               </Collapsible>
               <Collapsible 
-              title="How Sell DedaCoin in Hedge90? (Caselation Hedge90)"
+              title="How To Sell DedaCoin On Hedge90? (Cancellation Hedge90)"
               children={
                 <div className='faq-answer'>
                   <ul>

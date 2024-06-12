@@ -244,7 +244,7 @@ header .social-icons a {
 
 .key-feature-section-box{
   width: 30%;
-  height: 250px;
+  height: 280px;
   margin: 10px;
   display:flexbox;
   border: 1px solid #8a8aa0;
@@ -366,6 +366,44 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+   background:#EFBD65;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 10%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+
+
+.button-container {
+  width: 210px;
+  margin: 0 auto;
+}
+
+.savable-btn {
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background:#EFBD65;
+  border-radius: 5px;
+}
+
 @media screen and (max-width: 1270px) {
   .how-to-buy {
     width: 80%;
@@ -460,42 +498,4 @@ input[type=number] {
 iframe
 {
     display: none;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.modal-content {
-   background:#EFBD65;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 10%;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-
-
-.button-container {
-  width: 210px;
-  margin: 0 auto;
-}
-
-.savable-btn {
-  padding: 10px 20px;
-  margin: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  background:#EFBD65;
-  border-radius: 5px;
 }

@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import * as htmlToImage from 'html-to-image';
 import './index.css';
 
-const InvoiceModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+const InvoiceModal = ({ isOpen, amount, tnxId, onClose }: { isOpen: boolean, amount: Number, tnxId: string; onClose: () => void }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const saveAsImage = () => {
@@ -32,9 +32,9 @@ const InvoiceModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
             <div className="modal-content" ref={modalRef}>
                 <h2>Purchase Invoice</h2>
                 <p>
-                You purcahsed 1000000 DedaCoin successfully! <br /> <br />
+                You purcahsed {amount.toString()} DedaCoin successfully! <br /> <br />
                 Transaction ID: <br />
-                <span style={{fontSize:"8px"}}> 0x1e0d8fd0ecc7d1e8515777c28c07fefb024197ca73362ab46489b57a898d5781 </span><br />
+                <span style={{fontSize:"8px"}}> {tnxId} </span><br />
                 </p>
             </div>
             <div className="button-container">
