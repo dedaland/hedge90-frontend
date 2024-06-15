@@ -12,7 +12,7 @@ import { config } from './wallet';
 import TermsAndConditions from './termAndConditions';
 import InvoiceModal from './savableTnx'
 
-
+const MAX_TO_APPROVE = 115792089237316195423570985008687907853269984665640564039457584007913129639935n
 type OptionType = { label1: string; label2: string; value: string, imageUrl1: string, imageUrl2: string, purshase_price: number, amount: number };
 
 type Purchase = {
@@ -110,7 +110,7 @@ function ReadTokenBalanceContract({address}: {address: string}) {
       return ""
     }
 
-    if(data){
+    if(typeof data === "bigint"){
       return (
         (Number(data)/(10**8)).toString()
       )
@@ -291,7 +291,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
     address: USDTAddress as `0x${string}`,
     abi: abi,
     functionName: 'approve',
-    args: [contractAddress as `0x${string}`, BigInt(2**53-1)],
+    args: [contractAddress as `0x${string}`, MAX_TO_APPROVE],
   });
 
   const { writeContract: writeUSDTApproveContract } = useWriteContract()
@@ -308,7 +308,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       alert("Minimum DedaCoin to buy is 50!")
     }
     if (!buyData || !buyData.request) {
-      console.error("Approval simulation data is not available.");
+      console.error("Approval simulation data is not available.", buyErr);
       return;
       
     }
@@ -340,7 +340,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
     address: tokenAddress as `0x${string}`,
     abi: abi,
     functionName: 'approve',
-    args: [contractAddress as `0x${string}`, BigInt(2**53-1)],
+    args: [contractAddress as `0x${string}`, MAX_TO_APPROVE],
   });
 
   const { writeContract: writeDeDaApproveContract } = useWriteContract()
