@@ -257,7 +257,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
     // NOTE: fetch price first
   // const tokenPrice = 1
 
-  const finalPriceWithDecimal = DeDaAmountToBuy * BigInt(tokenPrice * 10**6)
+  const finalPriceWithDecimal = DeDaAmountToBuy * BigInt(tokenPrice * 10**18)
 
   // Read the allowance to check if the amount is already approved
   const { data: usdtAllowance } = useReadContract({
@@ -397,9 +397,9 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       .map((item: any, index: number) => ({
          id: item.originalIndex,
          value: item.originalIndex,
-         label1: `${item.amount / (10**8)} DEDA(at ${item.pricePerToken / (10**6)}$ price)`,
+         label1: `${item.amount / (10**8)} DEDA(at ${item.pricePerToken / (10**18)}$ price)`,
          imageUrl1: '/logo.png',
-         label2: `${item.USDTAmount / (10**6)}`,
+         label2: `${item.USDTAmount / (10**18)}`,
          purshase_price: item.pricePerToken,
          amount: item.amount,
          imageUrl2: '/TetherUSDT.svg' 
@@ -475,7 +475,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                           <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress as `0x${string}`} />:"Connect your wallet"}</p>
                           <h5>Tether you receive</h5>
                           <input type="text"
-                          value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**6) - (option.purshase_price/(10**6)*0.1))! : acc, 0)).toString()}
+                          value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**18) - (option.purshase_price/(10**18)*0.1))! : acc, 0)).toString()}
                           // value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.map((option) => option.value == DeDaIndexToSell.toString() ? option.usdt_max : 0)).toString()}
                           placeholder="Amount" disabled />
                           <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
@@ -505,7 +505,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                                   placeholder="Amount" />
                           
                           <h5>Tether to pay</h5>
-                          <input type="text" value={finalPriceWithDecimal == 0n ? "":(Number(finalPriceWithDecimal)/10**6).toString()} placeholder="Amount" disabled />
+                          <input type="text" value={finalPriceWithDecimal == 0n ? "":(Number(finalPriceWithDecimal)/10**18).toString()} placeholder="Amount" disabled />
                           <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                           {isUSDTApproved ? (
                             <BuyTokensComponent amountToBuy={DeDaAmountToBuyWithDecimal} />
