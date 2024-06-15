@@ -29,9 +29,9 @@ export const config = createConfig({
   connectors: [
     ...connectors,
   ],
-  chains: [bscTestnet],
+  chains: [bsc],
   transports: {
-    [bscTestnet.id]: http(process.env.RPC_URL)//http("https://sepolia.infura.io/v3/3b14b0c3e9f246f59b141820d1936066")//http("https://go.getblock.io/874b729c0579489e95445e53e0e1dd23") //unstable_connector(injected)
+    [bsc.id]: http(process.env.RPC_URL)//http("https://sepolia.infura.io/v3/3b14b0c3e9f246f59b141820d1936066")//http("https://go.getblock.io/874b729c0579489e95445e53e0e1dd23") //unstable_connector(injected)
   },
   multiInjectedProviderDiscovery: true
 });
