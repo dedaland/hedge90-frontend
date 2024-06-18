@@ -9,13 +9,11 @@ const InvoiceModal = ({ isOpen, amount, tnxId, onClose }: { isOpen: boolean, amo
   const saveAsImage = () => {
     if (modalRef.current) {
       htmlToImage.toPng(modalRef.current, {
-        width:350, height:350,
-        canvasWidth:350, canvasHeight:350,
     })
         .then((dataUrl) => {
           const link = document.createElement('a');
           link.href = dataUrl;
-          link.download = 'modal-image.png';
+          link.download = 'invoice-image.png';
           link.click();
         })
         .catch((error) => {
@@ -30,11 +28,15 @@ const InvoiceModal = ({ isOpen, amount, tnxId, onClose }: { isOpen: boolean, amo
     <div className="modal-overlay">
         <div style={{width:"360px", margin:"100px auto", alignContent:"center"}}>
             <div className="modal-content" ref={modalRef}>
-                <h2>Purchase Invoice</h2>
-                <p>
-                You purcahsed {amount.toString()} DedaCoin successfully! <br /> <br />
-                Transaction ID: <br />
-                <span style={{fontSize:"8px"}}> {tnxId} </span><br />
+                <div style={{alignContent: "center", textAlign: "center"}}>Successful purchase</div>
+                <p style={{alignContent: "center", textAlign: "center"}}>
+                  <div style={{alignContent: "center", textAlign: "center"}}>
+                    <img width={"50%"} src="/invoice_img.png" alt="" />
+                  </div>
+                You purcahsed successfully <br />
+                 <h2>{amount.toString()} DEDA </h2> 
+                Transaction ID: <br /> <br />
+                <div style={{fontSize:"8px", backgroundColor:"black", borderRadius:"5px", padding: "4px"}}> {tnxId} </div><br />
                 </p>
             </div>
             <div className="button-container">
