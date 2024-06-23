@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import * as htmlToImage from 'html-to-image';
 import './../index.css';
 
-const InvoiceModal = ({ isOpen, amount, tnxId, onClose }: { isOpen: boolean, amount: Number, tnxId: string; onClose: () => void }) => {
+const InvoiceModal = ({ isOpen, amount, tnxId, action, onClose }: { isOpen: boolean, amount: Number, tnxId: string, action: string; onClose: () => void }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const saveAsImage = () => {
@@ -28,16 +28,17 @@ const InvoiceModal = ({ isOpen, amount, tnxId, onClose }: { isOpen: boolean, amo
     <div className="modal-overlay">
         <div style={{width:"360px", margin:"100px auto", alignContent:"center"}}>
             <div className="modal-content" ref={modalRef}>
-                <div style={{alignContent: "center", textAlign: "center"}}>Successful purchase</div>
-                <p style={{alignContent: "center", textAlign: "center"}}>
+           { action === "return"?<div className="return-checkmark"></div>: <div className="purchase-checkmark"></div>}
+                <div style={{alignContent: "center", textAlign: "center"}}>Successful {action}</div>
+                <div style={{alignContent: "center", textAlign: "center"}}>
                   <div style={{alignContent: "center", textAlign: "center"}}>
                     <img width={"50%"} src="/invoice_img.png" alt="" />
                   </div>
-                You purcahsed successfully <br />
+                You {action}ed successfully <br />
                  <h2>{amount.toString()} DEDA </h2> 
                 Transaction ID: <br /> <br />
                 <div style={{fontSize:"8px", backgroundColor:"black", borderRadius:"5px", padding: "4px"}}> {tnxId} </div><br />
-                </p>
+                </div>
             </div>
             <div className="button-container">
                 <button className='savable-btn' onClick={onClose}>Close</button>

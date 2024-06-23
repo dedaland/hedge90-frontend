@@ -85,11 +85,11 @@ const customTheme: ThemeConfig = (theme) => ({
 });
 
 
-function ReadTokenBalanceContract({address}: {address: string}) {
+function ReadTokenBalanceContract({address, decimal}: {address: string, decimal: number}) {
     const account = getAccount(config)
     const { data, isError, isLoading } = useReadContract({
       abi: abi,
-      address: tokenAddress as `0x${string}`,
+      address: address as `0x${string}`,
       functionName: 'balanceOf',
       args: [account.address ?? '0x0000000000000000000000000000000000000000'],
       config: config
@@ -106,7 +106,7 @@ function ReadTokenBalanceContract({address}: {address: string}) {
 
     if(typeof data === "bigint"){
       return (
-        (Number(data)/(10**8)).toString()
+        (Number(data)/(10**decimal)).toString()
       )
     }else{
       return "Couldn't fetch balance"
@@ -130,7 +130,7 @@ function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
   
     return (
       <div>
-          <InvoiceModal isOpen={isModalOpen} amount={(Number(amountToBuy)/10**8)} tnxId={tnxHash} onClose={() => setIsModalOpen(false)} />
+          <InvoiceModal isOpen={isModalOpen} amount={(Number(amountToBuy)/10**8)} tnxId={tnxHash} action='purchase' onClose={() => setIsModalOpen(false)} />
         {isPurchased ? (
         <button className="sell-button">Successfully purchased</button>
        ) :
@@ -166,6 +166,8 @@ function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
   function SellTokensComponent({ amountToSell, index }: { amountToSell: bigint, index: bigint }) {
     const [isLoading, setisLoading] = useState(false);
     const [isPurchased, setisPurchased] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [tnxHash, setTnxHash] = useState("0x");
   
     const { data } = useSimulateContract({
       address: contractAddress as `0x${string}`,
@@ -178,6 +180,7 @@ function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
   
     return (
       <div>
+        <InvoiceModal isOpen={isModalOpen} amount={(Number(amountToSell)/10**8)} tnxId={tnxHash} action='return' onClose={() => setIsModalOpen(false)} />
         {isPurchased ? (
         <button className="sell-button">Successfully returned</button>
        ) :
@@ -185,10 +188,12 @@ function BuyTokensComponent({ amountToBuy }: { amountToBuy: bigint }) {
           setisLoading(true)
           writeContract(
             data!.request,{
-              onSuccess: () => {
+              onSuccess: (data) => {
                 setTimeout(() => {
                   setisPurchased(true)
                   setisLoading(false);
+                  setTnxHash(data)
+                  setIsModalOpen(true)
                 }, 15000)
               
             },
@@ -222,7 +227,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   
   
     const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(50));
-    const [DeDaAmountToSell, setDeDaAmountToSell] = useState(BigInt(0));
+    const [DeDaAmountToSell, setDeDaAmountToSell] = useState(BigInt(50));
     const [DeDaIndexToSell, setDeDaIndexToSell] = useState(BigInt(0));
     const [tokenPrice, setTokenPrice] = useState(0);
   
@@ -414,7 +419,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   // Only run this effect once, on mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+    const [usdtBalanceLow, setUsdtBalanceLow] = useState(false);
   
     return (
       <div>
@@ -466,7 +471,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                               setDeDaAmountToSell(BigInt(data))
                             }}
                             >Max</button>
-                            <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress as `0x${string}`} />:"Connect your wallet"}</p>
+                            <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress as `0x${string}`} decimal={8} />:"Connect your wallet"}</p>
                             <h5>Tether you receive</h5>
                             <input type="text"
                             value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**18) - (option.purshase_price/(10**18)*0.1))! : acc, 0)).toString()}
@@ -484,6 +489,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   
                         <div style={buysell == 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
                             <h5>DedaCoin you recieve</h5>
+                            <div style={{color: "red", display: usdtBalanceLow?"block":"none"}}>your USDT balance is too low!</div>
                             <input type="number"
                                     value={DeDaAmountToBuy == 0n ? "" : DeDaAmountToBuy.toString()}
                                     onChange={(e) => {
@@ -500,6 +506,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                             
                             <h5>Tether to pay</h5>
                             <input type="text" value={finalPriceWithDecimal == 0n ? "":(Number(finalPriceWithDecimal)/10**18).toString()} placeholder="Amount" disabled />
+                            <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={USDTAddress as `0x${string}`} decimal={18} />:"Connect your wallet"}</p>
                             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                             {isUSDTApproved ? (
                               <BuyTokensComponent amountToBuy={DeDaAmountToBuyWithDecimal} />

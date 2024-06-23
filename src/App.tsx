@@ -1,43 +1,9 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Collapsible from './collapsible';
-import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios'
 
-import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
-import { getAccount } from '@wagmi/core'
-import { abi } from './erc20_abi'
-import { contract_abi } from './contract_abi'
-import { config } from './wallet';
 import TransactionComponent from './components/Transaction'
 
-
-
-
-
-const tokenAddress = process.env.REACT_APP_TOKEN_ADDRESS;
-
-// Address of the contract to spend the tokens
-const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
-
-
-
-
-
-
-
-
-
-
-
-
-
 const App = () => {
-  // const [buysell, setBuysell] = useState('buy');
-  // const { isConnected, address } = useAccount();
-  // const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(0));
-  // function toggleBuysell(input: string) {
-  //   setBuysell(input);
-  // }
 
   return (
     
