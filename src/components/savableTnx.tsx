@@ -26,7 +26,7 @@ const InvoiceModal = ({ isOpen, amount, tnxId, action, onClose }: { isOpen: bool
 
   return (
     <div className="modal-overlay">
-        <div style={{width:"360px", margin:"100px auto", alignContent:"center"}}>
+        <div className='inner-modal'>
             <div className="modal-content" ref={modalRef}>
            { action === "return"?<div className="return-checkmark"></div>: <div className="purchase-checkmark"></div>}
                 <div style={{alignContent: "center", textAlign: "center"}}>Successful {action}</div>

@@ -63,11 +63,12 @@ const TermsAndConditions = () => {
                 the usual fees will be given to the smart contract. <br />
                 7. Pricing Reference: Our sales price reference is available in the Hedge90 OTC section of
                 the DedaBit centralized exchange. <br />
-                8. Compliance: Users are required to comply with all rules and regulations related to the
+                8. Minimum amount to purchase is 50 DEDA <br />
+                9. Compliance: Users are required to comply with all rules and regulations related to the
                 use and purchase of DedaCoin tokens. <br />
-                9. Acceptance of Terms: Using the Hedge90 smart contract implies acceptance of all terms
+                10. Acceptance of Terms: Using the Hedge90 smart contract implies acceptance of all terms
                 and conditions stated in this document. <br />
-                10. User Responsibility: Users are responsible for storing and protecting purchased tokens 
+                11. User Responsibility: Users are responsible for storing and protecting purchased tokens 
                 and must take all necessary security measures to prevent unauthorized access. 11. Legal Use: DedaCoin tokens are only for legal and authorized purposes. Any
                 unauthorized or illegal use is prohibited. <br />
                 12. Limitation of Liability: The company assumes no responsibility for damages resulting

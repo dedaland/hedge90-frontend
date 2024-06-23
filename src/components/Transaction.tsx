@@ -227,7 +227,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
   
   
     const [DeDaAmountToBuy, setDeDaAmountToBuy] = useState(BigInt(50));
-    const [DeDaAmountToSell, setDeDaAmountToSell] = useState(BigInt(50));
+    const [DeDaAmountToSell, setDeDaAmountToSell] = useState(BigInt(0));
     const [DeDaIndexToSell, setDeDaIndexToSell] = useState(BigInt(0));
     const [tokenPrice, setTokenPrice] = useState(0);
   

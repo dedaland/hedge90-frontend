@@ -378,6 +378,12 @@ input[type=number] {
   z-index: 9999;
 }
 
+.inner-modal{
+  width: 360px;
+  margin:100px auto;
+  align-content:center
+}
+
 .modal-content {
    background:#26262f;
   text-align: "center";
@@ -522,6 +528,13 @@ input[type=number] {
   }
   .intro {
     display:none;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .inner-modal {
+    transform: scale(0.6);
+    margin:-40px auto
   }
 }
 
