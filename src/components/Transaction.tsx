@@ -5,7 +5,7 @@ import { abi } from '../erc20_abi'
 import axios from 'axios'
 import { contract_abi } from '../contract_abi'
 import { getAccount } from '@wagmi/core'
-import { config } from '../wallet';
+import { wagmiConfig as config } from '../wallet-connect';
 import InvoiceModal from './savableTnx'
 import TermsAndConditions from './termAndConditions';
 
@@ -87,7 +87,7 @@ const customTheme: ThemeConfig = (theme) => ({
 
 function ReadTokenBalanceContract({address, decimal}: {address: string, decimal: number}) {
     const account = getAccount(config)
-    const { data, isError, isLoading } = useReadContract({
+    const { data, error, isError, isLoading } = useReadContract({
       abi: abi,
       address: address as `0x${string}`,
       functionName: 'balanceOf',
@@ -100,7 +100,7 @@ function ReadTokenBalanceContract({address, decimal}: {address: string, decimal:
     }
 
     if (isError) {
-      console.log("ERR", "Couldn't fetch balance")
+      console.log("ERR", "Couldn't fetch balance", error)
       return ""
     }
 
