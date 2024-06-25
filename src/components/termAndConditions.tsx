@@ -6,7 +6,7 @@ const TermsAndConditions = () => {
     useEffect(() => {
         // Check localStorage for acceptance
         const isAccepted = localStorage.getItem('termsAccepted');
-        if (isAccepted != 'true') {
+        if (isAccepted !== 'true') {
             setAccepted(false);
         }
     }, []);

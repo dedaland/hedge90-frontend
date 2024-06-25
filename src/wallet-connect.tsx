@@ -1,10 +1,9 @@
-import { http, createConfig, WagmiProvider, Connector } from "wagmi";
-import { Chain, bsc, bscTestnet } from "viem/chains";
+import { http, createConfig } from "wagmi";
+import { bsc, bscTestnet } from "viem/chains";
 import { walletConnect, coinbaseWallet } from "wagmi/connectors";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TransportConfig, EIP1193RequestFn } from "viem";
-import { StoreApi } from "zustand/vanilla";
+import { QueryClient } from "@tanstack/react-query";
+
 
 export function ConnectButton() {
     return <w3m-button balance='hide'/>

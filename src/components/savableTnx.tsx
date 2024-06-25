@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import * as htmlToImage from 'html-to-image';
 import './../index.css';
 
