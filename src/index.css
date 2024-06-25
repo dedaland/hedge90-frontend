@@ -48,6 +48,11 @@ header .social-icons a {
   text-decoration: none;
   color: #66fcf1;
 }
+header .social-icons-head a {
+  margin-left: 10px;
+  text-decoration: none;
+  color: #66fcf1;
+}
 .main-section{
   display: flex;
 }
@@ -514,9 +519,7 @@ input[type=number] {
     color: #c5c6c7;
     width: 80%;
   }
-  .section-links {
-    display: none;
-  }
+  
 }
 
 @media screen and (max-width: 800px) {
@@ -529,6 +532,9 @@ input[type=number] {
   .intro {
     display:none;
   }
+  .section-links {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 320px) {
@@ -538,6 +544,11 @@ input[type=number] {
   }
 }
 
+@media screen and (max-width: 518px) {
+  .social-icons-head{
+    display: none;
+  }
+}
 
 iframe
 {

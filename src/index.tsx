@@ -1,54 +1,33 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import { WagmiProvider} from 'wagmi';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createWeb3Modal } from "@web3modal/wagmi/react";
 
-import { queryClient, config } from './wallet';
+import { WagmiProvider } from "wagmi";
 
-
+import { QueryClientProvider } from "@tanstack/react-query";
+import { wagmiConfig, queryClient } from './wallet-connect'
 import App from './App';
-import AdminPage from './pages/admin'
 
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-  },
-  {
-    path: "/admin",
-    element: <AdminPage />,
-  },
-]);
-
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+// 1. Get projectId at https://cloud.walletconnect.com
+const projectId = "0d6e5c92264b0ded8e52916d2aa84c84";
 
 
-root.render(
+// 3. Create modal
+createWeb3Modal({ 
+    wagmiConfig, projectId,
+    themeMode: 'dark',
+    themeVariables: {
+        '--w3m-accent': '#000',
+      }
+});
+
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-        <WagmiProvider config={config}>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-
-            <RainbowKitProvider modalSize="compact" theme={darkTheme({
-              accentColor: '#000',
-              accentColorForeground: 'white',
-              borderRadius: 'small',
-              fontStack: 'system',
-              overlayBlur: 'small'
-            })}
-        >
-              <RouterProvider router={router} />
-            </RainbowKitProvider>
+        <App />
       </QueryClientProvider>
-
-        </WagmiProvider>
+    </WagmiProvider>
   </React.StrictMode>
 );
-

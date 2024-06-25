@@ -1,4 +1,6 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+// import { ConnectButton } from '@rainbow-me/rainbowkit';
+// import { ConnectButton } from '@rainbow-me/rainbowkit';
+import  { ConnectButton } from './wallet-connect';
 import Collapsible from './collapsible';
 
 import TransactionComponent from './components/Transaction'
@@ -26,8 +28,9 @@ const App = () => {
         </div>
         
         <div className="section">
-            <ConnectButton showBalance={false} />
-            <div className="social-icons">
+            {/* <ConnectButton showBalance={false} /> */}
+            <ConnectButton/>
+            <div className="social-icons-head">
                 <a href="https://x.com/dedacoin_co" target="_blank"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
                 <a href="https://t.me/DedaCoin_Official" target="_blank"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
             </div>
