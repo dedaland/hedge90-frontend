@@ -250,7 +250,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       // NOTE: fetch price first
     // const tokenPrice = 1
   
-    const finalPriceWithDecimal = DeDaAmountToBuy * BigInt(tokenPrice * 10**18)
+    const finalPriceWithDecimal = DeDaAmountToBuy * BigInt(tokenPrice?tokenPrice:0 * 10**18)
   
     // Read the allowance to check if the amount is already approved
     const { data: usdtAllowance } = useReadContract({
