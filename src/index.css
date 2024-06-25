@@ -536,17 +536,82 @@ input[type=number] {
     display: none;
   }
 }
-
-@media screen and (max-width: 320px) {
-  .inner-modal {
-    transform: scale(0.6);
-    margin:-40px auto
+@media screen and (max-width: 560px) {
+  .transactions {
+    width: 320px;
+    margin: auto;
+    line-height: 0.5;
+  }
+  .sell-buy-section input {
+    width: 88%;
+  }
+  .available-amount{
+    position:initial;
+  }
+  .price-text{
+    padding-top: 10px;
+  }
+  .section-title {
+    font-size: 1em;
+    padding: 15px;
+  }
+  .section-step-title{
+    font-size: 1.3em;
+    padding-top: 15px;
+  }
+  .section-step-content{
+    font-size: 0.7em;
+    width: 50%;
+    padding-top: 15px;
+    padding-bottom: 30px;
+  }
+  .key-feature-title{
+    font-size: 1.5em;
+    padding-left: 50px;
+  }
+  .key-features {
+    margin-left: 30px;
+  }
+  .key-feature-section-box-title {
+    font-size: 1.5em;
+  }
+  .key-feature-section-box-content{
+    font-size: 1em;
+  }
+  .faq-title {
+    margin-left: 30px;
+    font-size: 1.5em;
+  }
+  .faq-sub-title {
+    font-size: 1em;
+    margin-left: 30px;
+    width: 80%;
+  }
+  .collapsible {
+    margin-left: 30px;
+    margin-right: 30px
+  }
+  .collapsible-content{
+    padding-left: 15px;
+    padding-right: 10px
+  }
+  .faq-answer {
+    line-height: 1.1em;
+  }
+  .social-icons{
+    width: 50px;
   }
 }
 
 @media screen and (max-width: 518px) {
   .social-icons-head{
     display: none;
+  }
+}
+@media screen and (max-width: 320px) {
+  .inner-modal {
+    transform: scale(0.6);
+    margin:-40px auto
   }
 }
 
