@@ -250,7 +250,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       // NOTE: fetch price first
     // const tokenPrice = 1
   
-    const finalPriceWithDecimal = DeDaAmountToBuy * BigInt(tokenPrice?tokenPrice:0 * 10**18)
+    const finalPriceWithDecimal = DeDaAmountToBuy * BigInt(tokenPrice * (10**18))
   
     // Read the allowance to check if the amount is already approved
     const { data: usdtAllowance } = useReadContract({
@@ -380,7 +380,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
         const account = getAccount(config)
         try{
         const price_res = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-price`);
-        setTokenPrice(price_res.data['price'])
+        setTokenPrice(price_res.data['price']?price_res.data['price']:0)
         }catch(err){
           console.log("NO PRICE")
         }
