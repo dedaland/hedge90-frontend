@@ -21,9 +21,8 @@ const App = () => {
           DedaCoin
           </div> 
         <div className='section-links'>
-            <a href="#">ABOUT</a>
-            <a href="#">HOW TO BUY</a>
-            <a href="#">FAQS</a>
+            <a href="#how-to-buy">HOW TO BUY</a>
+            <a href="#faq-answer">FAQS</a>
         </div>
         </div>
         
@@ -31,8 +30,8 @@ const App = () => {
             {/* <ConnectButton showBalance={false} /> */}
             <ConnectButton/>
             <div className="social-icons-head">
-                <a href="https://x.com/dedacoin_co" target="_blank"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
-                <a href="https://t.me/DedaCoin_Official" target="_blank"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
+                <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
+                <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
             </div>
         </div>
     </header>
@@ -44,7 +43,7 @@ const App = () => {
               </section>
               <TransactionComponent />
           </div>
-          <section className='how-to-buy'>
+          <section id="how-to-buy" className='how-to-buy'>
             <div className='section-title'>How to buy</div>
                 <div className='secion-step'>step 01</div>
                 <div className='section-step-title'>connect your crypto wallet</div>
@@ -107,7 +106,7 @@ const App = () => {
                 </div>
             </div>
           </section>
-          <section className='faq-section'>
+          <section id="faq-answer" className='faq-section'>
             <div className='faq-title'>Frequently asked questions</div>
             <div className='faq-sub-title'>Find answers to some of your questions or contact us below</div>
               <Collapsible 
@@ -123,8 +122,7 @@ const App = () => {
                 You can complete the process by watching our tutorial video and following the step-by-step guides !
                 </div>
               }
-              >
-              </Collapsible>
+              />
               <Collapsible 
               title="How to add Deda (BNB Chain) to MetaMask?"
               children={
@@ -143,8 +141,7 @@ const App = () => {
                 </ul>
                 </div>
               }
-              >
-              </Collapsible>
+              />
               <Collapsible 
               title="How buy DedaCoin in Hedge90?"
               children={
@@ -172,8 +169,7 @@ const App = () => {
                 </ul>
                 </div>
               }
-              >
-              </Collapsible>
+              />
               <Collapsible 
               title="How To Sell DedaCoin On Hedge90? (Cancellation Hedge90)"
               children={
@@ -194,8 +190,7 @@ const App = () => {
                 </ul>
                 </div>
               }
-              >
-              </Collapsible>
+              />
           </section>
 
           <section className='footer-section'>
@@ -206,8 +201,8 @@ const App = () => {
             
             <div className="section">
                 <div className="social-icons">
-                    <a href="https://x.com/dedacoin_co" target="_blank"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
-                    <a href="https://t.me/DedaCoin_Official" target="_blank"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
+                    <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
+                    <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
                 </div>
             </div>
           </section>

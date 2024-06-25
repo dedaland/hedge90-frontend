@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
 import Select, { StylesConfig, ThemeConfig, SingleValue } from 'react-select';
 import { abi } from '../erc20_abi'
@@ -21,12 +21,6 @@ const MAX_TO_APPROVE = 115792089237316195423570985008687907853269984665640564039
 
 
 type OptionType = { label1: string; label2: string; value: string, imageUrl1: string, imageUrl2: string, purshase_price: number, amount: number };
-
-type Purchase = {
-  amount: number;
-  pricePerToken: number;
-  USDTAmount: number;
-};
 
 
 const customStyles: StylesConfig<OptionType, false> = {
@@ -280,7 +274,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       } else {
         setIsUSDTApproved(false);
       }
-    }, [usdtAllowance, DeDaAmountToBuy]);
+    }, [usdtAllowance, DeDaAmountToBuy, finalPriceWithDecimal]);
   
   
     
@@ -299,7 +293,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       if (buyErr) {
         console.error("Failed to simulate contract approval.", buyErr);
       }
-    }, []);
+    }, [buyErr]);
   
     const handleBuyApprove = () => {
       let amountToUse = DeDaAmountToBuy;
@@ -333,7 +327,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       } else {
         setIsDeDaApproved(false);
       }
-    }, [dedaAllowance, DeDaAmountToSell]);
+    }, [dedaAllowance, DeDaAmountToSell, DeDaAmountToSellWithDecimal]);
   
     const { data: sellData, error: sellErr } = useSimulateContract({
       address: tokenAddress as `0x${string}`,
@@ -341,6 +335,12 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
       functionName: 'approve',
       args: [contractAddress as `0x${string}`, MAX_TO_APPROVE],
     });
+
+    useEffect(() => {
+      if (sellErr) {
+        console.error("Failed to simulate contract sell.", sellErr);
+      }
+    }, [sellErr]);
   
     const { writeContract: writeDeDaApproveContract } = useWriteContract()
   
@@ -429,13 +429,13 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                         <div className="panel-header">
                             <button 
                             onClick={() => toggleBuysell('buy')}
-                            style={buysell == 'buy' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="buy-button">Buy</button>
+                            style={buysell === 'buy' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="buy-button">Buy</button>
                             <button 
                             onClick={() => toggleBuysell('sell')}
-                            style={buysell == 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
+                            style={buysell === 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
                         </div>
                         {/* sell section */}
-                        <div style={buysell == 'sell' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
+                        <div style={buysell === 'sell' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
                         <div className="previous-purchases">
                             <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
                             <Select
@@ -451,10 +451,10 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                         </div>
                             <h5>DedaCoin to pay</h5>
                             <input type="number"
-                                    value={DeDaAmountToSell == 0n ? "" : DeDaAmountToSell.toString()}
+                                    value={DeDaAmountToSell === 0n ? "" : DeDaAmountToSell.toString()}
                                     onChange={
                                       (e) => {
-                                        const data = selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)
+                                        const data = selectOptions.reduce((acc, option) => option.value === DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)
                                         if(data >= Number(e.target.value)){
                                           setDeDaAmountToSell(BigInt(e.target.value))
                                         }
@@ -467,14 +467,14 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                                     placeholder="Amount" />
                             <button className='max-button'
                             onClick={() => {
-                              const data = selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)
+                              const data = selectOptions.reduce((acc, option) => option.value === DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)
                               setDeDaAmountToSell(BigInt(data))
                             }}
                             >Max</button>
                             <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress as `0x${string}`} decimal={8} />:"Connect your wallet"}</p>
                             <h5>Tether you receive</h5>
                             <input type="text"
-                            value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**18) - (option.purshase_price/(10**18)*0.1))! : acc, 0)).toString()}
+                            value={DeDaAmountToSell === 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value === DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**18) - (option.purshase_price/(10**18)*0.1))! : acc, 0)).toString()}
                             // value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.map((option) => option.value == DeDaIndexToSell.toString() ? option.usdt_max : 0)).toString()}
                             placeholder="Amount" disabled />
                             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
@@ -487,11 +487,11 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                         </div>
                         {/* buy section */}
   
-                        <div style={buysell == 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
+                        <div style={buysell === 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
                             <h5>DedaCoin you recieve</h5>
                             <div style={{color: "red", display: usdtBalanceLow?"block":"none"}}>your USDT balance is too low!</div>
                             <input type="number"
-                                    value={DeDaAmountToBuy == 0n ? "" : DeDaAmountToBuy.toString()}
+                                    value={DeDaAmountToBuy === 0n ? "" : DeDaAmountToBuy.toString()}
                                     onChange={(e) => {
                                       let value = BigInt(e.target.value);
                                       setDeDaAmountToBuy(value);
@@ -505,7 +505,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                                     placeholder="Amount" />
                             
                             <h5>Tether to pay</h5>
-                            <input type="text" value={finalPriceWithDecimal == 0n ? "":(Number(finalPriceWithDecimal)/10**18).toString()} placeholder="Amount" disabled />
+                            <input type="text" value={finalPriceWithDecimal === 0n ? "":(Number(finalPriceWithDecimal)/10**18).toString()} placeholder="Amount" disabled />
                             <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={USDTAddress as `0x${string}`} decimal={18} />:"Connect your wallet"}</p>
                             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                             {isUSDTApproved ? (
