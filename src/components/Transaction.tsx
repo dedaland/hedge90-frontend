@@ -454,7 +454,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                                     value={DeDaAmountToSell === 0n ? "" : DeDaAmountToSell.toString()}
                                     onChange={
                                       (e) => {
-                                        const data = selectOptions.reduce((acc, option) => option.value === DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)
+                                        const data = selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)
                                         if(data >= Number(e.target.value)){
                                           setDeDaAmountToSell(BigInt(e.target.value))
                                         }
@@ -467,7 +467,7 @@ function TransactionComponent(){//({ DeDaAmountToBuy }: { DeDaAmountToBuy: bigin
                                     placeholder="Amount" />
                             <button className='max-button'
                             onClick={() => {
-                              const data = selectOptions.reduce((acc, option) => option.value === DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)
+                              const data = selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)
                               setDeDaAmountToSell(BigInt(data))
                             }}
                             >Max</button>
