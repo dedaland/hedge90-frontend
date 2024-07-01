@@ -1,5 +1,7 @@
 import { http, createConfig } from "wagmi";
-import { bsc, bscTestnet } from "viem/chains";
+import { defineChain } from 'viem'
+
+import { bsc, bscTestnet, localhost } from "viem/chains";
 import { walletConnect, coinbaseWallet } from "wagmi/connectors";
 
 import { QueryClient } from "@tanstack/react-query";
@@ -8,6 +10,27 @@ import { QueryClient } from "@tanstack/react-query";
 export function ConnectButton() {
     return <w3m-button balance='hide'/>
 }
+
+ 
+export const local_anvil = defineChain({
+  id: 31337,
+  name: 'Local',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: {
+      http: ['http://127.0.0.1:8545'],
+      webSocket: [],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'Explorer', url: 'http://127.0.0.1:5100/' },
+  },
+  contracts: {},
+})
 
 const projectId = "0d6e5c92264b0ded8e52916d2aa84c84";
 if (!projectId) throw new Error("Project ID is undefined");
