@@ -60,9 +60,9 @@ if(IS_PROD){
     });
 }else{
     wagmiConfig = createConfig({
-        chains: [bscTestnet],
+        chains: [local_anvil],
         transports: {
-            [bscTestnet.id]: http(process.env.RPC_URL),
+            [local_anvil.id]: http(process.env.RPC_URL),
         },
         connectors: [
             walletConnect({ projectId, metadata, showQrModal: false }),

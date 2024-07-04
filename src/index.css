@@ -106,6 +106,8 @@ header .social-icons-head a {
 
   width: 50%;
   border: none;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
   padding: 14px 20px;
   border-radius: 5px;
   cursor: pointer;
@@ -178,13 +180,25 @@ header .social-icons-head a {
 .available-amount {
   position: absolute;
   right: 10px;
-  font-size: 0.8em;
+  font-size: 0.7em;
   color: #c5c6c7;
 }
 
 .price-text {
   font-size: 0.8em;
   padding-bottom: 20px;
+}
+.what-is-hedge90{
+  margin: 100px auto;
+  font-size: 1.2em;
+  width: 44%;
+  color: white;
+  border: 1px solid #8a8aa0;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.61);
+  padding: 40px;
+  text-align: center;
+  backdrop-filter: blur(5px);
 }
 
 .how-to-buy {
@@ -249,7 +263,7 @@ header .social-icons-head a {
 
 .key-feature-section-box{
   width: 30%;
-  height: 280px;
+  min-height: 280px;
   margin: 10px;
   display:flexbox;
   border: 1px solid #8a8aa0;
@@ -500,7 +514,35 @@ input[type=number] {
   .key-feature-section-box{
     width: 80%;
   }
+
+  .for-large-screen{
+    display: none;
+  }
 }
+
+@media screen and (max-width: 800px) {
+  .main-section {
+    display: ruby-text;
+  }
+  .transactions{
+    margin-left: auto;
+  }
+  .intro {
+    display:none;
+  }
+  .section-links {
+    display: none;
+  }
+}
+
+/* @media screen and (max-width: 882px) {
+  .section-links{
+    font-size: 0.8em;
+  }
+  .section .logo {
+    font-size: 1em;
+  }
+} */
 
 @media screen and (max-width: 740px) {
   .how-to-buy {
@@ -529,20 +571,7 @@ input[type=number] {
   
 }
 
-@media screen and (max-width: 800px) {
-  .main-section {
-    display: ruby-text;
-  }
-  .transactions{
-    margin-left: auto;
-  }
-  .intro {
-    display:none;
-  }
-  .section-links {
-    display: none;
-  }
-}
+
 @media screen and (max-width: 560px) {
   .transactions {
     width: 320px;
@@ -611,6 +640,9 @@ input[type=number] {
   .arrow {
     right: 25px;
     width: 14px;
+  }
+  .what-is-hedge90{
+    font-size: 0.7em;
   }
 }
 

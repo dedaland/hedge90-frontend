@@ -7,7 +7,6 @@ import { contract_abi } from '../contract_abi'
 import { getAccount } from '@wagmi/core'
 import { wagmiConfig as config } from '../wallet-connect';
 import InvoiceModal from './savableTnx'
-import TermsAndConditions from './termAndConditions';
 
 
 
@@ -103,7 +102,11 @@ function ReadTokenBalanceContract({address, decimal}: {address: string, decimal:
 
     if(typeof data === "bigint"){
       return (
-        (Number(data)/(10**decimal)).toString()
+        <span>
+          {(Number(data)/(10**decimal)).toString()}
+          <hr style={{borderBottom: "none", borderColor: "gray"}} />
+          {/* <div style={{color: "red"}}>not enough USDT</div> */}
+        </span>
       )
     }else{
       return "Couldn't fetch balance"
@@ -156,7 +159,7 @@ function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, 
       )
     }
     }>
-          { isLoading ? "Purchasing..." : "Buy DedaCoin"}
+          { isLoading ? "Processing..." : "Buy DedaCoin"}
         </button>)}
       </div>
     );
@@ -204,7 +207,7 @@ function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, 
       )
     }
     }>
-          { isLoading ? "Returning..." : "Return DedaCoin"}
+          { isLoading ? "Processing..." : "Sell DedaCoin"}
         </button>)}
       </div>
     );
@@ -447,8 +450,8 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                             onClick={() => toggleBuysell('sell')}
                             style={buysell === 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
                                                         <button 
-                            onClick={() => toggleBuysell('sell')}
-                            style={buysell === 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Cancel</button>
+                            onClick={() => toggleBuysell('cancel')}
+                            style={buysell === 'cancel' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Cancel</button>
                         </div>
                         {/* sell section */}
                         <div style={buysell === 'sell' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
@@ -497,7 +500,7 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                             {isDeDaApproved ? (
                               <SellTokensComponent amountToSell={DeDaAmountToSellWithDecimal} index={DeDaIndexToSell} />
                               ) : (
-                                <button disabled={isDeDaApproveLoading} className="sell-button" onClick={handleSellApprove}>{ isDeDaApproveLoading ? "Approving..." : "Approve Tokens"}</button>
+                                <button disabled={isDeDaApproveLoading} className="sell-button" onClick={handleSellApprove}>{ isDeDaApproveLoading ? "Processing..." : "Approve USDT"}</button>
                               )}
                             {/* <button className="sell-button">Sell Now</button> */}
                         </div>
@@ -525,20 +528,20 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                                     value={finalPriceWithDecimal == 0 ? "":RoundTwoPlaces(finalPriceWithDecimal).toString()}
                                     placeholder="Amount" disabled/>
                             
-                            
                             <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={USDTAddress as `0x${string}`} decimal={18} />:"Connect your wallet"}</p>
                             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
+                            <div style={{textAlign: "center", fontSize:"0.7em", paddingBottom:"10px"}}>The minimum purchase amount is set at 50 USDT.</div>
                             {isUSDTApproved ? (
                               <BuyTokensComponent amountToBuy={USDTAmountToBuyWithDecimal} dedaAmount={RoundTwoPlaces(finalPriceWithDecimal)} />
                               ) : (
-                                <button disabled={isUSDTApproveLoading} className="sell-button" onClick={handleBuyApprove}>{ isUSDTApproveLoading ? "Approving..." : "Approve Tokens"}</button>
+                                <button disabled={isUSDTApproveLoading} className="sell-button" onClick={handleBuyApprove}>{ isUSDTApproveLoading ? "Processing..." : "Approve DedaCoin"}</button>
                               )}
+
                             
                         </div>
                     </div>
                 </section>
         {/*  */}
-        <TermsAndConditions/>
         
       </div>
     );

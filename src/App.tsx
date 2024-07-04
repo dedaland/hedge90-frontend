@@ -4,6 +4,8 @@ import  { ConnectButton } from './wallet-connect';
 import Collapsible from './collapsible';
 
 import TransactionComponent from './components/Transaction'
+import TermsAndConditions from './components/termAndConditions';
+
 
 const App = () => {
 
@@ -14,25 +16,24 @@ const App = () => {
       <header>
 
         <div className="section">
-        <img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />
-        {/* <img width="30px" style={{paddingRight: "13px"}} src="/TetherUSDT.svg" alt="" /> */}
-
+          <a href="https://dedacoin.co" target='_blank'>
+            <img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />
+          </a>
+        |
         <div className='logo'>
           DedaCoin
           </div> 
         <div className='section-links'>
+            <a href="#what-is-hedge90" className='for-large-screen'>What is Hedge90 Trading</a>
             <a href="#how-to-buy">HOW TO BUY</a>
             <a href="#faq-answer">FAQS</a>
+            <a href="https://dedacoin.co/white-paper/" target='_blank'>Whitepaper</a>
         </div>
         </div>
         
         <div className="section">
-            {/* <ConnectButton showBalance={false} /> */}
             <ConnectButton/>
-            <div className="social-icons-head">
-                <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
-                <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
-            </div>
+
         </div>
     </header>
       <img className="mid-img" src="/pattern.svg" alt="pattern" />
@@ -42,6 +43,10 @@ const App = () => {
                   <h2>The Future of Stable Investment</h2>
               </section>
               <TransactionComponent />
+          </div>
+          <div id="what-is-hedge90" className='what-is-hedge90'>
+            <h2>What is Hedge90 Trading?</h2>
+            A strategy that follows market trends enabling you to profit during upward trends while safeguarding your capital during downward trends.
           </div>
           <section id="how-to-buy" className='how-to-buy'>
             <div className='section-title'>How to buy</div>
@@ -76,33 +81,35 @@ const App = () => {
             
             <div className='key-feature-section-box'>
                 <div className='key-feature-section-box-title'>
-                Price stability
+                Non-upgradeable
+
                 </div>
                 <div className='key-feature-section-box-content'>
-                  Easily track your investments and 
-                  trade DedaCoin on our secure
-                  platform.
+                Guarantees that the buyback protocol
+                remains in place permanently,
+                providing long-term security.
                 </div>
             </div>
             <div className='key-feature-section-box'>
                 <div className='key-feature-section-box-title'>
-                High Liquidity
+                Volatility Protection
                 </div>
                 <div className='key-feature-section-box-content'>
-                with a growing number of active
-                users, DedaCoin offers high liquidity
-                for seamless buying and selling.
+                Transactions are voided if the underlying
+                asset price fluctuates more than 100 basis
+                points in a 60-second period,
+                ensuring stability in volatile markets.
+
                 </div>
             </div>
             <div className='key-feature-section-box'>
                 <div className='key-feature-section-box-title'>
-                High security
+                Secure & Permissionless
                 </div>
                 <div className='key-feature-section-box-content'>
-                By initiating the latest  blockchain technology
-                we can ensure our users that all of their 
-                transactions and their assets are 
-                safely guarded in our platform
+                USDT used to purchase DedaCoins is locked
+                in the Hedge90 contract to ensure sufficient
+                liquidity and security for all user-invested capital.
                 </div>
             </div>
           </section>
@@ -197,6 +204,10 @@ const App = () => {
             <div className="section">
                 
                 <div className='logo'><img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />DedaCoin</div> 
+                <div style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Privacy policy</div>
+                <div style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Term and Conditions</div>
+        <TermsAndConditions/>
+
             </div>
             
             <div className="section">
