@@ -1,13 +1,28 @@
-// import { ConnectButton } from '@rainbow-me/rainbowkit';
-// import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useState } from 'react';
 import  { ConnectButton } from './wallet-connect';
 import Collapsible from './collapsible';
 
 import TransactionComponent from './components/Transaction'
 import TermsAndConditions from './components/termAndConditions';
+import PrivacyPolicy from './components/privacyPolicy'
 
 
 const App = () => {
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const handlePrivacyPolicy = () => {
+    setShowPrivacyPolicy(!showPrivacyPolicy);
+    return showPrivacyPolicy
+    // Add additional logic for when terms are accepted
+  };
+
+  const [accepted, setAccepted] = useState('true');
+
+
+  const handleAccept = (state: string) => {
+    console.log("handleAccept", state)
+    setAccepted(state);
+    localStorage.setItem('termsAccepted', state);
+  };
 
   return (
     
@@ -204,9 +219,10 @@ const App = () => {
             <div className="section">
                 
                 <div className='logo'><img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />DedaCoin</div> 
-                <div style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Privacy policy</div>
-                <div style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Term and Conditions</div>
-        <TermsAndConditions/>
+                <div onClick={()=>{setShowPrivacyPolicy(!showPrivacyPolicy)}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Privacy policy</div>
+                <div onClick={()=>{handleAccept('false')}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Term and Conditions</div>
+        <TermsAndConditions accepted={accepted} handleAccept={handleAccept}/>
+        <PrivacyPolicy show={showPrivacyPolicy} toggleShow={handlePrivacyPolicy} />
 
             </div>
             

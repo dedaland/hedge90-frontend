@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
-const TermsAndConditions = () => {
-    const [accepted, setAccepted] = useState(true);
+const TermsAndConditions = ({accepted, handleAccept}: {accepted: string, handleAccept: any}) => {
 
     useEffect(() => {
-        // Check localStorage for acceptance
         const isAccepted = localStorage.getItem('termsAccepted');
         if (isAccepted !== 'true') {
-            setAccepted(false);
+            handleAccept('false');
         }
     }, []);
 
-    const handleAccept = () => {
-        setAccepted(true);
-        localStorage.setItem('termsAccepted', 'true');
-        // Add additional logic for when terms are accepted
-    };
+    
 
-    if (accepted) {
+    if (accepted == 'true') {
         return null; // Don't render the component if terms are accepted
     }
 
@@ -92,7 +86,7 @@ const TermsAndConditions = () => {
                         bottom: '-36px' // Adjust to ensure it is above the button
                     }}></div>
                     <button 
-                        onClick={handleAccept} 
+                        onClick={()=>{handleAccept('true')}} 
                         style={{ 
                             backgroundColor: '#EFBD65', 
                             color: '#000', 

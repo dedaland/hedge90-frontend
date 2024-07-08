@@ -4,7 +4,7 @@ import Select, { StylesConfig, ThemeConfig, SingleValue } from 'react-select';
 import { abi } from '../erc20_abi'
 import axios from 'axios'
 import { contract_abi } from '../contract_abi'
-import { getAccount } from '@wagmi/core'
+import { getAccount, readContract } from '@wagmi/core'
 import { wagmiConfig as config } from '../wallet-connect';
 import InvoiceModal from './savableTnx'
 
@@ -80,33 +80,83 @@ function RoundTwoPlaces(num: any){
   return Math.floor(num * 100) / 100;
 }
 
-
-function ReadTokenBalanceContract({address, decimal}: {address: string, decimal: number}) {
-    const account = getAccount(config)
-    const { data, error, isError, isLoading } = useReadContract({
-      abi: abi,
-      address: address as `0x${string}`,
-      functionName: 'balanceOf',
-      args: [account.address ?? '0x0000000000000000000000000000000000000000'],
-      config: config
+function getBalance({address}: {address: string}){
+  const account = getAccount(config)
+  // console.log("getBalance", account)
+  const result = readContract(config, {
+    abi: abi,
+    address: address as `0x${string}`,
+    functionName: 'balanceOf',
+    args: [account.address ?? '0x0000000000000000000000000000000000000000'],
+  })
+  return result.then((data) => {
+      console.log("DATA1", data)
+      return data
+    }).catch((err)=>{
+      console.log("ERR", err)
+      return null;
     })
+}
 
-    if (isLoading) {
-      return "Loading..."
-    }
+function LowBalanceTokenComponent({showLowBalance, lowBalanceFunc, name, address, userInput, decimal}:
+  {showLowBalance: boolean,lowBalanceFunc:any, name: string, address: string, userInput: number, decimal: number }){
+  const [balance, setBalance] = useState<bigint | null>(null);
+  useEffect(() => {
+    getBalance({address}).then((data)=>{
+      // console.log("BALANCE", balance, userInput)
+      setBalance(data)
+      if(balance && balance < (userInput*(10**decimal))){
+        lowBalanceFunc(true)
+      }
+      else{
+        lowBalanceFunc(false)
+      }
+    })
+},[userInput])
+  return (
+    <div style={{display: showLowBalance?"block":"none"}}>
+      <hr style={{borderBottom: "none",  borderColor: "gray"}} />
+      <div style={{color: "red", textAlign:"right", fontSize:"0.8em"}}>not enough {name}</div>
+    </div>
+    )
+}
 
-    if (isError) {
-      console.log("ERR", "Couldn't fetch balance", error)
-      return ""
-    }
 
-    if(typeof data === "bigint"){
+function ReadTokenBalanceContract({address, decimal, lowBalanceFunc, userInput}: 
+                                    {address: string, decimal: number, lowBalanceFunc:any, userInput: number}) {
+        const [balance, setBalance] = useState<bigint | null>(null);
+
+        useEffect(() => {
+          getBalance({address}).then((data)=>{
+            setBalance(data)
+          })
+      },[address])
+        
+    
+      if(balance && userInput){
+        if(balance < (userInput*(10**decimal))){
+          lowBalanceFunc(true)
+        }
+        else{
+          lowBalanceFunc(false)
+        }
+      }
+
+
+    // if (isLoading) {
+    //   return "Loading..."
+    // }
+
+    // if (isError) {
+    //   console.log("ERR", "Couldn't fetch balance", error)
+    //   return ""
+    // }
+    if(typeof balance === "bigint"){
+      // lowBalanceFunc((Number(balance)/(10**decimal)) < 50);
       return (
-        <span>
-          {(Number(data)/(10**decimal)).toString()}
-          <hr style={{borderBottom: "none", borderColor: "gray"}} />
-          {/* <div style={{color: "red"}}>not enough USDT</div> */}
-        </span>
+        <div style={{display:"inline"}}>
+          {(Number(balance)/(10**decimal)).toString()}
+         </div>
       )
     }else{
       return "Couldn't fetch balance"
@@ -119,7 +169,7 @@ function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tnxHash, setTnxHash] = useState("0x");
     const amount = BigInt(amountToBuy);
-    console.log("BUY AMOUNT", amountToBuy, amount)
+    // console.log("BUY AMOUNT", amountToBuy, amount)
   
     const { data, error } = useSimulateContract({
       address: contractAddress as `0x${string}`,
@@ -213,6 +263,53 @@ function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, 
     );
   }
 
+  function CancelTokensComponent({ index }: { index: number }) {
+    const [isLoading, setisLoading] = useState(false);
+    const [isPurchased, setisPurchased] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [tnxHash, setTnxHash] = useState("0x");
+  
+    const { data } = useSimulateContract({
+      address: contractAddress as `0x${string}`,
+      abi: contract_abi,
+      functionName: 'cancelHedge90',
+      args: [BigInt(index)],
+    });
+  
+    const { writeContract } = useWriteContract()
+  
+    return (
+      <div>
+        <InvoiceModal isOpen={isModalOpen} amount={(Number(0)/10**8)} tnxId={tnxHash} action='return' onClose={() => setIsModalOpen(false)} />
+        {isPurchased ? (
+        <button className="sell-button">Successfully canceled</button>
+       ) :
+        (<button disabled={isLoading} className="sell-button" onClick={() => {
+          setisLoading(true)
+          writeContract(
+            data!.request,{
+              onSuccess: (data) => {
+                setTimeout(() => {
+                  setisPurchased(true)
+                  setisLoading(false);
+                  setTnxHash(data)
+                  setIsModalOpen(true)
+                }, 15000)
+              
+            },
+            onError: () => {
+              setisLoading(false);
+            }
+          }
+      )
+    }
+    }>
+          { isLoading ? "Processing..." : "Cancel Hedge90"}
+        </button>)}
+      </div>
+    );
+  }
+
 
 
 function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigint }) {
@@ -279,7 +376,7 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
   
     
     useEffect(() => {
-      console.log("APPROVE DATA", usdtAllowance, USDTAmountToBuyWithDecimal)
+      // console.log("APPROVE DATA", usdtAllowance, USDTAmountToBuyWithDecimal)
       if (usdtAllowance && usdtAllowance >= USDTAmountToBuyWithDecimal) {
         setIsUSDTApproved(true);
       } else {
@@ -395,7 +492,7 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
           setTokenPrice(res)
 
             setFinalPriceWithDecimal(
-              RoundTwoPlaces(Number(USDTAmountToBuy) / res)
+              RoundTwoPlaces(Number(USDTAmountToBuy) / res - (USDTAmountToBuy / res * 0.04))
             );
         }catch(err){
           console.log("NO PRICE")
@@ -435,7 +532,7 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
   // Only run this effect once, on mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [USDTAmountToBuy, tokenPrice]);
-    const [usdtBalanceLow, setUsdtBalanceLow] = useState(false);
+    const [tokenBalanceLow, setTokenBalanceLow] = useState(false);
   
     return (
       <div>
@@ -452,6 +549,45 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                                                         <button 
                             onClick={() => toggleBuysell('cancel')}
                             style={buysell === 'cancel' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Cancel</button>
+                        </div>
+                        {/* buy section */}
+  
+                        <div style={buysell === 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
+                            <h5>Tether to pay</h5>
+                            {/* <div style={{color: "red", display: tokenBalanceLow?"block":"none"}}>your USDT balance is too low!</div> */}
+                            <input type="text"
+                            value={USDTAmountToBuy === 0 ? "" : USDTAmountToBuy.toString()}
+                            onChange={(e) => {
+                              let value = Number(e.target.value);
+                              let finalPrice = RoundTwoPlaces((value / tokenPrice)  - (value / tokenPrice * 0.04))
+                              console.log("finalPrice", finalPrice);
+                              setUSDTAmountToBuy(value);
+                              setFinalPriceWithDecimal(finalPrice);
+                              
+                          }}
+                          onBlur={(e) => {
+                              let value = Number(e.target.value);
+                              if (value < 50) {
+                                  setUSDTAmountToBuy(50);
+                              }
+                          }}
+                             placeholder="Amount" />
+                            <h5>DedaCoin you recieve</h5>
+                            <input type="string"
+                                    value={finalPriceWithDecimal == 0 ? "":RoundTwoPlaces(finalPriceWithDecimal).toString()}
+                                    placeholder="Amount" disabled/>
+                            
+                            <div className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={USDTAddress as `0x${string}`} decimal={18}  userInput={USDTAmountToBuy} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}}/>:"Connect your wallet"}</div>
+                            <div>{isConnected? <LowBalanceTokenComponent showLowBalance={tokenBalanceLow} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}} name={"USDT"} address={USDTAddress as `0x${string}`} userInput={USDTAmountToBuy}  decimal={18}/>:""}</div>
+                            <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
+                            <div style={{textAlign: "center", fontSize:"0.7em", paddingBottom:"10px"}}>The minimum purchase amount is set at 50 USDT.</div>
+                            {isUSDTApproved ? (
+                              <BuyTokensComponent amountToBuy={USDTAmountToBuyWithDecimal} dedaAmount={RoundTwoPlaces(finalPriceWithDecimal)} />
+                              ) : (
+                                <button disabled={isUSDTApproveLoading} className="sell-button" onClick={handleBuyApprove}>{ isUSDTApproveLoading ? "Processing..." : "Approve USDT"}</button>
+                              )}
+
+                            
                         </div>
                         {/* sell section */}
                         <div style={buysell === 'sell' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
@@ -490,55 +626,46 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                               setDeDaAmountToSell(data)
                             }}
                             >Max</button>
-                            <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress as `0x${string}`} decimal={8} />:"Connect your wallet"}</p>
+                            <div className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress as `0x${string}`} decimal={8}  userInput={DeDaAmountToSell} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}}/>:"Connect your wallet"}</div>
+                            <div>{isConnected? <LowBalanceTokenComponent showLowBalance={tokenBalanceLow} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}} name={"DedaCoin"} address={tokenAddress as `0x${string}`} userInput={DeDaAmountToSell}  decimal={8}/>:""}</div>
                             <h5>Tether you receive</h5>
                             <input type="text"
-                            value={DeDaAmountToSell === 0 ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**18) - (option.purshase_price/(10**18)*0.1))! : acc, 0)).toString()}
+                            value={DeDaAmountToSell === 0 ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**18) - (option.purshase_price/(10**18)*0.1) - (option.purshase_price/(10**18)*0.04))! : acc, 0)).toString()}
                             // value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.map((option) => option.value == DeDaIndexToSell.toString() ? option.usdt_max : 0)).toString()}
                             placeholder="Amount" disabled />
                             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                             {isDeDaApproved ? (
                               <SellTokensComponent amountToSell={DeDaAmountToSellWithDecimal} index={DeDaIndexToSell} />
                               ) : (
-                                <button disabled={isDeDaApproveLoading} className="sell-button" onClick={handleSellApprove}>{ isDeDaApproveLoading ? "Processing..." : "Approve USDT"}</button>
+                                <button disabled={isDeDaApproveLoading} className="sell-button" onClick={handleSellApprove}>{ isDeDaApproveLoading ? "Processing..." : "Approve Dedacoin"}</button>
                               )}
                             {/* <button className="sell-button">Sell Now</button> */}
                         </div>
-                        {/* buy section */}
+                        {/* cancel section */}
+                        <div style={buysell === 'cancel' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
+                        <div className="previous-purchases">
+                            <h3> <img width="15px" src="/time-past-svgrepo-com.svg" alt="" /> Previous Purchases</h3>
+                            <Select
+                              isLoading={loadingOptions}
+                              options={selectOptions}
+                              styles={customStyles}
+                              theme={customTheme}
+                              formatOptionLabel={formatOptionLabel}
+                              value={selectOptions.find(option => option.value === DeDaIndexToSell.toString())}
+                              onChange={handleSelectChange}
+                            />
   
-                        <div style={buysell === 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
-                            <h5>Tether to pay</h5>
-                            <div style={{color: "red", display: usdtBalanceLow?"block":"none"}}>your USDT balance is too low!</div>
-                            <input type="text"
-                            value={USDTAmountToBuy === 0 ? "" : USDTAmountToBuy.toString()}
-                            onChange={(e) => {
-                              let value = Number(e.target.value);
-                              setUSDTAmountToBuy(value);
-                              setFinalPriceWithDecimal(RoundTwoPlaces(value / tokenPrice));
-                          }}
-                          onBlur={(e) => {
-                              let value = Number(e.target.value);
-                              if (value < 50) {
-                                  setUSDTAmountToBuy(50);
-                              }
-                          }}
-                             placeholder="Amount" />
-                            <h5>DedaCoin you recieve</h5>
-                            <input type="string"
-                                    value={finalPriceWithDecimal == 0 ? "":RoundTwoPlaces(finalPriceWithDecimal).toString()}
-                                    placeholder="Amount" disabled/>
-                            
-                            <p className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={USDTAddress as `0x${string}`} decimal={18} />:"Connect your wallet"}</p>
-                            <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
-                            <div style={{textAlign: "center", fontSize:"0.7em", paddingBottom:"10px"}}>The minimum purchase amount is set at 50 USDT.</div>
-                            {isUSDTApproved ? (
-                              <BuyTokensComponent amountToBuy={USDTAmountToBuyWithDecimal} dedaAmount={RoundTwoPlaces(finalPriceWithDecimal)} />
-                              ) : (
-                                <button disabled={isUSDTApproveLoading} className="sell-button" onClick={handleBuyApprove}>{ isUSDTApproveLoading ? "Processing..." : "Approve DedaCoin"}</button>
-                              )}
-
-                            
                         </div>
+                            <hr style={{borderBottom:"none", width:"95%"}} />
+                            <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
+                            {/* {isDeDaApproved ? (
+                              ) : (
+                                <button disabled={isDeDaApproveLoading} className="sell-button" onClick={handleSellApprove}>{ isDeDaApproveLoading ? "Processing..." : "Approve USDT"}</button>
+                              )} */}
+                              <CancelTokensComponent index={DeDaIndexToSell} />
+
+                        </div>
+
                     </div>
                 </section>
         {/*  */}

@@ -15,6 +15,16 @@ export const contract_abi = [
 				"internalType": "address",
 				"name": "_teamWallet",
 				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_withdrawalAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_tokenPriceManager",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -46,11 +56,24 @@ export const contract_abi = [
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "USDTAmount",
 				"type": "uint256"
 			}
 		],
 		"name": "buyTokens",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_index",
+				"type": "uint256"
+			}
+		],
+		"name": "cancelHedge90",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -61,28 +84,9 @@ export const contract_abi = [
 		"type": "error"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "token",
-				"type": "address"
-			}
-		],
-		"name": "SafeERC20FailedOperation",
+		"inputs": [],
+		"name": "ReentrancyGuardReentrantCall",
 		"type": "error"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "message",
-				"type": "string"
-			}
-		],
-		"name": "Debug",
-		"type": "event"
 	},
 	{
 		"inputs": [
@@ -105,71 +109,26 @@ export const contract_abi = [
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "token",
+				"type": "address"
+			}
+		],
+		"name": "SafeERC20FailedOperation",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
-				"name": "newPrice",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
-		"name": "setTokenPrice",
+		"name": "withdrawTokens",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "buyer",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "pricePerToken",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "USDTAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "TokensPurchased",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "seller",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "refundAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "TokensReturned",
-		"type": "event"
 	},
 	{
 		"inputs": [
@@ -282,7 +241,7 @@ export const contract_abi = [
 	},
 	{
 		"inputs": [],
-		"name": "tokenPrice",
+		"name": "tokenPriceDecimal",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -295,12 +254,12 @@ export const contract_abi = [
 	},
 	{
 		"inputs": [],
-		"name": "tokenPriceDecimal",
+		"name": "tokenPriceManager",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "contract TokenPriceManager",
 				"name": "",
-				"type": "uint256"
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -318,7 +277,18 @@ export const contract_abi = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withdrawalAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	}
-] as const
-
-  
+]
