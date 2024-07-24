@@ -1,7 +1,7 @@
 
 import { useRef } from 'react';
 import * as htmlToImage from 'html-to-image';
-import './../index.css';
+import './../../styles/index.css';
 
 const InvoiceModal = ({ isOpen, amount, tnxId, action, onClose }: { isOpen: boolean, amount: Number, tnxId: string, action: string; onClose: () => void }) => {
   const modalRef = useRef<HTMLDivElement>(null);

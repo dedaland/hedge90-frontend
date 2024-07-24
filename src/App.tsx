@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import  { ConnectButton } from './wallet-connect';
-import Collapsible from './collapsible';
+import Collapsible from './components/collapsible';
 
 import TransactionComponent from './components/Transaction'
-import TermsAndConditions from './components/termAndConditions';
-import PrivacyPolicy from './components/privacyPolicy'
+import TermsAndConditions from './components/modals/termAndConditions';
+import PrivacyPolicy from './components/modals/privacyPolicy'
 
 
 const App = () => {

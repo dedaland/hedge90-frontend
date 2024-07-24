@@ -1,12 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
 import Select, { StylesConfig, ThemeConfig, SingleValue } from 'react-select';
-import { abi } from '../erc20_abi'
+import { abi } from '../constants/erc20_abi'
 import axios from 'axios'
-import { contract_abi } from '../contract_abi'
+import { contract_abi } from '../constants/contract_abi'
 import { getAccount, readContract } from '@wagmi/core'
 import { wagmiConfig as config } from '../wallet-connect';
-import InvoiceModal from './savableTnx'
+import {LowBalanceTokenComponent, getBalance} from './token/lowBalanceToken';
+import CancelTokensComponent from './token/cancelToken';
+import BuyTokensComponent from './token/buyToken';
+import SellTokensComponent from './token/sellToken';
+
 
 
 
@@ -80,46 +85,8 @@ function RoundTwoPlaces(num: any){
   return Math.floor(num * 100) / 100;
 }
 
-function getBalance({address}: {address: string}){
-  const account = getAccount(config)
-  // console.log("getBalance", account)
-  const result = readContract(config, {
-    abi: abi,
-    address: address as `0x${string}`,
-    functionName: 'balanceOf',
-    args: [account.address ?? '0x0000000000000000000000000000000000000000'],
-  })
-  return result.then((data) => {
-      console.log("DATA1", data)
-      return data
-    }).catch((err)=>{
-      console.log("ERR", err)
-      return null;
-    })
-}
 
-function LowBalanceTokenComponent({showLowBalance, lowBalanceFunc, name, address, userInput, decimal}:
-  {showLowBalance: boolean,lowBalanceFunc:any, name: string, address: string, userInput: number, decimal: number }){
-  const [balance, setBalance] = useState<bigint | null>(null);
-  useEffect(() => {
-    getBalance({address}).then((data)=>{
-      // console.log("BALANCE", balance, userInput)
-      setBalance(data)
-      if(balance && balance < (userInput*(10**decimal))){
-        lowBalanceFunc(true)
-      }
-      else{
-        lowBalanceFunc(false)
-      }
-    })
-},[userInput])
-  return (
-    <div style={{display: showLowBalance?"block":"none"}}>
-      <hr style={{borderBottom: "none",  borderColor: "gray"}} />
-      <div style={{color: "red", textAlign:"right", fontSize:"0.8em"}}>not enough {name}</div>
-    </div>
-    )
-}
+
 
 
 function ReadTokenBalanceContract({address, decimal, lowBalanceFunc, userInput}: 
@@ -134,6 +101,7 @@ function ReadTokenBalanceContract({address, decimal, lowBalanceFunc, userInput}:
         
     
       if(balance && userInput){
+        console.log("HERER", balance, userInput)
         if(balance < (userInput*(10**decimal))){
           lowBalanceFunc(true)
         }
@@ -163,152 +131,31 @@ function ReadTokenBalanceContract({address, decimal, lowBalanceFunc, userInput}:
     }
 }
 
-function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, dedaAmount: number }) {
-    const [isLoading, setisLoading] = useState(false);
-    const [isPurchased, setisPurchased] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [tnxHash, setTnxHash] = useState("0x");
-    const amount = BigInt(amountToBuy);
-    // console.log("BUY AMOUNT", amountToBuy, amount)
-  
-    const { data, error } = useSimulateContract({
-      address: contractAddress as `0x${string}`,
-      abi: contract_abi,
-      functionName: 'buyTokens',
-      args: [amount],
-    });
-  
-    const { writeContract } = useWriteContract()
-  
-    return (
-      <div>
-          <InvoiceModal isOpen={isModalOpen} amount={(Number(dedaAmount))} tnxId={tnxHash} action='purchase' onClose={() => setIsModalOpen(false)} />
-        {isPurchased ? (
-        <button className="sell-button">Successfully purchased</button>
-       ) :
-        (<button disabled={isLoading} className="sell-button" onClick={() => {
-          setisLoading(true)
-          writeContract(
-            data!.request,{
-              onSuccess: (data) => {
-                console.log("USDT APPROVE DATA", data)
-  
-                setTimeout(() => {
-                  setisPurchased(true)
-                  setisLoading(false);
-                  setTnxHash(data)
-                  setIsModalOpen(true)
-                }, 15000)
-              
-            },
-            onError: (error) => {
-              console.log("ERROR", error)
-              setisLoading(false);
-            }
-          }
-      )
-    }
-    }>
-          { isLoading ? "Processing..." : "Buy DedaCoin"}
-        </button>)}
-      </div>
-    );
-  }
-  
-  
-  function SellTokensComponent({ amountToSell, index }: { amountToSell: number, index: number }) {
-    const [isLoading, setisLoading] = useState(false);
-    const [isPurchased, setisPurchased] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [tnxHash, setTnxHash] = useState("0x");
-  
-    const { data } = useSimulateContract({
-      address: contractAddress as `0x${string}`,
-      abi: contract_abi,
-      functionName: 'returnTokens',
-      args: [BigInt(amountToSell), BigInt(index)],
-    });
-  
-    const { writeContract } = useWriteContract()
-  
-    return (
-      <div>
-        <InvoiceModal isOpen={isModalOpen} amount={(Number(amountToSell)/10**8)} tnxId={tnxHash} action='return' onClose={() => setIsModalOpen(false)} />
-        {isPurchased ? (
-        <button className="sell-button">Successfully returned</button>
-       ) :
-        (<button disabled={isLoading} className="sell-button" onClick={() => {
-          setisLoading(true)
-          writeContract(
-            data!.request,{
-              onSuccess: (data) => {
-                setTimeout(() => {
-                  setisPurchased(true)
-                  setisLoading(false);
-                  setTnxHash(data)
-                  setIsModalOpen(true)
-                }, 15000)
-              
-            },
-            onError: () => {
-              setisLoading(false);
-            }
-          }
-      )
-    }
-    }>
-          { isLoading ? "Processing..." : "Sell DedaCoin"}
-        </button>)}
-      </div>
-    );
-  }
 
-  function CancelTokensComponent({ index }: { index: number }) {
-    const [isLoading, setisLoading] = useState(false);
-    const [isPurchased, setisPurchased] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [tnxHash, setTnxHash] = useState("0x");
+  const fetchPrice = async () => {
+    const price_res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/get-price`);
+    return price_res.data['price'] ? price_res.data['price'] : 1;
+  };
   
-    const { data } = useSimulateContract({
-      address: contractAddress as `0x${string}`,
-      abi: contract_abi,
-      functionName: 'cancelHedge90',
-      args: [BigInt(index)],
-    });
-  
-    const { writeContract } = useWriteContract()
-  
-    return (
-      <div>
-        <InvoiceModal isOpen={isModalOpen} amount={(Number(0)/10**8)} tnxId={tnxHash} action='return' onClose={() => setIsModalOpen(false)} />
-        {isPurchased ? (
-        <button className="sell-button">Successfully canceled</button>
-       ) :
-        (<button disabled={isLoading} className="sell-button" onClick={() => {
-          setisLoading(true)
-          writeContract(
-            data!.request,{
-              onSuccess: (data) => {
-                setTimeout(() => {
-                  setisPurchased(true)
-                  setisLoading(false);
-                  setTnxHash(data)
-                  setIsModalOpen(true)
-                }, 15000)
-              
-            },
-            onError: () => {
-              setisLoading(false);
-            }
-          }
-      )
-    }
-    }>
-          { isLoading ? "Processing..." : "Cancel Hedge90"}
-        </button>)}
-      </div>
-    );
-  }
+  const fetchUserPurchases = async (accountAddress: string) => {
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/get-user-purchases/${accountAddress}`);
+    return response.data
+      .map((item:any, index:any) => ({
+        ...item,
+        originalIndex: index
+      }))
+      .filter((item:any) => item.amount !== "0")
+      .map((item:any, index:any) => ({
+        id: item.originalIndex,
+        value: item.originalIndex,
+        label1: `${RoundTwoPlaces(item.amount / (10**8))} DEDA(at ${item.pricePerToken / (10**18)}$ price)`,
+        imageUrl1: '/logo.png',
+        label2: `${item.USDTAmount / (10**18)}`,
+        purshase_price: item.pricePerToken,
+        amount: item.amount,
+        imageUrl2: '/TetherUSDT.svg' 
+      }));
+  };
 
 
 
@@ -481,58 +328,56 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
     };
   
   
-    const [selectOptions, setSelectOptions] = useState<OptionType[]>([]);
-    const [loadingOptions, setLoadingOptions] = useState(true);
-    useEffect(() => {
-      const intervalId = setInterval(async () => {
-        const account = getAccount(config)
-        try{
-          const price_res = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-price`);
-          const res = price_res.data['price']?price_res.data['price']:1
-          setTokenPrice(res)
+    // const [selectOptions, setSelectOptions] = useState<OptionType[]>([]);
+    // const [loadingOptions, setLoadingOptions] = useState(true);
+    
+    
+      // const [tokenPrice, setTokenPrice] = useState(1);
+      // const [finalPriceWithDecimal, setFinalPriceWithDecimal] = useState(0);
+      const [selectOptions, setSelectOptions] = useState<OptionType[]>([]);
+      const [loadingOptions, setLoadingOptions] = useState(false);
+    
+      const account = getAccount(config);
+    
+  const queryClient = useQueryClient();
 
-            setFinalPriceWithDecimal(
-              RoundTwoPlaces(Number(USDTAmountToBuy) / res - (USDTAmountToBuy / res * 0.04))
-            );
-        }catch(err){
-          console.log("NO PRICE")
-        }
-        try{
-        setLoadingOptions(true)
-        const response = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-user-purchases/${account.address}`);
-        const data = response.data
-        .map((item: any, index: number) => ({
-          ...item,
-          originalIndex: index
-        }))
-        .filter((item: any) => item.amount !== "0")
-        .map((item: any, index: number) => ({
-           id: item.originalIndex,
-           value: item.originalIndex,
-           label1: `${RoundTwoPlaces(item.amount / (10**8))} DEDA(at ${item.pricePerToken / (10**18)}$ price)`,
-           imageUrl1: '/logo.png',
-           label2: `${item.USDTAmount / (10**18)}`,
-           purshase_price: item.pricePerToken,
-           amount: item.amount,
-           imageUrl2: '/TetherUSDT.svg' 
-          }));
-  
-        console.log("DATA", data)
-        setSelectOptions(data)
-        setLoadingOptions(false)
-        }catch(err: any){
-          console.log("NO USER PURCHASES")
-        }
-  
-      }, 5000);
-  
-      return () => {
-          clearInterval(intervalId);
-      };
-  // Only run this effect once, on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [USDTAmountToBuy, tokenPrice]);
-    const [tokenBalanceLow, setTokenBalanceLow] = useState(false);
+  const { data: priceData, error: priceError } = useQuery({
+    queryKey: ['price'],
+    queryFn: fetchPrice,
+    refetchInterval: 5000,
+  });
+
+  const { data: userPurchasesData, error: userPurchasesError } = useQuery({
+    queryKey: ['userPurchases', account.address],
+    queryFn: () => fetchUserPurchases(account.address?account.address:""),
+    refetchInterval: 5000,
+    enabled: !!account.address // only run this query if account.address is available
+  });
+    
+  useEffect(() => {
+    if (priceData) {
+      setTokenPrice(priceData);
+      setFinalPriceWithDecimal(RoundTwoPlaces(Number(USDTAmountToBuy) / priceData - (USDTAmountToBuy / priceData * 0.04)));
+    }
+  }, [priceData, USDTAmountToBuy]);
+
+  useEffect(() => {
+    if (userPurchasesData) {
+      setSelectOptions(userPurchasesData);
+      setLoadingOptions(false);
+    }
+  }, [userPurchasesData]);
+
+  useEffect(() => {
+    if (priceError) {
+      console.log("NO PRICE");
+    }
+    if (userPurchasesError) {
+      console.log("NO USER PURCHASES");
+      setLoadingOptions(false);
+    }
+  }, [priceError, userPurchasesError]);
+      const [tokenBalanceLow, setTokenBalanceLow] = useState(false);
   
     return (
       <div>
