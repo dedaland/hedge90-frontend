@@ -424,6 +424,9 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                             
                             <div className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={USDTAddress as `0x${string}`} decimal={18}  userInput={USDTAmountToBuy} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}}/>:"Connect your wallet"}</div>
                             <div>{isConnected? <LowBalanceTokenComponent showLowBalance={tokenBalanceLow} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}} name={"USDT"} address={USDTAddress as `0x${string}`} userInput={USDTAmountToBuy}  decimal={18}/>:""}</div>
+                            <br />
+                            <br />
+                            <input type="string" placeholder='inviter code' />
                             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                             <div style={{textAlign: "center", fontSize:"0.7em", paddingBottom:"10px"}}>The minimum purchase amount is set at 50 USDT.</div>
                             {isUSDTApproved ? (
