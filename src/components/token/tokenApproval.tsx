@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { type BaseError, useWriteContract, useSimulateContract, useReadContract } from 'wagmi'
+import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
+import { abi } from '../../constants/erc20_abi'
 
-const TokenApproval = ({ tokenAddress, abi, userAddress, contractAddress, amount, decimal, approveText, onSuccess, onError }:
-    {tokenAddress: `0x${string}` | undefined, abi: any, userAddress: string,contractAddress:string, amount: number, decimal: number, approveText: string, onSuccess: any, onError: any}
-) => {
+const TokenApproval = ({ tokenAddress, amount, decimal, contractAddress, approveText }: 
+  {tokenAddress: `0x${string}`, amount: number, decimal: number, contractAddress: `0x${string}`, approveText: string}) => {
   const [isApproved, setIsApproved] = useState(false);
   const [isApproveLoading, setIsApproveLoading] = useState(false);
+  const { isConnected, address } = useAccount();
 
   const amountWithDecimal = amount * (10 ** decimal);
   const { data: allowance } = useReadContract({
     address: tokenAddress,
     abi,
     functionName: 'allowance',
-    args: [userAddress, contractAddress],
+    args: [address? address: "0x0", contractAddress],
   });
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const TokenApproval = ({ tokenAddress, abi, userAddress, contractAddress, amount
     address: tokenAddress,
     abi,
     functionName: 'approve',
-    args: [contractAddress, amountWithDecimal],
+    args: [contractAddress, BigInt(amountWithDecimal)],
   });
 
   useEffect(() => {

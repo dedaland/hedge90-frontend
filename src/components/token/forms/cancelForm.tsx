@@ -3,15 +3,8 @@ import Select, { SingleValue } from 'react-select';
 import { useReadContract, useSimulateContract, useWriteContract } from 'wagmi';
 import { type OptionType, customStyles, customTheme, formatOptionLabel } from '../../theme/selectTheme';
 
-interface CancelFormProps {
-  tokenAddress: string;
-  abi: any;
-  userAddress: string;
-  contractAddress: string;
-  selectOptions: OptionType[];
-}
 
-const CancelForm: React.FC<CancelFormProps> = ({ tokenAddress, abi, userAddress, contractAddress, selectOptions }) => {
+const CancelForm = () => {
   const [selectedIndex, setSelectedIndex] = useState<number>(1);
   const [isCancelLoading, setIsCancelLoading] = useState(false);
 

@@ -65,7 +65,8 @@ import { getAccount, readContract } from '@wagmi/core'
 import { wagmiConfig as config } from '../../wallet-connect';
 import { abi } from '../../constants/erc20_abi'
 import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
-import { isUnparsedPrepend } from 'typescript';
+import useStore from '../../store/store'
+
 const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 const initialState = {
@@ -90,14 +91,18 @@ function reducer(state: any, action: any) {
   }
 }
 
-function SellTokensComponent({ amountToSell, index }: { amountToSell: number, index: number }) {
+function SellTokensComponent() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const {
+    DeDaIndexToSell,
+    DeDaAmountToSell,
+  } = useStore();
 
   const { data } = useSimulateContract({
     address: contractAddress as `0x${string}`,
     abi: contract_abi,
     functionName: 'returnTokens',
-    args: [BigInt(amountToSell), BigInt(index)],
+    args: [BigInt(DeDaAmountToSell * (10 ** 8)), BigInt(DeDaIndexToSell)],
   });
 
   const { writeContract } = useWriteContract();
@@ -106,7 +111,7 @@ function SellTokensComponent({ amountToSell, index }: { amountToSell: number, in
     <div>
       <InvoiceModal
         isOpen={state.isModalOpen}
-        amount={(Number(amountToSell) / 10 ** 8)}
+        amount={(Number(DeDaAmountToSell) / 10 ** 8)}
         tnxId={state.tnxHash}
         action='return'
         onClose={() => dispatch({ type: 'SET_MODAL_OPEN', payload: false })}

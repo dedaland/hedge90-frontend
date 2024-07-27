@@ -9,7 +9,7 @@ const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 
 
-function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, dedaAmount: number }) {
+function BuyTokensComponent() {
     const [isLoading, setisLoading] = useState(false);
     const [isPurchased, setisPurchased] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);

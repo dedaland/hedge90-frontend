@@ -8,7 +8,7 @@ import { type BaseError, useWriteContract, useSimulateContract, useReadContract,
 const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 
-function CancelTokensComponent({ index }: { index: number }) {
+function CancelTokensComponent() {
     const [isLoading, setisLoading] = useState(false);
     const [isPurchased, setisPurchased] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);

@@ -25,8 +25,7 @@ function getBalance({address}: {address: string}){
 }
 
 
-function LowBalanceTokenComponent({showLowBalance, lowBalanceFunc, name, address, userInput, decimal}:
-    {showLowBalance: boolean,lowBalanceFunc:any, name: string, address: string, userInput: number, decimal: number }){
+function LowBalanceTokenComponent(){
     const [balance, setBalance] = useState<bigint | null>(null);
     console.log("HERE", showLowBalance)
     useEffect(() => {

@@ -27,6 +27,8 @@ interface State {
   setIsConnected: (connected: boolean) => void;
   handleBuyApprove: () => void;
   handleSellApprove: () => void;
+  showLowBalance: boolean;
+  setShowLowBalance: (show: boolean) => void;
 }
 
 const useStore = create<State>((set) => ({
@@ -56,6 +58,8 @@ const useStore = create<State>((set) => ({
   setIsConnected: (connected) => set({ isConnected: connected }),
   handleBuyApprove: () => set({ isUSDTApproveLoading: true }),
   handleSellApprove: () => set({ isDeDaApproveLoading: true }),
+  showLowBalance: false,
+  setShowLowBalance: (show) => set({ showLowBalance: show })
 }));
 
 export default useStore;

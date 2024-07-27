@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { getAccount, readContract } from '@wagmi/core'
+import { wagmiConfig as config } from '../../wallet-connect';
+import { abi } from '../../constants/erc20_abi'
 
 
-function getBalance({address}: {address: string}){
+function getBalance(){
     const account = getAccount(config)
     // console.log("getBalance", account)
     const result = readContract(config, {
@@ -20,7 +23,7 @@ function getBalance({address}: {address: string}){
   }
 
 const  ReadTokenBalanceContract = ({address, decimal, lowBalanceFunc, userInput}: 
-    {address: string, decimal: number, lowBalanceFunc:any, userInput: number}) {
+    {address: string, decimal: number, lowBalanceFunc:any, userInput: number}) => {
         const [balance, setBalance] = useState<bigint | null>(null);
 
         useEffect(() => {

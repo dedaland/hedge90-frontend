@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import BuyTokensComponent from '../buyToken';
-import ReadTokenBalanceContract from ''
+import ReadTokenBalanceContract from '../readTokenBalance'
+import { LowBalanceTokenComponent } from '../lowBalanceToken'
+import { RoundTwoPlaces } from '../../../utils/rounding'
+import TokenApproval from '../tokenApproval'
+import { getAccount, readContract } from '@wagmi/core'
+import { abi } from '../../../constants/erc20_abi'
+import useStore from '../../../store/store'
+import { useAccount } from 'wagmi'
 
-const BuyForm = ({ isConnected, USDTAmountToBuy, tokenPrice, handleBuyApprove, isUSDTApproved, isUSDTApproveLoading, finalPriceWithDecimal, setUSDTAmountToBuy, setFinalPriceWithDecimal }:
-  { isConnected:any, USDTAmountToBuy:any, tokenPrice:any, handleBuyApprove:any, isUSDTApproved:any, isUSDTApproveLoading:any, finalPriceWithDecimal:any, setUSDTAmountToBuy:any, setFinalPriceWithDecimal:any }
-) => {
+const USDTAddress = process.env.REACT_APP_USDT_ADDRESS;
+
+const BuyForm = () => {
   const [tokenBalanceLow, setTokenBalanceLow] = useState(false);
+  const { isConnected, address } = useAccount();
+  const {
+    USDTAmountToBuy,
+    setUSDTAmountToBuy,
+    tokenPrice,
+    isUSDTApproved
+  } = useStore()
 
   return (
     <div>
@@ -17,7 +31,7 @@ const BuyForm = ({ isConnected, USDTAmountToBuy, tokenPrice, handleBuyApprove, i
           let value = Number(e.target.value);
           let finalPrice = RoundTwoPlaces((value / tokenPrice) - (value / tokenPrice * 0.04));
           setUSDTAmountToBuy(value);
-          setFinalPriceWithDecimal(finalPrice);
+          // setFinalPriceWithDecimal(finalPrice);
         }}
         onBlur={(e) => {
           let value = Number(e.target.value);
@@ -42,14 +56,10 @@ const BuyForm = ({ isConnected, USDTAmountToBuy, tokenPrice, handleBuyApprove, i
       ) : (
         <TokenApproval
           tokenAddress={USDTAddress}
-          abi={abi}
-          userAddress={address}
           contractAddress={contractAddress}
           amount={USDTAmountToBuy}
           decimal={18}
           approveText="Approve USDT"
-          onSuccess={() => setIsUSDTApproved(true)}
-          onError={() => setIsUSDTApproveLoading(false)}
         />
       )}
     </div>

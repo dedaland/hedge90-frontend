@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import SellTokensComponent from '../sellToken';
+import SellTokensComponent from '../sellToken'
+import TokenApproval from '../tokenApproval'
+import useStore from '../../../store/store'
 
-const SellForm = ({ isConnected, DeDaAmountToSell, tokenPrice, DeDaIndexToSell, setDeDaAmountToSell, setDeDaIndexToSell, handleSellApprove, isDeDaApproved, isDeDaApproveLoading, selectOptions, loadingOptions, customStyles, customTheme, formatOptionLabel }) => {
+const SellForm = () => {
   const [tokenBalanceLow, setTokenBalanceLow] = useState(false);
+  const {
+    DeDaIndexToSell,
+    setDeDaIndexToSell,
+    DeDaAmountToSell,
+    setDeDaAmountToSell,
+    isDeDaApproved,
+    setIsDeDaApproved,
+    selectOptions,
+    tokenPrice
+  } = useStore();
 
-  const handleSelectChange = (selectedOption) => {
+  const handleSelectChange = (selectedOption: any) => {
     if (selectedOption) {
       setDeDaIndexToSell(Number(selectedOption.value));
     }
@@ -47,10 +59,11 @@ const SellForm = ({ isConnected, DeDaAmountToSell, tokenPrice, DeDaIndexToSell, 
         }}
       >Max</button>
       <div className='available-amount'>
-        Available: {isConnected ? <ReadTokenBalanceContract address={tokenAddress} decimal={8} userInput={DeDaAmountToSell} lowBalanceFunc={setTokenBalanceLow} /> : "Connect your wallet"}
+        Available: 
+        {/* {isConnected ? <ReadTokenBalanceContract address={tokenAddress} decimal={8} userInput={DeDaAmountToSell} lowBalanceFunc={setTokenBalanceLow} /> : "Connect your wallet"} */}
       </div>
       <div>
-        {isConnected ? <LowBalanceTokenComponent showLowBalance={tokenBalanceLow} lowBalanceFunc={setTokenBalanceLow} name={"DedaCoin"} address={tokenAddress} userInput={DeDaAmountToSell} decimal={8} /> : ""}
+        {/* {isConnected ? <LowBalanceTokenComponent showLowBalance={tokenBalanceLow} lowBalanceFunc={setTokenBalanceLow} name={"DedaCoin"} address={tokenAddress} userInput={DeDaAmountToSell} decimal={8} /> : ""} */}
       </div>
       <h5>Tether you receive</h5>
       <input
@@ -61,7 +74,7 @@ const SellForm = ({ isConnected, DeDaAmountToSell, tokenPrice, DeDaIndexToSell, 
         />
         ⓘ 1 DedaCoin = {tokenPrice !== 0 ? tokenPrice.toString() +  `Tether` : `Loading...`}
         {isDeDaApproved ? (
-        <SellTokensComponent amountToSell={DeDaAmountToSell * (10 ** 8)} />
+        <SellTokensComponent />
         ) : (
         <TokenApproval
         tokenAddress={tokenAddress}
