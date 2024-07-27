@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from "react-router-dom";
 import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
 import Select, { StylesConfig, ThemeConfig, SingleValue } from 'react-select';
 import { abi } from '../erc20_abi'
@@ -533,6 +534,13 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [USDTAmountToBuy, tokenPrice]);
     const [tokenBalanceLow, setTokenBalanceLow] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [refCode, setRefCode] = useState("");
+    const generateRefCode = ()=>{
+      if(address){
+      setRefCode(window.location.origin + "?ref=" + address)
+      }else{}
+    }
   
     return (
       <div>
@@ -546,9 +554,9 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                             <button 
                             onClick={() => toggleBuysell('sell')}
                             style={buysell === 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
-                                                        <button 
+                            {!searchParams.get('ref')?<button 
                             onClick={() => toggleBuysell('cancel')}
-                            style={buysell === 'cancel' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Cancel</button>
+                            style={buysell === 'cancel' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Cancel</button>: ""}
                         </div>
                         {/* buy section */}
   
@@ -576,11 +584,18 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                             <input type="string"
                                     value={finalPriceWithDecimal == 0 ? "":RoundTwoPlaces(finalPriceWithDecimal).toString()}
                                     placeholder="Amount" disabled/>
+                            <h5>inviter: </h5>
+                            {searchParams.get('ref')?<input type="text" value={searchParams.get('ref')?.toString()}  placeholder='inviter' disabled/>:""}
                             
                             <div className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={USDTAddress as `0x${string}`} decimal={18}  userInput={USDTAmountToBuy} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}}/>:"Connect your wallet"}</div>
                             <div>{isConnected? <LowBalanceTokenComponent showLowBalance={tokenBalanceLow} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}} name={"USDT"} address={USDTAddress as `0x${string}`} userInput={USDTAmountToBuy}  decimal={18}/>:""}</div>
                             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                             <div style={{textAlign: "center", fontSize:"0.7em", paddingBottom:"10px"}}>The minimum purchase amount is set at 50 USDT.</div>
+                            {searchParams.get('ref')?<button onClick={generateRefCode} style={{"backgroundColor": "#788181", "border": "none", "borderRadius":"5px", "padding": "8px"}}>Generate ref code</button>:""}
+                            <br />
+                            <br />
+                            <div style={{fontSize:"10px"}}> <a target='_blank' style={{color: "green"}} href={refCode}>{refCode} </a></div>
+                            <br />  
                             {isUSDTApproved ? (
                               <BuyTokensComponent amountToBuy={USDTAmountToBuyWithDecimal} dedaAmount={RoundTwoPlaces(finalPriceWithDecimal)} />
                               ) : (

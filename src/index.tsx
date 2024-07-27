@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from 'react-router-dom';
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 
 import { WagmiProvider } from "wagmi";
@@ -26,7 +27,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
         <App />
+      </BrowserRouter>
       </QueryClientProvider>
     </WagmiProvider>
   </React.StrictMode>
