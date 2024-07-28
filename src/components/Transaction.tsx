@@ -551,9 +551,9 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                             <button 
                             onClick={() => toggleBuysell('buy')}
                             style={buysell === 'buy' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="buy-button">Buy</button>
-                            <button 
+                            {!searchParams.get('ref')?<button 
                             onClick={() => toggleBuysell('sell')}
-                            style={buysell === 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>
+                            style={buysell === 'sell' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Sell</button>: ""}
                             {!searchParams.get('ref')?<button 
                             onClick={() => toggleBuysell('cancel')}
                             style={buysell === 'cancel' ? {backgroundColor: "white", color: "black"} : {backgroundColor: "#26262f", color: "white"}} className="refund-button">Cancel</button>: ""}
