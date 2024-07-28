@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from "react-router-dom";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
 import Select, { StylesConfig, ThemeConfig, SingleValue } from 'react-select';
 import { abi } from '../erc20_abi'
@@ -8,6 +9,97 @@ import { contract_abi } from '../contract_abi'
 import { getAccount, readContract } from '@wagmi/core'
 import { wagmiConfig as config } from '../wallet-connect';
 import InvoiceModal from './savableTnx'
+import { create } from 'zustand';
+
+
+interface State {
+  tokenPrice: number;
+  setTokenPrice: (price: number) => void;
+  USDTAmountToBuy: number;
+  setUSDTAmountToBuy: (amount: number) => void;
+  finalPriceWithDecimal: number;
+  setFinalPriceWithDecimal: (price: number) => void;
+  isUSDTApproved: boolean;
+  setIsUSDTApproved: (approved: boolean) => void;
+  isUSDTApproveLoading: boolean;
+  setIsUSDTApproveLoading: (loading: boolean) => void;
+  DeDaAmountToSell: number;
+  setDeDaAmountToSell: (amount: number) => void;
+  DeDaIndexToSell: number;
+  setDeDaIndexToSell: (index: number) => void;
+  isDeDaApproved: boolean;
+  setIsDeDaApproved: (approved: boolean) => void;
+  isDeDaApproveLoading: boolean;
+  setIsDeDaApproveLoading: (loading: boolean) => void;
+  selectOptions: any[];
+  setSelectOptions: (options: any[]) => void;
+  loadingOptions: boolean;
+  setLoadingOptions: (loading: boolean) => void;
+  isConnected: boolean;
+  setIsConnected: (connected: boolean) => void;
+  handleBuyApprove: () => void;
+  handleSellApprove: () => void;
+  showLowBalance: boolean;
+  setShowLowBalance: (show: boolean) => void;
+}
+
+const useStore = create<State>((set) => ({
+  tokenPrice: 0,
+  setTokenPrice: (price) => set({ tokenPrice: price }),
+  USDTAmountToBuy: 50,
+  setUSDTAmountToBuy: (amount) => set({ USDTAmountToBuy: amount }),
+  finalPriceWithDecimal: 0,
+  setFinalPriceWithDecimal: (price) => set({ finalPriceWithDecimal: price }),
+  isUSDTApproved: false,
+  setIsUSDTApproved: (approved) => set({ isUSDTApproved: approved }),
+  isUSDTApproveLoading: false,
+  setIsUSDTApproveLoading: (loading) => set({ isUSDTApproveLoading: loading }),
+  DeDaAmountToSell: 0,
+  setDeDaAmountToSell: (amount) => set({ DeDaAmountToSell: amount }),
+  DeDaIndexToSell: 0,
+  setDeDaIndexToSell: (index) => set({ DeDaIndexToSell: index }),
+  isDeDaApproved: false,
+  setIsDeDaApproved: (approved) => set({ isDeDaApproved: approved }),
+  isDeDaApproveLoading: false,
+  setIsDeDaApproveLoading: (loading) => set({ isDeDaApproveLoading: loading }),
+  selectOptions: [],
+  setSelectOptions: (options) => set({ selectOptions: options }),
+  loadingOptions: true,
+  setLoadingOptions: (loading) => set({ loadingOptions: loading }),
+  isConnected: false,
+  setIsConnected: (connected) => set({ isConnected: connected }),
+  handleBuyApprove: () => set({ isUSDTApproveLoading: true }),
+  handleSellApprove: () => set({ isDeDaApproveLoading: true }),
+  showLowBalance: false,
+  setShowLowBalance: (show) => set({ showLowBalance: show })
+}));
+
+
+const fetchPrice = async () => {
+  const price_res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/get-price`);
+  return price_res.data['price'] ? price_res.data['price'] : 1;
+};
+
+const fetchUserPurchases = async (accountAddress: string) => {
+  console.log("Fetching user purchases")
+  const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/get-user-purchases/${accountAddress}`);
+  return response.data
+    .map((item:any, index:any) => ({
+      ...item,
+      originalIndex: index
+    }))
+    .filter((item:any) => item.amount !== "0")
+    .map((item:any, index:any) => ({
+      id: item.originalIndex,
+      value: item.originalIndex,
+      label1: `${RoundTwoPlaces(item.amount / (10**8))} DEDA(at ${item.pricePerToken / (10**18)}$ price)`,
+      imageUrl1: '/logo.png',
+      label2: `${item.USDTAmount / (10**18)}`,
+      purshase_price: item.pricePerToken,
+      amount: item.amount,
+      imageUrl2: '/TetherUSDT.svg' 
+    }));
+};
 
 
 
@@ -99,91 +191,98 @@ function getBalance({address}: {address: string}){
     })
 }
 
-function LowBalanceTokenComponent({showLowBalance, lowBalanceFunc, name, address, userInput, decimal}:
-  {showLowBalance: boolean,lowBalanceFunc:any, name: string, address: string, userInput: number, decimal: number }){
-  const [balance, setBalance] = useState<bigint | null>(null);
-  useEffect(() => {
-    getBalance({address}).then((data)=>{
-      // console.log("BALANCE", balance, userInput)
-      setBalance(data)
-      if(balance && balance < (userInput*(10**decimal))){
-        lowBalanceFunc(true)
-      }
-      else{
-        lowBalanceFunc(false)
-      }
-    })
-},[userInput])
-  return (
-    <div style={{display: showLowBalance?"block":"none"}}>
-      <hr style={{borderBottom: "none",  borderColor: "gray"}} />
-      <div style={{color: "red", textAlign:"right", fontSize:"0.8em"}}>not enough {name}</div>
-    </div>
-    )
-}
 
-
-function ReadTokenBalanceContract({address, decimal, lowBalanceFunc, userInput}: 
-                                    {address: string, decimal: number, lowBalanceFunc:any, userInput: number}) {
+function ReadUSDTBalanceContract({address, decimal}: {address: string, decimal: number}) {
         const [balance, setBalance] = useState<bigint | null>(null);
-
+        const { USDTAmountToBuy, setShowLowBalance, showLowBalance, DeDaAmountToSell } = useStore();
+        let showLowBalanceLocal = false
         useEffect(() => {
           getBalance({address}).then((data)=>{
             setBalance(data)
+              if(data && data < (USDTAmountToBuy*(10**decimal))){
+                setShowLowBalance(true)
+                showLowBalanceLocal = true
+              console.log("HERE IN USDT looooooow1", showLowBalance)
+              }
+              else{
+                setShowLowBalance(false)
+              console.log("HERE IN USDT looooooow2", showLowBalance)
+
+              }
           })
-      },[address])
-        
-    
-      if(balance && userInput){
-        if(balance < (userInput*(10**decimal))){
-          lowBalanceFunc(true)
-        }
-        else{
-          lowBalanceFunc(false)
-        }
-      }
-
-
-    // if (isLoading) {
-    //   return "Loading..."
-    // }
-
-    // if (isError) {
-    //   console.log("ERR", "Couldn't fetch balance", error)
-    //   return ""
-    // }
+      },[address, USDTAmountToBuy])
     if(typeof balance === "bigint"){
-      // lowBalanceFunc((Number(balance)/(10**decimal)) < 50);
       return (
         <div style={{display:"inline"}}>
-          {(Number(balance)/(10**decimal)).toString()}
-         </div>
+          <div style={{display:"inline"}}>
+            {(Number(balance)/(10**decimal)).toString()}
+          </div>
+          <div style={{display: showLowBalance?"block":"none"}}>
+            <hr style={{borderBottom: "none",  borderColor: "gray"}} />
+            <div style={{color: "red", textAlign:"right", fontSize:"0.8em"}}>not enough USDT</div>
+          </div>
+        </div>
       )
     }else{
       return "Couldn't fetch balance"
     }
 }
 
-function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, dedaAmount: number }) {
+function ReadDeDaBalanceContract({address, decimal}: {address: string, decimal: number}) {
+  const [balance, setBalance] = useState<bigint | null>(null);
+  const { setShowLowBalance, showLowBalance, DeDaAmountToSell } = useStore();
+  let showLowBalanceLocal = false
+  useEffect(() => {
+    getBalance({address}).then((data)=>{
+      setBalance(data)
+        if(data && data < (DeDaAmountToSell*(10**decimal))){
+          setShowLowBalance(true)
+          showLowBalanceLocal = true
+        }
+        else{
+          setShowLowBalance(false)
+
+        }
+    })
+},[address, DeDaAmountToSell])
+if(typeof balance === "bigint"){
+return (
+  <div style={{display:"inline"}}>
+    <div style={{display:"inline"}}>
+      {(Number(balance)/(10**decimal)).toString()}
+    </div>
+    <div style={{display: showLowBalance?"block":"none"}}>
+      <hr style={{borderBottom: "none",  borderColor: "gray"}} />
+      <div style={{color: "red", textAlign:"right", fontSize:"0.8em"}}>not enough DedaCoin</div>
+    </div>
+  </div>
+)
+}else{
+return "Couldn't fetch balance"
+}
+}
+
+function BuyTokensComponent() {
     const [isLoading, setisLoading] = useState(false);
     const [isPurchased, setisPurchased] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tnxHash, setTnxHash] = useState("0x");
-    const amount = BigInt(amountToBuy);
+    const {USDTAmountToBuy, finalPriceWithDecimal} = useStore(); // RoundTwoPlaces
     // console.log("BUY AMOUNT", amountToBuy, amount)
   
     const { data, error } = useSimulateContract({
       address: contractAddress as `0x${string}`,
       abi: contract_abi,
       functionName: 'buyTokens',
-      args: [amount],
+      args: [BigInt(USDTAmountToBuy * (10 ** 18)), "0x0000000000000000000000000000000000000000"],
     });
+    console.log("Buy Err", error?.message)
   
     const { writeContract } = useWriteContract()
   
     return (
       <div>
-          <InvoiceModal isOpen={isModalOpen} amount={(Number(dedaAmount))} tnxId={tnxHash} action='purchase' onClose={() => setIsModalOpen(false)} />
+          <InvoiceModal isOpen={isModalOpen} amount={(Number(RoundTwoPlaces(finalPriceWithDecimal)))} tnxId={tnxHash} action='purchase' onClose={() => setIsModalOpen(false)} />
         {isPurchased ? (
         <button className="sell-button">Successfully purchased</button>
        ) :
@@ -217,24 +316,26 @@ function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, 
   }
   
   
-  function SellTokensComponent({ amountToSell, index }: { amountToSell: number, index: number }) {
+  function SellTokensComponent() {
     const [isLoading, setisLoading] = useState(false);
     const [isPurchased, setisPurchased] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tnxHash, setTnxHash] = useState("0x");
+    const { DeDaIndexToSell, DeDaAmountToSell } = useStore()
   
-    const { data } = useSimulateContract({
+    const { data, error } = useSimulateContract({
       address: contractAddress as `0x${string}`,
       abi: contract_abi,
       functionName: 'returnTokens',
-      args: [BigInt(amountToSell), BigInt(index)],
+      args: [BigInt(DeDaAmountToSell * (10**8)), BigInt(DeDaIndexToSell)],
     });
+    console.log("Sell Err", error?.message)
   
     const { writeContract } = useWriteContract()
   
     return (
       <div>
-        <InvoiceModal isOpen={isModalOpen} amount={(Number(amountToSell)/10**8)} tnxId={tnxHash} action='return' onClose={() => setIsModalOpen(false)} />
+        <InvoiceModal isOpen={isModalOpen} amount={Number(DeDaAmountToSell)} tnxId={tnxHash} action='return' onClose={() => setIsModalOpen(false)} />
         {isPurchased ? (
         <button className="sell-button">Successfully returned</button>
        ) :
@@ -264,18 +365,20 @@ function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, 
     );
   }
 
-  function CancelTokensComponent({ index }: { index: number }) {
+  function CancelTokensComponent() {
     const [isLoading, setisLoading] = useState(false);
     const [isPurchased, setisPurchased] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tnxHash, setTnxHash] = useState("0x");
+    const { DeDaIndexToSell } = useStore()
   
-    const { data } = useSimulateContract({
+    const { data, error } = useSimulateContract({
       address: contractAddress as `0x${string}`,
       abi: contract_abi,
       functionName: 'cancelHedge90',
-      args: [BigInt(index)],
+      args: [BigInt(DeDaIndexToSell)],
     });
+    console.log("Cancel Err", error?.message)
   
     const { writeContract } = useWriteContract()
   
@@ -313,24 +416,23 @@ function BuyTokensComponent({ amountToBuy, dedaAmount }: { amountToBuy: number, 
 
 
 
-function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigint }) {
-    // const { address } = useAccount();
-    const [isUSDTApproved, setIsUSDTApproved] = useState(false);
-    const [isUSDTApproveLoading, setisUSDTApproveLoading] = useState(false);
+function TransactionComponent(){
+    const { isUSDTApproved, setIsUSDTApproved } = useStore();
+    const { isUSDTApproveLoading, setIsUSDTApproveLoading } = useStore();
   
   
-    const [isDeDaApproved, setIsDeDaApproved] = useState(false);
-    const [isDeDaApproveLoading, setisDeDaApproveLoading] = useState(false);
+    const { isDeDaApproved, setIsDeDaApproved } = useStore();
+    const { isDeDaApproveLoading, setIsDeDaApproveLoading } = useStore();
     // 
     const [buysell, setBuysell] = useState('buy');
     const { isConnected, address } = useAccount();
   
   
   
-    const [USDTAmountToBuy, setUSDTAmountToBuy] = useState(50);
-    const [DeDaAmountToSell, setDeDaAmountToSell] = useState(0);
-    const [DeDaIndexToSell, setDeDaIndexToSell] = useState(0);
-    const [tokenPrice, setTokenPrice] = useState(0);
+    const {USDTAmountToBuy, setUSDTAmountToBuy} = useStore();
+    const {DeDaAmountToSell, setDeDaAmountToSell} = useStore();
+    const { DeDaIndexToSell, setDeDaIndexToSell } = useStore()
+    const  { tokenPrice, setTokenPrice } = useStore();
   
     
     const formatOptionLabel = ({ label1, imageUrl1, label2, imageUrl2 }: OptionType) => (
@@ -351,14 +453,13 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
     function toggleBuysell(input: string) {
       setBuysell(input);
     }
+  
     // 
     const USDTAmountToBuyWithDecimal = USDTAmountToBuy * (10 ** 18)
     const DeDaAmountToSellWithDecimal = DeDaAmountToSell * (10 ** 8)
       // NOTE: fetch price first
     // const tokenPrice = 1
-    const [finalPriceWithDecimal, setFinalPriceWithDecimal] = useState(0) // USDTAmountToBuy / BigInt(tokenPrice * (10**18)));
-    // setFinalPriceWithDecimal(USDTAmountToBuy / BigInt(tokenPrice * (10**18)))
-    // let  = USDTAmountToBuy / BigInt(tokenPrice * (10**18))
+    const {finalPriceWithDecimal, setFinalPriceWithDecimal} = useStore()
   
     // Read the allowance to check if the amount is already approved
     const { data: usdtAllowance } = useReadContract({
@@ -367,6 +468,14 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
       functionName: 'allowance',
       args: [address ?? '0x0000000000000000000000000000000000000000', contractAddress as `0x${string}`],
     });
+
+    function checkUSDTApproval(value: number){
+      if (usdtAllowance && usdtAllowance >= (value * (10 ** 18))) {
+        setIsUSDTApproved(true);
+      } else {
+        setIsUSDTApproved(false);
+      }
+    }
     
     const { data: dedaAllowance } = useReadContract({
       address: tokenAddress as `0x${string}`,
@@ -377,14 +486,12 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
   
     
     useEffect(() => {
-      // console.log("APPROVE DATA", usdtAllowance, USDTAmountToBuyWithDecimal)
       if (usdtAllowance && usdtAllowance >= USDTAmountToBuyWithDecimal) {
         setIsUSDTApproved(true);
       } else {
         setIsUSDTApproved(false);
       }
-    }, [usdtAllowance, USDTAmountToBuy, finalPriceWithDecimal, USDTAmountToBuyWithDecimal]);
-  
+    },[usdtAllowance]);
   
     
   
@@ -414,17 +521,17 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
         return;
         
       }
-      setisUSDTApproveLoading(true)
+      setIsUSDTApproveLoading(true)
       writeUSDTApproveContract(
         buyData.request,{
               onSuccess: () => {
                 setTimeout(() => {
                   setIsUSDTApproved(true)
-                  setisUSDTApproveLoading(false);
+                  setIsUSDTApproveLoading(false);
                 }, 15000)
             },
             onError: () => {
-              setisUSDTApproveLoading(false);
+              setIsUSDTApproveLoading(false);
             }
           }
       )
@@ -436,7 +543,14 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
       } else {
         setIsDeDaApproved(false);
       }
-    }, [dedaAllowance, DeDaAmountToSell, DeDaAmountToSellWithDecimal]);
+    },[dedaAllowance])
+    function checkDEDAApproval(value: number){
+      if (dedaAllowance && dedaAllowance >= (value * (10 ** 8))) {
+        setIsDeDaApproved(true);
+      } else {
+        setIsDeDaApproved(false);
+      }
+    }
   
     const { data: sellData, error: sellErr } = useSimulateContract({
       address: tokenAddress as `0x${string}`,
@@ -459,17 +573,17 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
         return;
         
       }
-      setisDeDaApproveLoading(true)
+      setIsDeDaApproveLoading(true)
       writeDeDaApproveContract(
         sellData.request,{
               onSuccess: () => {
                 setTimeout(() => {
                   setIsDeDaApproved(true)
-                  setisDeDaApproveLoading(false);
+                  setIsDeDaApproveLoading(false);
                 }, 15000)
             },
             onError: () => {
-              setisDeDaApproveLoading(false);
+              setIsDeDaApproveLoading(false);
             }
           }
       )
@@ -482,58 +596,49 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
     };
   
   
-    const [selectOptions, setSelectOptions] = useState<OptionType[]>([]);
+    const { selectOptions, setSelectOptions } = useStore()
     const [loadingOptions, setLoadingOptions] = useState(true);
-    useEffect(() => {
-      const intervalId = setInterval(async () => {
-        const account = getAccount(config)
-        try{
-          const price_res = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-price`);
-          const res = price_res.data['price']?price_res.data['price']:1
-          setTokenPrice(res)
+  const account = getAccount(config)
+  const queryClient = useQueryClient();
 
-            setFinalPriceWithDecimal(
-              RoundTwoPlaces(Number(USDTAmountToBuy) / res - (USDTAmountToBuy / res * 0.04))
-            );
-        }catch(err){
-          console.log("NO PRICE")
-        }
-        try{
-        setLoadingOptions(true)
-        const response = await axios.get(process.env.REACT_APP_BACKEND_URL + `/get-user-purchases/${account.address}`);
-        const data = response.data
-        .map((item: any, index: number) => ({
-          ...item,
-          originalIndex: index
-        }))
-        .filter((item: any) => item.amount !== "0")
-        .map((item: any, index: number) => ({
-           id: item.originalIndex,
-           value: item.originalIndex,
-           label1: `${RoundTwoPlaces(item.amount / (10**8))} DEDA(at ${item.pricePerToken / (10**18)}$ price)`,
-           imageUrl1: '/logo.png',
-           label2: `${item.USDTAmount / (10**18)}`,
-           purshase_price: item.pricePerToken,
-           amount: item.amount,
-           imageUrl2: '/TetherUSDT.svg' 
-          }));
-  
-        console.log("DATA", data)
-        setSelectOptions(data)
-        setLoadingOptions(false)
-        }catch(err: any){
-          console.log("NO USER PURCHASES")
-        }
-  
-      }, 5000);
-  
-      return () => {
-          clearInterval(intervalId);
-      };
-  // Only run this effect once, on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [USDTAmountToBuy, tokenPrice]);
-    const [tokenBalanceLow, setTokenBalanceLow] = useState(false);
+  const { data: priceData, error: priceError } = useQuery({
+    queryKey: ['price'],
+    queryFn: fetchPrice,
+    refetchInterval: 5000,
+  });
+
+  const { data: userPurchasesData, error: userPurchasesError } = useQuery({
+    queryKey: ['userPurchases', account.address],
+    queryFn: () => fetchUserPurchases(account.address?account.address:""),
+    refetchInterval: 5000,
+    enabled: !!account.address
+  });
+
+  useEffect(() => {
+    if (priceData) {
+      setTokenPrice(priceData);
+      setFinalPriceWithDecimal(RoundTwoPlaces(Number(USDTAmountToBuy) / priceData - (USDTAmountToBuy / priceData * 0.04)));
+    }
+  }, [priceData, USDTAmountToBuy]);
+
+  useEffect(() => {
+    if (userPurchasesData) {
+      setSelectOptions(userPurchasesData);
+      setLoadingOptions(false);
+    }
+  }, [userPurchasesData]);
+
+  useEffect(() => {
+    if (priceError) {
+      console.log("NO PRICE");
+    }
+    if (userPurchasesError) {
+      console.log("NO USER PURCHASES");
+      setLoadingOptions(false);
+    }
+  }, [priceError, userPurchasesError]);
+
+    const {showLowBalance, setShowLowBalance} = useStore();
     const [searchParams, setSearchParams] = useSearchParams();
     const [refCode, setRefCode] = useState("");
     const generateRefCode = ()=>{
@@ -541,7 +646,6 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
       setRefCode(window.location.origin + "?ref=" + address)
       }else{}
     }
-  
     return (
       <div>
         {/*  */}
@@ -562,7 +666,6 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
   
                         <div style={buysell === 'buy' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
                             <h5>Tether to pay</h5>
-                            {/* <div style={{color: "red", display: tokenBalanceLow?"block":"none"}}>your USDT balance is too low!</div> */}
                             <input type="text"
                             value={USDTAmountToBuy === 0 ? "" : USDTAmountToBuy.toString()}
                             onChange={(e) => {
@@ -571,6 +674,7 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                               console.log("finalPrice", finalPrice);
                               setUSDTAmountToBuy(value);
                               setFinalPriceWithDecimal(finalPrice);
+                              checkUSDTApproval(value)
                               
                           }}
                           onBlur={(e) => {
@@ -587,8 +691,11 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                             <h5>inviter: </h5>
                             {searchParams.get('ref')?<input type="text" value={searchParams.get('ref')?.toString()}  placeholder='inviter' disabled/>:""}
                             
-                            <div className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={USDTAddress as `0x${string}`} decimal={18}  userInput={USDTAmountToBuy} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}}/>:"Connect your wallet"}</div>
-                            <div>{isConnected? <LowBalanceTokenComponent showLowBalance={tokenBalanceLow} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}} name={"USDT"} address={USDTAddress as `0x${string}`} userInput={USDTAmountToBuy}  decimal={18}/>:""}</div>
+                            <div className='available-amount'>Available: {isConnected?
+                              <ReadUSDTBalanceContract address={USDTAddress as `0x${string}`} decimal={18}/>
+                              :"Connect your wallet"}
+                            </div>
+                            {/* <div>{isConnected? <LowBalanceTokenComponent showLowBalance={showLowBalance} lowBalanceFunc={(state: boolean)=>{setShowLowBalance(state)}} name={"USDT"} address={USDTAddress as `0x${string}`} userInput={USDTAmountToBuy}  decimal={18}/>:""}</div> */}
                             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                             <div style={{textAlign: "center", fontSize:"0.7em", paddingBottom:"10px"}}>The minimum purchase amount is set at 50 USDT.</div>
                             {searchParams.get('ref')?<button onClick={generateRefCode} style={{"backgroundColor": "#788181", "border": "none", "borderRadius":"5px", "padding": "8px"}}>Generate ref code</button>:""}
@@ -597,7 +704,7 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                             <div style={{fontSize:"10px"}}> <a target='_blank' style={{color: "green"}} href={refCode}>{refCode} </a></div>
                             <br />  
                             {isUSDTApproved ? (
-                              <BuyTokensComponent amountToBuy={USDTAmountToBuyWithDecimal} dedaAmount={RoundTwoPlaces(finalPriceWithDecimal)} />
+                              <BuyTokensComponent/>
                               ) : (
                                 <button disabled={isUSDTApproveLoading} className="sell-button" onClick={handleBuyApprove}>{ isUSDTApproveLoading ? "Processing..." : "Approve USDT"}</button>
                               )}
@@ -625,15 +732,16 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                                     onChange={
                                       (e) => {
                                         const data = selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)
-                                        if(data >= Number(e.target.value)){
+                                        const value = Number(e.target.value);
+                                        if(data >= value){
                                           setDeDaAmountToSell(Number(e.target.value))
                                         }
                                         else{
                                           setDeDaAmountToSell(0)
                                         }
+                                        checkDEDAApproval(value)
                                       }
                                     }
-                                    // max={selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.amount/10**8)! : acc, 0)}
                                     placeholder="Amount" />
                             <button className='max-button'
                             onClick={() => {
@@ -641,20 +749,17 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
                               setDeDaAmountToSell(data)
                             }}
                             >Max</button>
-                            <div className='available-amount'>Available: {isConnected?<ReadTokenBalanceContract address={tokenAddress as `0x${string}`} decimal={8}  userInput={DeDaAmountToSell} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}}/>:"Connect your wallet"}</div>
-                            <div>{isConnected? <LowBalanceTokenComponent showLowBalance={tokenBalanceLow} lowBalanceFunc={(state: boolean)=>{setTokenBalanceLow(state)}} name={"DedaCoin"} address={tokenAddress as `0x${string}`} userInput={DeDaAmountToSell}  decimal={8}/>:""}</div>
+                            <div className='available-amount'>Available: {isConnected?<ReadDeDaBalanceContract address={tokenAddress as `0x${string}`} decimal={8}/>:"Connect your wallet"}</div>
                             <h5>Tether you receive</h5>
                             <input type="text"
                             value={DeDaAmountToSell === 0 ? "" : (Number(DeDaAmountToSell) * selectOptions.reduce((acc, option) => option.value == DeDaIndexToSell.toString() ? acc + (option.purshase_price/(10**18) - (option.purshase_price/(10**18)*0.1) - (option.purshase_price/(10**18)*0.04))! : acc, 0)).toString()}
-                            // value={DeDaAmountToSell == 0n ? "" : (Number(DeDaAmountToSell) * selectOptions.map((option) => option.value == DeDaIndexToSell.toString() ? option.usdt_max : 0)).toString()}
                             placeholder="Amount" disabled />
                             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
                             {isDeDaApproved ? (
-                              <SellTokensComponent amountToSell={DeDaAmountToSellWithDecimal} index={DeDaIndexToSell} />
+                              <SellTokensComponent />
                               ) : (
                                 <button disabled={isDeDaApproveLoading} className="sell-button" onClick={handleSellApprove}>{ isDeDaApproveLoading ? "Processing..." : "Approve Dedacoin"}</button>
                               )}
-                            {/* <button className="sell-button">Sell Now</button> */}
                         </div>
                         {/* cancel section */}
                         <div style={buysell === 'cancel' ? {display: 'block'} : {display: 'none'}} className="sell-buy-section">
@@ -672,12 +777,8 @@ function TransactionComponent(){//({ USDTAmountToBuy }: { USDTAmountToBuy: bigin
   
                         </div>
                             <hr style={{borderBottom:"none", width:"95%"}} />
-                            <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
-                            {/* {isDeDaApproved ? (
-                              ) : (
-                                <button disabled={isDeDaApproveLoading} className="sell-button" onClick={handleSellApprove}>{ isDeDaApproveLoading ? "Processing..." : "Approve USDT"}</button>
-                              )} */}
-                              <CancelTokensComponent index={DeDaIndexToSell} />
+                                <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
+                              <CancelTokensComponent />
 
                         </div>
 
