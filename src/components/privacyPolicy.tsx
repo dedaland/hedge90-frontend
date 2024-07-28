@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
 
-const PrivacyPolicy = ({show, toggleShow}: {show: boolean, toggleShow: any }) => {
+const PrivacyPolicy = ({ show, toggleShow }: { show: boolean, toggleShow: any }) => {
     const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(show);
 
     return (
         <div
-         style={
-            {
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(5px)',
-            justifyContent: 'center',
-            alignItems: 'center',
-            display: show ? 'flex' : 'none',
+            style={
+                {
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    backdropFilter: 'blur(5px)',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    display: show ? 'flex' : 'none',
 
-            zIndex: 1000, // Ensure this value is higher than other elements on the page
-        }}>
+                    zIndex: 1000, // Ensure this value is higher than other elements on the page
+                }}>
             <div style={{
                 backgroundColor: '#26262F',
                 padding: '35px',
@@ -36,8 +36,8 @@ const PrivacyPolicy = ({show, toggleShow}: {show: boolean, toggleShow: any }) =>
             }}>
                 <h2>Privacy Policy</h2>
                 <p>
-                
-                
+
+
 
                     Effective Date: June 2024 <br />
 
@@ -70,7 +70,7 @@ const PrivacyPolicy = ({show, toggleShow}: {show: boolean, toggleShow: any }) =>
                     We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.  <br />
 
 
-                    </p>
+                </p>
                 <div style={{
                     position: 'sticky',
                     bottom: 0,
@@ -85,14 +85,14 @@ const PrivacyPolicy = ({show, toggleShow}: {show: boolean, toggleShow: any }) =>
                         position: 'absolute',
                         bottom: '-36px' // Adjust to ensure it is above the button
                     }}></div>
-                    <button 
-                        onClick={toggleShow} 
-                        style={{ 
-                            backgroundColor: '#EFBD65', 
-                            color: '#000', 
-                            border: 'none', 
-                            padding: '10px 20px', 
-                            borderRadius: '5px', 
+                    <button
+                        onClick={toggleShow}
+                        style={{
+                            backgroundColor: '#EFBD65',
+                            color: '#000',
+                            border: 'none',
+                            padding: '10px 20px',
+                            borderRadius: '5px',
                             cursor: 'pointer',
                             width: '100%',
                             zIndex: 1 // Ensure the button is above the gradient
