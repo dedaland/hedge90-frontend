@@ -30,6 +30,8 @@ interface State {
     handleSellApprove: () => void;
     showLowBalance: boolean;
     setShowLowBalance: (show: boolean) => void;
+    buysell: string;
+    setBuysell: (option: string) => void;
 }
 
 const useStore = create<State>((set) => ({
@@ -60,7 +62,9 @@ const useStore = create<State>((set) => ({
     handleBuyApprove: () => set({ isUSDTApproveLoading: true }),
     handleSellApprove: () => set({ isDeDaApproveLoading: true }),
     showLowBalance: false,
-    setShowLowBalance: (show) => set({ showLowBalance: show })
+    setShowLowBalance: (show) => set({ showLowBalance: show }),
+    buysell: 'buy',
+    setBuysell: (option) => set({ buysell: option })
 }));
 
 export default useStore

@@ -8,9 +8,10 @@ import { getAccount } from '@wagmi/core'
 import { wagmiConfig as config } from '../wallet-connect';
 import useStore from '../store/store'
 import {ReadUSDTBalanceContract, ReadDeDaBalanceContract} from './tokenBalance'
-import BuyTokensComponent from './tokenBuy'
+// import BuyTokensComponent from './tokenBuy'
 import SellTokensComponent from './tokenSell'
 import CancelTokensComponent from './tokenCancel'
+import BuyFormComponent from './forms/buyForm'
 import {USDTAddress, tokenAddress, contractAddress, MAX_TO_APPROVE} from '../utils/constants'
 import {RoundTwoPlaces} from '../utils/functions'
 import {fetchPrice, fetchUserPurchases} from '../utils/fetch'
@@ -26,7 +27,7 @@ function TransactionComponent() {
   const { isDeDaApproved, setIsDeDaApproved } = useStore();
   const { isDeDaApproveLoading, setIsDeDaApproveLoading } = useStore();
   // 
-  const [buysell, setBuysell] = useState('buy');
+  const {buysell, setBuysell} = useStore();
   const { isConnected, address } = useAccount();
 
 
@@ -262,7 +263,7 @@ function TransactionComponent() {
               style={buysell === 'cancel' ? { backgroundColor: "white", color: "black" } : { backgroundColor: "#26262f", color: "white" }} className="refund-button">Cancel</button> : ""}
           </div>
           {/* buy section */}
-
+{/* 
           <div style={buysell === 'buy' ? { display: 'block' } : { display: 'none' }} className="sell-buy-section">
             <h5>Tether to pay</h5>
             <input type="text"
@@ -308,7 +309,8 @@ function TransactionComponent() {
             )}
 
 
-          </div>
+          </div> */}
+          <BuyFormComponent />
           {/* sell section */}
           <div style={buysell === 'sell' ? { display: 'block' } : { display: 'none' }} className="sell-buy-section">
             <div className="previous-purchases">
