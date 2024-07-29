@@ -239,7 +239,6 @@ function TransactionComponent() {
     }
   }, [priceError, userPurchasesError]);
 
-  const { showLowBalance, setShowLowBalance } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const [refCode, setRefCode] = useState("");
   const generateRefCode = () => {
@@ -295,7 +294,6 @@ function TransactionComponent() {
               <ReadUSDTBalanceContract address={USDTAddress as `0x${string}`} decimal={18} />
               : "Connect your wallet"}
             </div>
-            {/* <div>{isConnected? <LowBalanceTokenComponent showLowBalance={showLowBalance} lowBalanceFunc={(state: boolean)=>{setShowLowBalance(state)}} name={"USDT"} address={USDTAddress as `0x${string}`} userInput={USDTAmountToBuy}  decimal={18}/>:""}</div> */}
             <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0 ? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
             <div style={{ textAlign: "center", fontSize: "0.7em", paddingBottom: "10px" }}>The minimum purchase amount is set at 50 USDT.</div>
             {searchParams.get('ref') ? <button onClick={generateRefCode} style={{ "backgroundColor": "#788181", "border": "none", "borderRadius": "5px", "padding": "8px" }}>Generate ref code</button> : ""}
