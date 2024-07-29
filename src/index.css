@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: rgb(7 11 41);
+  background-color: #2a0184;
   height: 2400px;
 }
 .body-section{
@@ -89,7 +89,7 @@ header .social-icons-head a {
 
 .transaction-panel {
 
-  background: black;
+  background: #0c0124;
   padding: 20px;
   border-radius: 10px;
   width: 400px;
@@ -314,7 +314,8 @@ header .social-icons-head a {
 
 .collapsible {
   color: white;
-  background-color: rgb(38 38 47);
+  /* background-color: rgb(38 38 47); */
+  background-color: #0a1d33;
   border: 1px solid rgb(38 38 47);
   border-radius: 10px;
   margin-left: 100px;
@@ -323,7 +324,7 @@ header .social-icons-head a {
 }
 
 .collapsible-header {
-  background-color:rgb(38 38 47); 
+  background-color:#0a1d33; 
   font-size: 1.1em;
   color: white;
   border: none;
