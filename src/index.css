@@ -7,6 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #2a0184;
   height: 2400px;
+  overflow-x: hidden;
 }
 .body-section{
   max-width: 1600px;
