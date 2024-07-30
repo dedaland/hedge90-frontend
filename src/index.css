@@ -6,7 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #2a0184;
-  height: 2400px;
+  /* height: 2400px; */
   overflow-x: hidden;
 }
 .body-section{

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
 import { SingleValue } from 'react-select';
 import { getAccount } from '@wagmi/core'
@@ -55,6 +55,7 @@ function TransactionComponent() {
   }, [priceError]);
 
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   return (
     <div>
       <section className="transactions">
@@ -63,10 +64,10 @@ function TransactionComponent() {
             <button
               onClick={() => toggleBuysell('buy')}
               style={buysell === 'buy' ? { backgroundColor: "white", color: "black" } : { backgroundColor: "#26262f", color: "white" }} className="buy-button">Buy</button>
-            {!searchParams.get('ref') ? <button
+            {!(location.pathname === "/referral") ? <button
               onClick={() => toggleBuysell('sell')}
               style={buysell === 'sell' ? { backgroundColor: "white", color: "black" } : { backgroundColor: "#26262f", color: "white" }} className="refund-button">Sell</button> : ""}
-            {!searchParams.get('ref') ? <button
+            {!(location.pathname === "/referral") ? <button
               onClick={() => toggleBuysell('cancel')}
               style={buysell === 'cancel' ? { backgroundColor: "white", color: "black" } : { backgroundColor: "#26262f", color: "white" }} className="refund-button">Cancel</button> : ""}
           </div>

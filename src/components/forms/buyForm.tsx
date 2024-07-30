@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { type BaseError, useWriteContract, useSimulateContract, useReadContract, useAccount } from 'wagmi'
 import { abi } from '../../erc20_abi'
 import useStore from '../../store/store'
@@ -32,13 +32,6 @@ function BuyFormComponent() {
           setIsUSDTApproved(false);
         }
       }
-      const [searchParams, setSearchParams] = useSearchParams();
-  const [refCode, setRefCode] = useState("");
-  const generateRefCode = () => {
-    if (address) {
-      setRefCode(window.location.origin + "?ref=" + address)
-    } else { }
-  }
   const { data: buyData, error: buyErr } = useSimulateContract({
     address: USDTAddress as `0x${string}`,
     abi: abi,
@@ -79,6 +72,14 @@ function BuyFormComponent() {
     }
     )
   }
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [refCode, setRefCode] = useState("");
+  const generateRefCode = () => {
+    if (address) {
+      setRefCode(window.location.origin + "?ref=" + address)
+    } else { }
+  }
     return (
     <div style={buysell === 'buy' ? { display: 'block' } : { display: 'none' }} className="sell-buy-section">
     <h5>Tether to pay</h5>
@@ -104,8 +105,9 @@ function BuyFormComponent() {
     <input type="string"
       value={finalPriceWithDecimal == 0 ? "" : RoundTwoPlaces(finalPriceWithDecimal).toString()}
       placeholder="Amount" disabled />
-    <h5>inviter: </h5>
-    {searchParams.get('ref') ? <input type="text" value={searchParams.get('ref')?.toString()} placeholder='inviter' disabled /> : ""}
+    {searchParams.get('ref') ? 
+    <div><h5>inviter: </h5><input type="text" value={searchParams.get('ref')?.toString()} placeholder='inviter' disabled /> </div>
+    : ""}
 
     <div className='available-amount'>Available: {isConnected ?
       <ReadUSDTBalanceContract address={USDTAddress as `0x${string}`} decimal={18} />
@@ -113,10 +115,10 @@ function BuyFormComponent() {
     </div>
     <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0 ? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
     <div style={{ textAlign: "center", fontSize: "0.7em", paddingBottom: "10px" }}>The minimum purchase amount is set at 50 USDT.</div>
-    {searchParams.get('ref') ? <button onClick={generateRefCode} style={{ "backgroundColor": "#788181", "border": "none", "borderRadius": "5px", "padding": "8px" }}>Generate ref code</button> : ""}
+    {searchParams.get('ref') ? <button onClick={generateRefCode} style={{ "backgroundColor": "rgb(61 216 216)", "border": "none", "borderRadius": "5px", "padding": "8px" }}>Generate ref code</button> : ""}
     <br />
     <br />
-    <div style={{ fontSize: "10px" }}> <a target='_blank' style={{ color: "green" }} href={refCode}>{refCode} </a></div>
+    <div style={{ textAlign: "center", fontSize: "10px" }}> <a target='_blank' style={{ color: "white" }} href={refCode}>{refCode} </a></div>
     <br />
     {isUSDTApproved ? (
       <BuyTokensComponent />
