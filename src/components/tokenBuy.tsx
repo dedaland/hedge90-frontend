@@ -22,7 +22,7 @@ function BuyTokensComponent() {
     const { data, error } = useSimulateContract({
       address: contractAddress as `0x${string}`,
       abi: contract_abi,
-      functionName: 'buyTokens',
+      functionName: (location.pathname==="/referral")?'normalBuy':'buyTokens',
       args: [BigInt(USDTAmountToBuy * (10 ** 18)), searchParams.get("ref")?searchParams.get("ref"):"0x0000000000000000000000000000000000000000"],
     });
     console.log("Buy Err", error?.message)

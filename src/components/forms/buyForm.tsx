@@ -115,11 +115,11 @@ function BuyFormComponent() {
     </div>
     <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0 ? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
     <div style={{ textAlign: "center", fontSize: "0.7em", paddingBottom: "10px" }}>The minimum purchase amount is set at 50 USDT.</div>
-    {searchParams.get('ref') ? <button onClick={generateRefCode} style={{ "backgroundColor": "rgb(61 216 216)", "border": "none", "borderRadius": "5px", "padding": "8px" }}>Generate ref code</button> : ""}
+    {/* {searchParams.get('ref') ? <button onClick={generateRefCode} style={{ "backgroundColor": "rgb(61 216 216)", "border": "none", "borderRadius": "5px", "padding": "8px" }}>Generate ref code</button> : ""}
     <br />
     <br />
     <div style={{ textAlign: "center", fontSize: "10px" }}> <a target='_blank' style={{ color: "white" }} href={refCode}>{refCode} </a></div>
-    <br />
+    <br /> */}
     {isUSDTApproved ? (
       <BuyTokensComponent />
     ) : (
