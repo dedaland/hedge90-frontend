@@ -21,6 +21,8 @@ function TransactionComponent() {
   const { USDTAmountToBuy } = useStore();
   const { setDeDaIndexToSell } = useStore()
   const { setTokenPrice } = useStore();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
 
   function toggleBuysell(input: string) {
@@ -43,7 +45,10 @@ function TransactionComponent() {
   useEffect(() => {
     if (priceData) {
       setTokenPrice(priceData);
-      setFinalPriceWithDecimal(RoundTwoPlaces(Number(USDTAmountToBuy) / priceData - (USDTAmountToBuy / priceData * 0.04)));
+      setFinalPriceWithDecimal(RoundTwoPlaces(Number(USDTAmountToBuy) / priceData));
+      if(location.pathname==="/hedge90"){
+        setFinalPriceWithDecimal(RoundTwoPlaces(Number(USDTAmountToBuy) / priceData - (USDTAmountToBuy / priceData * 0.04)));
+      }
     }
   }, [priceData, USDTAmountToBuy]);
 
@@ -54,8 +59,7 @@ function TransactionComponent() {
     }
   }, [priceError]);
 
-  const [searchParams] = useSearchParams();
-  const location = useLocation();
+  
   return (
     <div>
       <section className="transactions">
