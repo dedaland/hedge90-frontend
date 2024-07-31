@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation, useSearchParams } from "react-router-dom";
 import { type BaseError, useWriteContract, useSimulateContract} from 'wagmi'
 import { contract_abi } from '../contract_abi'
 import InvoiceModal from './savableTnx'
@@ -14,12 +15,15 @@ function BuyTokensComponent() {
     const [tnxHash, setTnxHash] = useState("0x");
     const { USDTAmountToBuy, finalPriceWithDecimal } = useStore(); // RoundTwoPlaces
     // console.log("BUY AMOUNT", amountToBuy, amount)
+    const location = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    console.log("LOC", location.pathname)
   
     const { data, error } = useSimulateContract({
       address: contractAddress as `0x${string}`,
       abi: contract_abi,
-      functionName: 'buyTokens',
-      args: [BigInt(USDTAmountToBuy * (10 ** 18)), "0x0000000000000000000000000000000000000000"],
+      functionName: (location.pathname==="/referral")?'normalBuy':'buyTokens',
+      args: [BigInt(USDTAmountToBuy * (10 ** 18)), searchParams.get("ref")?searchParams.get("ref"):"0x0000000000000000000000000000000000000000"],
     });
     console.log("Buy Err", error?.message)
   

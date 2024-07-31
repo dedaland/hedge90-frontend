@@ -1,5 +1,5 @@
 import { useState, ReactNode } from "react";
-import "./index.css";
+import "./../index.css";
 
 interface CollapsibleProps {
   title: string;
