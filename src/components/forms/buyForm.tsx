@@ -80,6 +80,7 @@ function BuyFormComponent() {
       setRefCode(window.location.origin + "?ref=" + address)
     } else { }
   }
+  const location = useLocation();
     return (
     <div style={buysell === 'buy' ? { display: 'block' } : { display: 'none' }} className="sell-buy-section">
     <h5>Tether to pay</h5>
@@ -87,7 +88,10 @@ function BuyFormComponent() {
       value={USDTAmountToBuy === 0 ? "" : USDTAmountToBuy.toString()}
       onChange={(e) => {
         let value = Number(e.target.value);
-        let finalPrice = RoundTwoPlaces((value / tokenPrice) - (value / tokenPrice * 0.04))
+        let finalPrice = RoundTwoPlaces((value / tokenPrice))
+        if(location.pathname==="/hedge90"){
+          finalPrice = RoundTwoPlaces((value / tokenPrice) - (value / tokenPrice * 0.04))
+        }
         console.log("finalPrice", finalPrice);
         setUSDTAmountToBuy(value);
         setFinalPriceWithDecimal(finalPrice);

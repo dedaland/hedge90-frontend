@@ -61,7 +61,7 @@ function ChoiceComponent() {
                                 <li>Ability to Sell Purchased DedaCoin on Reputable Exchanges</li>
                             </ul>
                         </div>
-                        <a href={`/referral` + referralCode} style={{ alignSelf: "flex-end", margin: "auto auto" }}>
+                        <a href={`/hedge90` + referralCode} style={{ alignSelf: "flex-end", margin: "auto auto" }}>
                             <button
                                 style={{
                                     borderRadius: "25px",
@@ -70,7 +70,7 @@ function ChoiceComponent() {
                                     cursor: "pointer"
 
                                 }}
-                            >Referral</button>
+                            >Hedge90</button>
                         </a>
                     </div>
                     <div style={{ backgroundColor: "#0c0124", width: "46%", border: "1px solid black", borderRadius: "30px", padding: "30px", display: "flex", flexDirection: "column" }}>
@@ -85,7 +85,7 @@ function ChoiceComponent() {
                                 <li>Minimum Purchase of 50 USDT</li>
                             </ul>
                         </div>
-                        <a href={`/hedge90` + referralCode} style={{ alignSelf: "flex-end", margin: "auto auto" }}>
+                        <a href={`/referral` + referralCode} style={{ alignSelf: "flex-end", margin: "auto auto" }}>
                             <button
                                 style={{
                                     borderRadius: "25px",
@@ -93,7 +93,7 @@ function ChoiceComponent() {
                                     padding: "17px",
                                     cursor: "pointer"
                                 }}
-                            >Hedge90</button>
+                            >Referral</button>
                         </a>
                     </div>
                 </div>
