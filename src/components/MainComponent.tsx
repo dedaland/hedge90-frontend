@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import  { ConnectButton } from '../wallet-connect';
+import { useLocation } from "react-router-dom";
 
 import TransactionComponent from './Transaction'
 import TermsAndConditions from './termAndConditions';
@@ -9,6 +10,7 @@ import Collapsible from './collapsible';
 
 const MainComponent = () => {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const location = useLocation();
   const handlePrivacyPolicy = () => {
     setShowPrivacyPolicy(!showPrivacyPolicy);
     return showPrivacyPolicy
@@ -16,6 +18,7 @@ const MainComponent = () => {
   };
 
   const [accepted, setAccepted] = useState('true');
+  const is_hedge90 =  location.pathname==="/hedge90";
 
 
   const handleAccept = (state: string) => {
@@ -39,7 +42,7 @@ const MainComponent = () => {
           DedaCoin
           </div> 
         <div className='section-links'>
-            <a href="#what-is-hedge90" className='for-large-screen'>What is Hedge90 Trading</a>
+            {is_hedge90?<a href="#what-is-hedge90" className='for-large-screen'>What is Hedge90 Trading</a>:""}
             <a href="#how-to-buy">HOW TO BUY</a>
             <a href="#faq-answer">FAQS</a>
             <a href="https://dedacoin.co/white-paper/" target='_blank'>Whitepaper</a>
@@ -55,14 +58,15 @@ const MainComponent = () => {
       <div className='main-section'>
             <section className="intro">
                   <h1>DedaCoin</h1>
-                  <h2>The Future of Stable Investment</h2>
+                 {is_hedge90?<h2>The Future of Stable Investment</h2>:
+                  <h3>Join the ICO-Watch Your Investment Grow!</h3>}
               </section>
               <TransactionComponent />
           </div>
-          <div id="what-is-hedge90" className='what-is-hedge90'>
+          {is_hedge90?<div id="what-is-hedge90" className='what-is-hedge90'>
             <h2>What is Hedge90 Trading?</h2>
             A strategy that follows market trends enabling you to profit during upward trends while safeguarding your capital during downward trends.
-          </div>
+          </div>:""}
           <section id="how-to-buy" className='how-to-buy'>
             <div className='section-title'>How to buy</div>
                 <div className='secion-step'>step 01</div>
@@ -91,6 +95,7 @@ const MainComponent = () => {
                 DedaCoin on our secure platform</div>
           </section>
 
+          {is_hedge90?<div>
           <div className='key-feature-title'>Key Features</div>
           <section className='key-features'>
             
@@ -127,7 +132,7 @@ const MainComponent = () => {
                 liquidity and security for all user-invested capital.
                 </div>
             </div>
-          </section>
+          </section></div>:""}
           <section id="faq-answer" className='faq-section'>
             <div className='faq-title'>Frequently asked questions</div>
             <div className='faq-sub-title'>Find answers to some of your questions or contact us below</div>

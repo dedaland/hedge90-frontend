@@ -79,6 +79,12 @@ header .social-icons-head a {
   color: white;
 }
 
+.intro h3 {
+  font-size:3.8em;
+  margin: 0;
+  color: white;
+}
+
 .transactions {
   display: flex;
 

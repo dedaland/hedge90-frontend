@@ -70,12 +70,12 @@ function ChoiceComponent() {
                                     cursor: "pointer"
 
                                 }}
-                            >Hedge90</button>
+                            >Coming soon</button>
                         </a>
                     </div>
                     <div style={{ backgroundColor: "#0c0124", width: "46%", border: "1px solid black", borderRadius: "30px", padding: "30px", display: "flex", flexDirection: "column" }}>
                         <div style={{ flexGrow: 1 }}>
-                            <h3>Buy DedaCoin in Normal DedaCoin</h3>
+                            <h3>Buy DedaCoin</h3>
                             <ul
                                 style={{
                                     lineHeight: "2"
@@ -93,7 +93,7 @@ function ChoiceComponent() {
                                     padding: "17px",
                                     cursor: "pointer"
                                 }}
-                            >Referral</button>
+                            >Buy now</button>
                         </a>
                     </div>
                 </div>
