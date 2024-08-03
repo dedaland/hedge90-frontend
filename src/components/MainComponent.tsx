@@ -50,8 +50,9 @@ const MainComponent = () => {
             <ConnectButton/>
 
         </div>
+        {/* <div className='header-space'></div> */}
     </header>
-      <img className="mid-img" src="/pattern.svg" alt="pattern" />
+      {/* <img className="mid-img" src="/pattern.svg" alt="pattern" /> */}
       <div className='main-section'>
             <section className="intro">
                   <h1>DedaCoin</h1>
@@ -65,6 +66,11 @@ const MainComponent = () => {
           </div>
           <section id="how-to-buy" className='how-to-buy'>
             <div className='section-title'>How to buy</div>
+            <ul className="bar">
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
                 <div className='secion-step'>step 01</div>
                 <div className='section-step-title'>connect your crypto wallet</div>
 
@@ -105,7 +111,23 @@ const MainComponent = () => {
                 providing long-term security.
                 </div>
             </div>
-            <div className='key-feature-section-box'>
+            <div style={{
+              zIndex:100,
+              width: "60%",
+              minHeight: "280px",
+              margin: "10px",
+              display:"flexbox",
+              border: "1px solid #EFBD65",
+              borderRadius: "10px",
+              backgroundColor: "#3700AF",
+              backdropFilter: "blur(5px)",
+            }}>
+                Transactions are voided if the underlying
+                asset price fluctuates more than 100 basis
+                points in a 60-second period,
+                ensuring stability in volatile markets.
+            </div>
+            {/* <div className='key-feature-section-box'>
                 <div className='key-feature-section-box-title'>
                 Volatility Protection
                 </div>
@@ -126,7 +148,7 @@ const MainComponent = () => {
                 in the Hedge90 contract to ensure sufficient
                 liquidity and security for all user-invested capital.
                 </div>
-            </div>
+            </div> */}
           </section>
           <section id="faq-answer" className='faq-section'>
             <div className='faq-title'>Frequently asked questions</div>
@@ -228,8 +250,9 @@ const MainComponent = () => {
             
             <div className="section">
                 <div className="social-icons">
-                    <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
-                    <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
+                    {/* <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #3700AF, #3700AF, #3700AF)" }} src="/twitter-logo-n.svg" alt="" /></a> */}
+                    <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/telegram-logo-n2.png" alt="" /></a>
+                    <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/twitter-logo-n2.png" alt="" /></a>
                 </div>
             </div>
           </section>
