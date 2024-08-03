@@ -94,6 +94,12 @@ header .social-icons-head a {
   color: white;
 }
 
+.intro h3 {
+  font-size:3.8em;
+  margin: 0;
+  color: white;
+}
+
 .transactions {
   display: flex;
 
@@ -343,7 +349,7 @@ header .social-icons-head a {
   margin-left: 100px;
   font-size: 2.5em;
   font-weight: bold;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .faq-sub-title {
@@ -360,8 +366,8 @@ header .social-icons-head a {
 .collapsible {
   color: white;
   /* background-color: rgb(38 38 47); */
-  background-color: #0a1d33;
-  border: 1px solid rgb(38 38 47);
+  background-color: #ededed;
+  border: 1px solid rgb(240, 240, 255);
   border-radius: 10px;
   margin-left: 100px;
   margin-right: 100px;
@@ -369,15 +375,14 @@ header .social-icons-head a {
 }
 
 .collapsible-header {
-  background-color:#0a1d33; 
+  background-color:#ededed; 
   font-size: 1.1em;
-  color: white;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 10px;
   width: 100%;
   text-align: left;
   cursor: pointer;
-
   padding: 30px;
 }
 
@@ -400,13 +405,19 @@ header .social-icons-head a {
   display: flex;
   justify-content: space-between;
   padding: 20px;
-  width: 90%;
   margin: auto;
   margin-top: 100px;
   background-image: linear-gradient(to right, #3700AF, #010101);
   margin-top: 16px;
   margin-left: 16px;
   margin-right: 16px;
+  border-radius: 30px;
+}
+
+.footer-parent{
+  background-image: linear-gradient(to right, #3700AF, #010101);
+  width: 90%;
+  margin: 0 auto;
   border-radius: 30px;
 }
 
@@ -700,6 +711,7 @@ input[type=number] {
   .faq-title {
     margin-left: 30px;
     font-size: 1.5em;
+    color: black
   }
   .faq-sub-title {
     font-size: 1em;

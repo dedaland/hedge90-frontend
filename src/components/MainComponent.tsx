@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import  { ConnectButton } from '../wallet-connect';
+import { useLocation } from "react-router-dom";
 
 import TransactionComponent from './Transaction'
 import TermsAndConditions from './termAndConditions';
@@ -9,6 +10,7 @@ import Collapsible from './collapsible';
 
 const MainComponent = () => {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const location = useLocation();
   const handlePrivacyPolicy = () => {
     setShowPrivacyPolicy(!showPrivacyPolicy);
     return showPrivacyPolicy
@@ -16,6 +18,7 @@ const MainComponent = () => {
   };
 
   const [accepted, setAccepted] = useState('true');
+  const is_hedge90 =  location.pathname==="/hedge90";
 
 
   const handleAccept = (state: string) => {
@@ -39,7 +42,7 @@ const MainComponent = () => {
           DedaCoin
           </div> 
         <div className='section-links'>
-            <a href="#what-is-hedge90" className='for-large-screen'>What is Hedge90 Trading</a>
+            {is_hedge90?<a href="#what-is-hedge90" className='for-large-screen'>What is Hedge90</a>:""}
             <a href="#how-to-buy">HOW TO BUY</a>
             <a href="#faq-answer">FAQS</a>
             <a href="https://dedacoin.co/white-paper/" target='_blank'>Whitepaper</a>
@@ -56,14 +59,15 @@ const MainComponent = () => {
       <div className='main-section'>
             <section className="intro">
                   <h1>DedaCoin</h1>
-                  <h2>The Future of Stable Investment</h2>
+                 {is_hedge90?<h2>The Future of Stable Investment</h2>:
+                  <h3>Join the ICO-Watch Your Investment Grow!</h3>}
               </section>
               <TransactionComponent />
           </div>
-          <div id="what-is-hedge90" className='what-is-hedge90'>
+          {is_hedge90?<div id="what-is-hedge90" className='what-is-hedge90'>
             <h2>What is Hedge90 Trading?</h2>
             A strategy that follows market trends enabling you to profit during upward trends while safeguarding your capital during downward trends.
-          </div>
+          </div>:""}
           <section id="how-to-buy" className='how-to-buy'>
             <div className='section-title'>How to buy</div>
             <ul className="bar">
@@ -97,6 +101,7 @@ const MainComponent = () => {
                 DedaCoin on our secure platform</div>
           </section>
 
+          {is_hedge90?<div>
           <div className='key-feature-title'>Key Features</div>
           <section className='key-features'>
             
@@ -109,6 +114,10 @@ const MainComponent = () => {
                 Guarantees that the buyback protocol
                 remains in place permanently,
                 providing long-term security.
+                <img style={{
+                  width: "80px",
+                  float: "right"
+                }} src="/shinny.png" alt="" />
                 </div>
             </div>
             <div style={{
@@ -122,10 +131,18 @@ const MainComponent = () => {
               backgroundColor: "#3700AF",
               backdropFilter: "blur(5px)",
             }}>
+                <div style={{
+                  width: "65%",
+                  padding: "40px"
+                }}>
                 Transactions are voided if the underlying
                 asset price fluctuates more than 100 basis
                 points in a 60-second period,
-                ensuring stability in volatile markets.
+                ensuring stability in volatile markets.</div>
+                <img style={{
+                  width: "200px",
+                  float: "right"
+                }} src="/building-blocks.png" alt="" />
             </div>
             {/* <div className='key-feature-section-box'>
                 <div className='key-feature-section-box-title'>
@@ -149,7 +166,7 @@ const MainComponent = () => {
                 liquidity and security for all user-invested capital.
                 </div>
             </div> */}
-          </section>
+          </section></div>:""}
           <section id="faq-answer" className='faq-section'>
             <div className='faq-title'>Frequently asked questions</div>
             <div className='faq-sub-title'>Find answers to some of your questions or contact us below</div>
@@ -236,35 +253,36 @@ const MainComponent = () => {
               }
               />
           </section>
+          <div className='footer-parent'>
+            <section className='footer-section'>
+              <div className="section">
+                  
+                  <div className='logo'><img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />DedaCoin</div> 
+                  <div onClick={()=>{setShowPrivacyPolicy(!showPrivacyPolicy)}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Privacy policy</div>
+                  <div onClick={()=>{handleAccept('false')}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Term and Conditions</div>
+          <TermsAndConditions accepted={accepted} handleAccept={handleAccept}/>
+          <PrivacyPolicy show={showPrivacyPolicy} toggleShow={handlePrivacyPolicy} />
 
-          <section className='footer-section'>
-            <div className="section">
-                
-                <div className='logo'><img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />DedaCoin</div> 
-                <div onClick={()=>{setShowPrivacyPolicy(!showPrivacyPolicy)}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Privacy policy</div>
-                <div onClick={()=>{handleAccept('false')}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Term and Conditions</div>
-        <TermsAndConditions accepted={accepted} handleAccept={handleAccept}/>
-        <PrivacyPolicy show={showPrivacyPolicy} toggleShow={handlePrivacyPolicy} />
-
-            </div>
-            
-            <div className="section">
-                <div className="social-icons">
-                    {/* <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #3700AF, #3700AF, #3700AF)" }} src="/twitter-logo-n.svg" alt="" /></a> */}
-                    <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/telegram-logo-n2.png" alt="" /></a>
-                    <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/twitter-logo-n2.png" alt="" /></a>
+              </div>
+              
+              <div className="section">
+                  <div className="social-icons">
+                      {/* <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #3700AF, #3700AF, #3700AF)" }} src="/twitter-logo-n.svg" alt="" /></a> */}
+                      <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/telegram-logo-n2.png" alt="" /></a>
+                      <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/twitter-logo-n2.png" alt="" /></a>
+                  </div>
+              </div>
+            </section>
+            <hr style={{border: "0.1px solid #EFBD65", width: "90%"}}/>
+            <section className='copy-contact-section'>
+                <div className='copyright'>
+                  © 2024 Dedacoin Rights Reserved.
                 </div>
-            </div>
-          </section>
-          <hr style={{border: "0.1px solid #EFBD65", width: "90%"}}/>
-          <section className='copy-contact-section'>
-              <div className='copyright'>
-                © 2024 Dedacoin Rights Reserved.
-              </div>
-              <div className='contact-us'>
-                Contact@dedacoin.com
-              </div>
-          </section>
+                <div className='contact-us'>
+                  Contact@dedacoin.com
+                </div>
+            </section>
+          </div>
     </div>
   );
 };
