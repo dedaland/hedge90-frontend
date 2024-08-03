@@ -233,7 +233,7 @@ header .social-icons-head a {
 }
 
 .how-to-buy {
-  margin: 50px auto;
+  margin: 0 auto;
   width: 44%;
   color: white;
   border: 1px solid #8a8aa0;
@@ -338,6 +338,18 @@ header .social-icons-head a {
   padding-bottom: 70px;
   color: #ffffff;
   width: 80%;
+}
+.key-feature-wide-box{
+  z-index:100;
+  width: 60%;
+  min-height: 280px;
+  margin: 10px;
+  display:flex;
+  flex-wrap: wrap;
+  border: 1px solid #EFBD65;
+  border-radius: 10px;
+  background-color: #3700AF;
+  backdrop-filter: blur(5px);
 }
 
 

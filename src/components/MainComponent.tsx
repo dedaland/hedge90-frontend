@@ -120,29 +120,77 @@ const MainComponent = () => {
                 }} src="/shinny.png" alt="" />
                 </div>
             </div>
-            <div style={{
-              zIndex:100,
-              width: "60%",
-              minHeight: "280px",
-              margin: "10px",
-              display:"flexbox",
-              border: "1px solid #EFBD65",
-              borderRadius: "10px",
-              backgroundColor: "#3700AF",
-              backdropFilter: "blur(5px)",
-            }}>
+            <div className='key-feature-wide-box'>
+                <div 
+                style={{
+                  fontSize: "2em",
+                  fontWeight: "bold",
+                  paddingLeft: "30px",
+                  paddingTop: "30px",
+                  paddingBottom: "10px",
+                  width: "30%",
+                  flexGrow: "1",
+                }}>
+                Volatility Protection
+                </div>
+                <div 
+                style={{
+                  fontSize: "2em",
+                  fontWeight: "bold",
+                  paddingLeft: "30px",
+                  paddingTop: "30px",
+                  paddingBottom: "10px",
+                  width: "30%",
+                  flexGrow: "1",
+                }}>
+                Secure & Permissionless
+                </div>
                 <div style={{
-                  width: "65%",
-                  padding: "40px"
+                    width: "30%",
+                  }}>
+
+                  </div>
+                <div style={{
+                  fontSize: "1.2em",
+                  paddingLeft: "30px",
+                  paddingTop: "30px",
+                  paddingBottom: "70px",
+                  color: "#ffffff",
+                  width: "30%",
+                  flexGrow: "1",
                 }}>
                 Transactions are voided if the underlying
                 asset price fluctuates more than 100 basis
                 points in a 60-second period,
-                ensuring stability in volatile markets.</div>
-                <img style={{
-                  width: "200px",
-                  float: "right"
-                }} src="/building-blocks.png" alt="" />
+                ensuring stability in volatile markets.
+
+                </div>
+                <div style={{
+                  fontSize: "1.2em",
+                  paddingLeft: "30px",
+                  paddingTop: "30px",
+                  paddingBottom: "70px",
+                  color: "#ffffff",
+                  width: "30%",
+                  flexGrow: "1",
+                }}>
+                USDT used to purchase DedaCoins is locked
+                in the Hedge90 contract to ensure sufficient
+                liquidity and security for all user-invested capital.
+
+                </div>
+                <div  style={{
+                  width: "30%",
+                  float: "right",
+                  display:"inline-block"
+                }} >
+                <img
+                style={{
+                  width: "100%",
+                }}
+                 src="/building-blocks.png" alt="" />
+                </div>
+                
             </div>
             {/* <div className='key-feature-section-box'>
                 <div className='key-feature-section-box-title'>
