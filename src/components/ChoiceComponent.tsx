@@ -34,7 +34,6 @@ function ChoiceComponent() {
                     <a href="https://dedacoin.co" target='_blank' rel="noopener noreferrer">
                         <img width="30px" style={{ paddingRight: "13px" }} src="/logo.png" alt="" />
                     </a>
-                    |
                     <div className='logo'>
                         DedaCoin
                     </div>
@@ -44,7 +43,7 @@ function ChoiceComponent() {
                     <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
                 </div>
             </header>
-            <div style={{ width: "800px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div className='choice-box'>
                 <div style={{
                     color: "black"
                 }}>
@@ -52,9 +51,8 @@ function ChoiceComponent() {
                     <h3>You have accessed this page through the Referral Program link, giving you the chance to purchase DedaCoin with a 1% discount.</h3>
                     <h3>You can receive the purchased tokens in your wallet via this secure and transparent smart contract.</h3>
                 </div>
-                <div style={{ display: "flex", gap: "20px" }}>
-                    <div style={{ 
-                        backgroundColor: "rgb(255 255 255)", color:"black", width: "46%", border: "1px solid black", borderRadius: "30px", padding: "30px", display: "flex", flexDirection: "column" }}>
+                <div className='choice-flex'>
+                    <div className='choice-box-child'>
                         <div style={{ flexGrow: 1 }}>
                             <h3>Buy DedaCoin in HEDGE90</h3>
                             <ul style={{
@@ -82,7 +80,7 @@ function ChoiceComponent() {
                             >Coming soon</button>
                         </a>
                     </div>
-                    <div style={{ backgroundColor: "rgb(255 255 255)", color:"black", width: "46%", border: "1px solid black", borderRadius: "30px", padding: "30px", display: "flex", flexDirection: "column" }}>
+                    <div className='choice-box-child'>
                         <div style={{ flexGrow: 1 }}>
                             <h3>Buy DedaCoin</h3>
                             <ul
@@ -109,6 +107,7 @@ function ChoiceComponent() {
                     </div>
                 </div>
             </div>
+            <div className='footer-parent'>
             <section className='footer-section'>
                 <div className="section">
 
@@ -127,6 +126,7 @@ function ChoiceComponent() {
                     </div>
                 </div>
             </section>
+            </div>
             <hr style={{ border: "0.1px solid #EFBD65", width: "90%" }} />
             <section className='copy-contact-section'>
                 <div className='copyright'>

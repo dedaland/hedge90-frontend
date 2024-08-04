@@ -1,8 +1,18 @@
+@font-face {
+  font-family: 'DeDaFont';
+  src: url('/public/fonts/Rooftop -Regular-Web.woff2') format('woff2'),
+       url('/public/fonts/Rooftop -Regular-Web.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    sans-serif; */
+    font-family: DeDaFont;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* background-color: #2a0184; */
@@ -53,6 +63,7 @@ header {
   font-size: 1.5em;
   font-weight: bold;
   color: white;
+  margin-left:-25px;
 }
 header .section {
   display: flex;
@@ -75,16 +86,17 @@ header .social-icons-head a {
   color: #66fcf1;
 }
 .section-links{
-  /* background-color: white; */
+  color: white;
+  background-color: white;
   background: url("/public/curve2.png");
     background-size: cover;
-    /* background-position-y: 69%; */
+    background-position-y: 69%;
     background-repeat: no-repeat;
-    /* height: 43px;
+    height: 43px;
     margin-top: -26px;
     padding-top: 35px;
     padding-left: 72px;
-    padding-right: 45px; */
+    padding-right: 45px;
     height: 37px;
     margin-top: -26px;
     padding-top: 35px;
@@ -124,7 +136,7 @@ header .social-icons-head a {
 }
 
 .intro h3 {
-  font-size:3.8em;
+  font-size:3.1em;
   margin: 0;
   color: white;
 }
@@ -132,8 +144,8 @@ header .social-icons-head a {
 .transactions {
   display: flex;
 
-  width: 500px;
-  margin-right: 100px;
+  width: 420px;
+  margin-right: 80px;
   justify-content: right;
   color: #fff;
 }
@@ -380,7 +392,32 @@ header .social-icons-head a {
   background-color: #3700AF;
   backdrop-filter: blur(5px);
 }
-
+.key-feature-wide-box-title{
+  font-size: 2em;
+  font-weight: bold;
+  padding-left: 30px;
+  padding-top: 30px;
+  padding-bottom: 10px;
+  width: 30%;
+  flex-grow: 1;
+}
+.key-feature-wide-box-conent{
+  font-size: 1.2em;
+  padding-left: 30px;
+  padding-top: 30px;
+  padding-bottom: 70px;
+  color: #ffffff;
+  width: 30%;
+  flex-grow: 1;
+}
+.empty-box{
+  width: 30%;
+}
+.key-feature-wide-box-img{
+  width: 30%;
+  float: right;
+  display:inline-bloc;
+}
 
 .faq-section{
   margin-top: 100px;
@@ -601,6 +638,27 @@ input[type=number] {
   top: -50%;
 
 }
+.choice-box{
+  width: 60%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.choice-box-child {
+  background-color: rgb(255 255 255);
+  color:black;
+  width: 46%;
+  border: 1px solid black;
+  border-radius: 30px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.choice-flex{
+  display: flex;
+  gap: 20px;
+}
 
 @media screen and (max-width: 1270px) {
   .how-to-buy {
@@ -628,15 +686,39 @@ input[type=number] {
   }
 }
 
+@media screen and (max-width: 1110px){
+  .key-feature-wide-box-img{
+    display: none;
+  }
+  .empty-box{
+    display: none;
+  }
+}
 
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 982px) {
+  .section-links{
+    color: white;
+    background: none;
+    margin: 0;
+    padding: 0;
+    /* margin-top: -26px;
+    padding-top: 80px;
+    padding-left: 72px; */
+  }
+  .section-links a{
+    color: white;
+  }
+}
+@media screen and (max-width: 1015px){
   .intro{
     margin-left: 50px;
     margin-right: 50px;
   }
+}
+@media screen and (max-width: 960px) {
   
   .intro h1 {
-    font-size: 3em;
+    font-size: 2.7em;
   }
   
   .intro h2 {
@@ -653,9 +735,24 @@ input[type=number] {
   .for-large-screen{
     display: none;
   }
+  .key-feature-wide-box{
+    width: 80%;
+  }
+  .key-feature-wide-box-title{
+    font-size: 1.2em;
+  }
+  .key-feature-wide-box-conent{
+    font-size: 0.7em;
+  }
 }
 
 @media screen and (max-width: 800px) {
+  .choice-flex{
+    display: block;
+  }
+  .choice-box-child{
+    width: 100%;
+  }
   .main-section {
     display: ruby-text;
   }
@@ -680,6 +777,9 @@ input[type=number] {
 } */
 
 @media screen and (max-width: 740px) {
+  .bar{
+    display: none;
+  }
   .how-to-buy {
     width: 80%;
   }

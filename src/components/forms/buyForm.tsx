@@ -109,9 +109,9 @@ function BuyFormComponent() {
     <input type="string"
       value={finalPriceWithDecimal == 0 ? "" : RoundTwoPlaces(finalPriceWithDecimal).toString()}
       placeholder="Amount" disabled />
-    {searchParams.get('ref') ? 
+    {/* {searchParams.get('ref') ? 
     <div><h5>inviter: </h5><input type="text" value={searchParams.get('ref')?.toString()} placeholder='inviter' disabled /> </div>
-    : ""}
+    : ""} */}
 
     <div className='available-amount'>Available: {isConnected ?
       <ReadUSDTBalanceContract address={USDTAddress as `0x${string}`} decimal={18} />

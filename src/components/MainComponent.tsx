@@ -35,9 +35,8 @@ const MainComponent = () => {
 
         <div className="section">
           <a href="https://dedacoin.co" target='_blank'>
-            <img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />
+            <img width="23px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />
           </a>
-        |
         <div className='logo'>
           DedaCoin
           </div> 
@@ -124,69 +123,27 @@ const MainComponent = () => {
                 </div>
             </div>
             <div className='key-feature-wide-box'>
-                <div 
-                style={{
-                  fontSize: "2em",
-                  fontWeight: "bold",
-                  paddingLeft: "30px",
-                  paddingTop: "30px",
-                  paddingBottom: "10px",
-                  width: "30%",
-                  flexGrow: "1",
-                }}>
+                <div className='key-feature-wide-box-title'>
                 Volatility Protection
                 </div>
-                <div 
-                style={{
-                  fontSize: "2em",
-                  fontWeight: "bold",
-                  paddingLeft: "30px",
-                  paddingTop: "30px",
-                  paddingBottom: "10px",
-                  width: "30%",
-                  flexGrow: "1",
-                }}>
+                <div className='key-feature-wide-box-title'>
                 Secure & Permissionless
                 </div>
-                <div style={{
-                    width: "30%",
-                  }}>
-
-                  </div>
-                <div style={{
-                  fontSize: "1.2em",
-                  paddingLeft: "30px",
-                  paddingTop: "30px",
-                  paddingBottom: "70px",
-                  color: "#ffffff",
-                  width: "30%",
-                  flexGrow: "1",
-                }}>
+                <div className='empty-box'></div>
+                <div className='key-feature-wide-box-conent'>
                 Transactions are voided if the underlying
                 asset price fluctuates more than 100 basis
                 points in a 60-second period,
                 ensuring stability in volatile markets.
 
                 </div>
-                <div style={{
-                  fontSize: "1.2em",
-                  paddingLeft: "30px",
-                  paddingTop: "30px",
-                  paddingBottom: "70px",
-                  color: "#ffffff",
-                  width: "30%",
-                  flexGrow: "1",
-                }}>
+                <div className='key-feature-wide-box-conent'>
                 USDT used to purchase DedaCoins is locked
                 in the Hedge90 contract to ensure sufficient
                 liquidity and security for all user-invested capital.
 
                 </div>
-                <div  style={{
-                  width: "30%",
-                  float: "right",
-                  display:"inline-block"
-                }} >
+                <div className='key-feature-wide-box-img'>
                 <img
                 style={{
                   width: "100%",
@@ -232,6 +189,8 @@ const MainComponent = () => {
                 </div>
               }
               />
+              {is_hedge90?
+              <div>
               <Collapsible 
               title="How buy DedaCoin in Hedge90?"
               children={
@@ -280,7 +239,7 @@ const MainComponent = () => {
                 </ul>
                 </div>
               }
-              />
+              /></div>:""}
           </section>
           <div className='footer-parent'>
             <section className='footer-section'>
