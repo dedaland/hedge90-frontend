@@ -67,13 +67,13 @@ function TransactionComponent() {
           <div className="panel-header">
             <button
               onClick={() => toggleBuysell('buy')}
-              style={buysell === 'buy' ? { backgroundColor: "white", color: "black" } : { backgroundColor: "#26262f", color: "white" }} className="buy-button">Buy</button>
+              style={buysell === 'buy' ? { backgroundColor: "#EFBD65", color: "black", borderRadius:"24px" } : { backgroundColor: "#26262f", color: "white", borderTopLeftRadius:"24px", borderBottomLeftRadius:"24px" }} className="buy-button">Buy</button>
             {!(location.pathname === "/referral") ? <button
               onClick={() => toggleBuysell('sell')}
-              style={buysell === 'sell' ? { backgroundColor: "white", color: "black" } : { backgroundColor: "#26262f", color: "white" }} className="refund-button">Sell</button> : ""}
+              style={buysell === 'sell' ? { backgroundColor: "#EFBD65", color: "black", borderRadius:"24px" } : { backgroundColor: "#26262f", color: "white" }} className="refund-button">Sell</button> : ""}
             {!(location.pathname === "/referral") ? <button
               onClick={() => toggleBuysell('cancel')}
-              style={buysell === 'cancel' ? { backgroundColor: "white", color: "black" } : { backgroundColor: "#26262f", color: "white" }} className="refund-button">Cancel</button> : ""}
+              style={buysell === 'cancel' ? { backgroundColor: "#EFBD65", color: "black", borderRadius:"24px" } : { backgroundColor: "#26262f", color: "white", borderTopRightRadius:"24px", borderBottomRightRadius:"24px" }} className="refund-button">Cancel</button> : ""}
           </div>
           <BuyFormComponent />
           {/* sell section */}

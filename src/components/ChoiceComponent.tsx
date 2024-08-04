@@ -24,7 +24,12 @@ function ChoiceComponent() {
     const referralCode = searchParams.get('ref') ? `?ref=` + searchParams.get('ref') : ``;
     return (
         <div style={{ color: "white" }}>
-            <header>
+            <header
+            style={{
+                // height:"100px",
+                borderBottomLeftRadius:"40px",
+                borderBottomRightRadius:"40px"
+            }}>
                 <div className="section">
                     <a href="https://dedacoin.co" target='_blank' rel="noopener noreferrer">
                         <img width="30px" style={{ paddingRight: "13px" }} src="/logo.png" alt="" />
@@ -40,13 +45,16 @@ function ChoiceComponent() {
                 </div>
             </header>
             <div style={{ width: "800px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "20px" }}>
-                <div>
+                <div style={{
+                    color: "black"
+                }}>
                     <h1> Congratulations on joining the large Deda community.</h1>
                     <h3>You have accessed this page through the Referral Program link, giving you the chance to purchase DedaCoin with a 1% discount.</h3>
                     <h3>You can receive the purchased tokens in your wallet via this secure and transparent smart contract.</h3>
                 </div>
                 <div style={{ display: "flex", gap: "20px" }}>
-                    <div style={{ backgroundColor: "#0c0124", width: "46%", border: "1px solid black", borderRadius: "30px", padding: "30px", display: "flex", flexDirection: "column" }}>
+                    <div style={{ 
+                        backgroundColor: "rgb(255 255 255)", color:"black", width: "46%", border: "1px solid black", borderRadius: "30px", padding: "30px", display: "flex", flexDirection: "column" }}>
                         <div style={{ flexGrow: 1 }}>
                             <h3>Buy DedaCoin in HEDGE90</h3>
                             <ul style={{
@@ -67,13 +75,14 @@ function ChoiceComponent() {
                                     borderRadius: "25px",
                                     width: "200px",
                                     padding: "17px",
-                                    cursor: "pointer"
-
+                                    cursor: "pointer",
+                                    backgroundColor:"#EFBD65",
+                                    border:"none"
                                 }}
                             >Coming soon</button>
                         </a>
                     </div>
-                    <div style={{ backgroundColor: "#0c0124", width: "46%", border: "1px solid black", borderRadius: "30px", padding: "30px", display: "flex", flexDirection: "column" }}>
+                    <div style={{ backgroundColor: "rgb(255 255 255)", color:"black", width: "46%", border: "1px solid black", borderRadius: "30px", padding: "30px", display: "flex", flexDirection: "column" }}>
                         <div style={{ flexGrow: 1 }}>
                             <h3>Buy DedaCoin</h3>
                             <ul
@@ -89,9 +98,11 @@ function ChoiceComponent() {
                             <button
                                 style={{
                                     borderRadius: "25px",
+                                    border:"none",
                                     width: "200px",
                                     padding: "17px",
-                                    cursor: "pointer"
+                                    cursor: "pointer",
+                                    backgroundColor:"#EFBD65"
                                 }}
                             >Buy now</button>
                         </a>

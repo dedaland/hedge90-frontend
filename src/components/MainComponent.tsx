@@ -41,8 +41,11 @@ const MainComponent = () => {
         <div className='logo'>
           DedaCoin
           </div> 
-        <div className='section-links'>
-            {is_hedge90?<a href="#what-is-hedge90" className='for-large-screen'>What is Hedge90 Trading</a>:""}
+        <div className='section-links'
+        style={{
+          height: is_hedge90?"64px":""
+        }}>
+            {is_hedge90?<a href="#what-is-hedge90" className='for-large-screen'>What is Hedge90</a>:""}
             <a href="#how-to-buy">HOW TO BUY</a>
             <a href="#faq-answer">FAQS</a>
             <a href="https://dedacoin.co/white-paper/" target='_blank'>Whitepaper</a>
@@ -53,8 +56,9 @@ const MainComponent = () => {
             <ConnectButton/>
 
         </div>
+        {/* <div className='header-space'></div> */}
     </header>
-      <img className="mid-img" src="/pattern.svg" alt="pattern" />
+      {/* <img className="mid-img" src="/pattern.svg" alt="pattern" /> */}
       <div className='main-section'>
             <section className="intro">
                   <h1>DedaCoin</h1>
@@ -69,6 +73,11 @@ const MainComponent = () => {
           </div>:""}
           <section id="how-to-buy" className='how-to-buy'>
             <div className='section-title'>How to buy</div>
+            <ul className="bar">
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
                 <div className='secion-step'>step 01</div>
                 <div className='section-step-title'>connect your crypto wallet</div>
 
@@ -108,29 +117,83 @@ const MainComponent = () => {
                 Guarantees that the buyback protocol
                 remains in place permanently,
                 providing long-term security.
+                <img style={{
+                  width: "80px",
+                  float: "right"
+                }} src="/shinny.png" alt="" />
                 </div>
             </div>
-            <div className='key-feature-section-box'>
-                <div className='key-feature-section-box-title'>
+            <div className='key-feature-wide-box'>
+                <div 
+                style={{
+                  fontSize: "2em",
+                  fontWeight: "bold",
+                  paddingLeft: "30px",
+                  paddingTop: "30px",
+                  paddingBottom: "10px",
+                  width: "30%",
+                  flexGrow: "1",
+                }}>
                 Volatility Protection
                 </div>
-                <div className='key-feature-section-box-content'>
+                <div 
+                style={{
+                  fontSize: "2em",
+                  fontWeight: "bold",
+                  paddingLeft: "30px",
+                  paddingTop: "30px",
+                  paddingBottom: "10px",
+                  width: "30%",
+                  flexGrow: "1",
+                }}>
+                Secure & Permissionless
+                </div>
+                <div style={{
+                    width: "30%",
+                  }}>
+
+                  </div>
+                <div style={{
+                  fontSize: "1.2em",
+                  paddingLeft: "30px",
+                  paddingTop: "30px",
+                  paddingBottom: "70px",
+                  color: "#ffffff",
+                  width: "30%",
+                  flexGrow: "1",
+                }}>
                 Transactions are voided if the underlying
                 asset price fluctuates more than 100 basis
                 points in a 60-second period,
                 ensuring stability in volatile markets.
 
                 </div>
-            </div>
-            <div className='key-feature-section-box'>
-                <div className='key-feature-section-box-title'>
-                Secure & Permissionless
-                </div>
-                <div className='key-feature-section-box-content'>
+                <div style={{
+                  fontSize: "1.2em",
+                  paddingLeft: "30px",
+                  paddingTop: "30px",
+                  paddingBottom: "70px",
+                  color: "#ffffff",
+                  width: "30%",
+                  flexGrow: "1",
+                }}>
                 USDT used to purchase DedaCoins is locked
                 in the Hedge90 contract to ensure sufficient
                 liquidity and security for all user-invested capital.
+
                 </div>
+                <div  style={{
+                  width: "30%",
+                  float: "right",
+                  display:"inline-block"
+                }} >
+                <img
+                style={{
+                  width: "100%",
+                }}
+                 src="/building-blocks.png" alt="" />
+                </div>
+                
             </div>
           </section></div>:""}
           <section id="faq-answer" className='faq-section'>
@@ -219,34 +282,36 @@ const MainComponent = () => {
               }
               />
           </section>
+          <div className='footer-parent'>
+            <section className='footer-section'>
+              <div className="section">
+                  
+                  <div className='logo'><img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />DedaCoin</div> 
+                  <div onClick={()=>{setShowPrivacyPolicy(!showPrivacyPolicy)}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Privacy policy</div>
+                  <div onClick={()=>{handleAccept('false')}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Term and Conditions</div>
+          <TermsAndConditions accepted={accepted} handleAccept={handleAccept}/>
+          <PrivacyPolicy show={showPrivacyPolicy} toggleShow={handlePrivacyPolicy} />
 
-          <section className='footer-section'>
-            <div className="section">
-                
-                <div className='logo'><img width="30px" style={{paddingRight: "13px"}} src="/logo.png" alt="" />DedaCoin</div> 
-                <div onClick={()=>{setShowPrivacyPolicy(!showPrivacyPolicy)}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Privacy policy</div>
-                <div onClick={()=>{handleAccept('false')}} style={{color:"white", cursor: "pointer"}}>|||||||| &#20; Term and Conditions</div>
-        <TermsAndConditions accepted={accepted} handleAccept={handleAccept}/>
-        <PrivacyPolicy show={showPrivacyPolicy} toggleShow={handlePrivacyPolicy} />
-
-            </div>
-            
-            <div className="section">
-                <div className="social-icons">
-                    <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
-                    <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
+              </div>
+              
+              <div className="section">
+                  <div className="social-icons">
+                      {/* <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #3700AF, #3700AF, #3700AF)" }} src="/twitter-logo-n.svg" alt="" /></a> */}
+                      <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/telegram-logo-n2.png" alt="" /></a>
+                      <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/twitter-logo-n2.png" alt="" /></a>
+                  </div>
+              </div>
+            </section>
+            <hr style={{border: "0.1px solid #EFBD65", width: "90%"}}/>
+            <section className='copy-contact-section'>
+                <div className='copyright'>
+                  © 2024 Dedacoin Rights Reserved.
                 </div>
-            </div>
-          </section>
-          <hr style={{border: "0.1px solid #EFBD65", width: "90%"}}/>
-          <section className='copy-contact-section'>
-              <div className='copyright'>
-                © 2024 Dedacoin Rights Reserved.
-              </div>
-              <div className='contact-us'>
-                Contact@dedacoin.com
-              </div>
-          </section>
+                <div className='contact-us'>
+                  Contact@dedacoin.com
+                </div>
+            </section>
+          </div>
     </div>
   );
 };
