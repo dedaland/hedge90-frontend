@@ -35,6 +35,17 @@ header {
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
 }
+/* header::before{
+  display: block;
+  position: relative;
+  content: '';
+  width: 10%;
+  top: 15%;
+  height: 70%;
+  background-color: white;
+  border-top-right-radius: 1em;
+  border-bottom-right-radius: 1em;
+} */
 .header-space{
   height: 100px;
 }
@@ -49,7 +60,7 @@ header .section {
 }
 .section a {
   text-decoration: none;
-  color: #fff;
+  color: #000000;
   margin: 0 15px;
 }
 
@@ -62,6 +73,24 @@ header .social-icons-head a {
   margin-left: 10px;
   text-decoration: none;
   color: #66fcf1;
+}
+.section-links{
+  /* background-color: white; */
+  background: url("/public/curve2.png");
+    background-size: cover;
+    /* background-position-y: 69%; */
+    background-repeat: no-repeat;
+    /* height: 43px;
+    margin-top: -26px;
+    padding-top: 35px;
+    padding-left: 72px;
+    padding-right: 45px; */
+    height: 37px;
+    margin-top: -26px;
+    padding-top: 35px;
+    padding-left: 64px;
+    padding-right: 45px;
+
 }
 .main-section{
   display: flex;

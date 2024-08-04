@@ -41,7 +41,10 @@ const MainComponent = () => {
         <div className='logo'>
           DedaCoin
           </div> 
-        <div className='section-links'>
+        <div className='section-links'
+        style={{
+          height: is_hedge90?"64px":""
+        }}>
             {is_hedge90?<a href="#what-is-hedge90" className='for-large-screen'>What is Hedge90</a>:""}
             <a href="#how-to-buy">HOW TO BUY</a>
             <a href="#faq-answer">FAQS</a>
@@ -192,28 +195,6 @@ const MainComponent = () => {
                 </div>
                 
             </div>
-            {/* <div className='key-feature-section-box'>
-                <div className='key-feature-section-box-title'>
-                Volatility Protection
-                </div>
-                <div className='key-feature-section-box-content'>
-                Transactions are voided if the underlying
-                asset price fluctuates more than 100 basis
-                points in a 60-second period,
-                ensuring stability in volatile markets.
-
-                </div>
-            </div>
-            <div className='key-feature-section-box'>
-                <div className='key-feature-section-box-title'>
-                Secure & Permissionless
-                </div>
-                <div className='key-feature-section-box-content'>
-                USDT used to purchase DedaCoins is locked
-                in the Hedge90 contract to ensure sufficient
-                liquidity and security for all user-invested capital.
-                </div>
-            </div> */}
           </section></div>:""}
           <section id="faq-answer" className='faq-section'>
             <div className='faq-title'>Frequently asked questions</div>
