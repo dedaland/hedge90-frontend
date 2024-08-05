@@ -67,8 +67,9 @@ function ChoiceComponent() {
                                 <li>Ability to Sell Purchased DedaCoin on Reputable Exchanges</li>
                             </ul>
                         </div>
-                        <a href={`/hedge90` + referralCode} style={{ alignSelf: "flex-end", margin: "auto auto" }}>
+                        <a href={`#` + referralCode} style={{ alignSelf: "flex-end", margin: "auto auto" }}>
                             <button
+                            disabled
                                 style={{
                                     borderRadius: "25px",
                                     width: "200px",
