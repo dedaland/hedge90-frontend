@@ -45,7 +45,7 @@ function TransactionComponent() {
   useEffect(() => {
     if (priceData) {
       setTokenPrice(priceData);
-      setFinalPriceWithDecimal(RoundTwoPlaces(Number(USDTAmountToBuy) / priceData));
+      setFinalPriceWithDecimal(RoundTwoPlaces(Number(USDTAmountToBuy) / priceData) + (USDTAmountToBuy / priceData * 0.01));
       if(location.pathname==="/hedge90"){
         setFinalPriceWithDecimal(RoundTwoPlaces(Number(USDTAmountToBuy) / priceData - (USDTAmountToBuy / priceData * 0.04)));
       }
