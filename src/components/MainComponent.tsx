@@ -257,7 +257,7 @@ const MainComponent = () => {
                   <div className="social-icons">
                       {/* <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #3700AF, #3700AF, #3700AF)" }} src="/twitter-logo-n.svg" alt="" /></a> */}
                       <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/telegram-logo-n2.png" alt="" /></a>
-                      <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/twitter-logo-n2.png" alt="" /></a>
+                      <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/twitter-logo-n2.png" alt="" /></a>
                   </div>
               </div>
             </section>
