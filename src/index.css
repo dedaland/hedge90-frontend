@@ -145,7 +145,7 @@ header .social-icons-head a {
   display: flex;
 
   width: 420px;
-  margin-right: 80px;
+  /* margin-right: 80px; */
   justify-content: right;
   color: #fff;
 }
@@ -757,7 +757,7 @@ input[type=number] {
     display: ruby-text;
   }
   .transactions{
-    margin-left: auto;
+    margin: 2%;
   }
   .intro {
     display:none;

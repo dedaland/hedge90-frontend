@@ -88,7 +88,7 @@ function BuyFormComponent() {
       value={USDTAmountToBuy === 0 ? "" : USDTAmountToBuy.toString()}
       onChange={(e) => {
         let value = Number(e.target.value);
-        let finalPrice = RoundTwoPlaces((value / tokenPrice)) // + (value / tokenPrice * 0.01))
+        let finalPrice = RoundTwoPlaces((value / tokenPrice) + (value / tokenPrice * 0.01))
         if(location.pathname==="/hedge90"){
           finalPrice = RoundTwoPlaces((value / tokenPrice) - (value / tokenPrice * 0.04))
         }
@@ -118,7 +118,7 @@ function BuyFormComponent() {
       : "Connect your wallet"}
     </div>
     <p className='price-text'>&#9432; 1 DedaCoin = {tokenPrice !== 0 ? tokenPrice.toString() + ` Tether` : `Loading...`}</p>
-    <div style={{ textAlign: "center", fontSize: "0.7em", paddingBottom: "10px" }}>The minimum purchase amount is set at 50 USDT.</div>
+    <div style={{ textAlign: "center", fontSize: "0.7em", paddingBottom: "10px" }}>The minimum purchase amount is set at 50$.</div>
     {/* {searchParams.get('ref') ? <button onClick={generateRefCode} style={{ "backgroundColor": "rgb(61 216 216)", "border": "none", "borderRadius": "5px", "padding": "8px" }}>Generate ref code</button> : ""}
     <br />
     <br />
