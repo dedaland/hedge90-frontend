@@ -88,7 +88,7 @@ function BuyFormComponent() {
       value={USDTAmountToBuy === 0 ? "" : USDTAmountToBuy.toString()}
       onChange={(e) => {
         let value = Number(e.target.value);
-        let finalPrice = RoundTwoPlaces((value / tokenPrice))
+        let finalPrice = RoundTwoPlaces((value / tokenPrice) + (value / tokenPrice * 0.01))
         if(location.pathname==="/hedge90"){
           finalPrice = RoundTwoPlaces((value / tokenPrice) - (value / tokenPrice * 0.04))
         }
