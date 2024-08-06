@@ -39,8 +39,8 @@ function ChoiceComponent() {
                     </div>
                 </div>
                 <div className="social-icons">
-                    <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
-                    <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
+                <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/telegram-logo-n2.png" alt="" /></a>
+                <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/x-logo-n2.jpg" alt="" /></a>
                 </div>
             </header>
             <div className='choice-box'>
@@ -122,8 +122,8 @@ function ChoiceComponent() {
 
                 <div className="section">
                     <div className="social-icons">
-                        <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="35px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/twitter-square-logo.svg" alt="" /></a>
-                        <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ border: "0.1px solid #8a8aa0", borderRadius: "10px", background: "radial-gradient(closest-side, #fff, #fff, #000)" }} src="/telegram-logo2.svg" alt="" /></a>
+                    <a href="https://t.me/DedaCoin_Official" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/telegram-logo-n2.png" alt="" /></a>
+                    <a href="https://x.com/dedacoin_co" target="_blank" rel="noopener noreferrer"><img width="34px" style={{ borderRadius: "40px", background: "#fff" }} src="/x-logo-n2.jpg" alt="" /></a>
                     </div>
                 </div>
             </section>
